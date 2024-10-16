@@ -1,0 +1,104 @@
+<div class="container mt-4">
+    <h2 class="mb-4">Chi tiết đơn hàng</h2>
+  
+    
+      <div class="row">
+        <!-- Thông tin đơn hàng bên trái -->
+        <div class="col-md-6"  *ngIf="orderDetailRequest">
+          <div class="mb-3" >
+            <label for="order-id">Mã đơn hàng:</label>
+            <input type="text" id="order-id" class="form-control" [value]="orderDetailRequest.id " readonly>
+          </div>
+          <div class="mb-3">
+            <label for="user-id">Mã khách hàng:</label>
+            <input type="text" id="user-id" class="form-control" [value]="orderDetailRequest.user_id" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="fullname">Họ và tên:</label>
+            <input type="text" id="fullname" class="form-control" [value]="orderDetailRequest.fullname" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="email">Email:</label>
+            <input type="email" id="email" class="form-control" [value]="orderDetailRequest.email" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="phone_number">Số điện thoại:</label>
+            <input type="text" id="phone_number" class="form-control" [value]="orderDetailRequest.phone_number" readonly>
+          </div>
+        
+          <div class="mb-3">
+            <label for="note">Ghi chú:</label>
+            <textarea id="note" class="form-control" [value]="orderDetailRequest.note" readonly></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="status">Trạng thái: <span style="font-size: 12px;color: red;">(được quyền thay đổi)</span></label>
+            <select id="status" class="form-control" [(ngModel)]="orderDetailRequest.status">
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+  
+        <!-- Thông tin đơn hàng bên phải -->
+        <div class="col-md-6"  *ngIf="orderDetailRequest">
+          <div class="mb-3">
+            <label for="total_money">Tổng tiền:</label>
+            <input type="text" id="total_money" class="form-control" [value]="totalAmount | currency" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="payment_method">Phương thức thanh toán:</label>
+            <input type="text" id="payment_method" class="form-control" [value]="orderDetailRequest.payment_method" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="shipping_address">Địa chỉ giao hàng:</label>
+            <input type="text" id="shipping_address" class="form-control" [value]="shipping_address" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="shipping_method">Phương thức giao hàng:</label>
+            <input type="text" id="shipping_method" class="form-control" [value]="orderDetailRequest.shipping_method" readonly>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Bảng sản phẩm -->
+      <div class="mt-4"  *ngIf="orderDetailRequest">
+        <h3>Sản phẩm trong đơn hàng</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Hình ảnh sản phẩm</th>
+              <th>Tên sản phẩm</th>
+              <th>Số lượng</th>
+              <th>Giá</th>
+              <th>Tổng</th>
+            </tr>
+          </thead>
+          <tbody >
+            <tr *ngFor="let item of orderDetailRequest.order_details">
+              <td><img [src]="item.product.thumbnail" alt="{{ item.product.name }}" width="100"></td>
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.numberOfProduct }}</td>
+              <td>{{ item.price | currency }}</td>
+              <td>{{ item.totalMoney | currency }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" class="text-end"><strong>Tổng giá trị đơn hàng:</strong></td>
+              <td>{{ this.orderDetailRequest.total_money | currency }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      
+      <!-- Nút lưu thay đổi -->
+      <div class="mt-4">
+        <button type="submit" (click)="updateOrder(orderDetailRequest.id)" class="btn btn-primary">Lưu Thay Đổi</button>
+      </div>
+      
+    
+  </div>
+  

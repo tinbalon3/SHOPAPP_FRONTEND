@@ -1,0 +1,49 @@
+<header>
+    <nav class="bg-dark navbar navbar-expand-lg navbar-light ">
+        <div class="container">
+            <a class="navbar-brand" routerLink="/">
+               <img src="../../../assets/logo/logo.png" alt="">
+               
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" routerLink="/">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="#">Thông báo</a>
+                    </li>
+                    <li class="nav-item">
+                        <app-cart-status></app-cart-status>
+                    </li>
+                    <li class="nav-item">
+                        <ng-container *ngIf="userReponse">
+                          <!-- Dropdown Trigger -->
+                          <div class="dropdown" ngbDropdown>
+                            <a class="nav-link dropdown-toggle" id="dropdownMenuButton" ngbDropdownToggle>
+                              {{userReponse.fullname}}
+                            </a>
+                            <!-- Dropdown Menu -->
+                            <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" routerLink="/user-profile">Tài khoản của tôi</a>
+                              <a class="dropdown-item" routerLink="/orders-history">Đơn mua</a>
+                              <a class="dropdown-item" (click)="logout()">Đăng xuất</a>
+                            </div>
+                          </div>
+                        </ng-container>
+                        
+                        <!-- If userReponse is not present, show login link -->
+                        <ng-container *ngIf="!userReponse">
+                          <a class="nav-link" routerLink="/login">Đăng nhập</a>
+                        </ng-container>
+                      </li>
+                      
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

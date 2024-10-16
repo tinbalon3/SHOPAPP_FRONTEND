@@ -1,0 +1,17 @@
+.text-warning .fa-star {
+    color: gray; /* Default color */
+  }
+  
+  .text-warning .fa-star.text-warning {
+    color: yellow; /* Color when selected */
+  }
+  .text-warning .fa-star {
+    cursor: pointer; /* Đổi con trỏ thành hình bàn tay */
+    transition: color 0.3s ease; /* Hiệu ứng chuyển màu mượt mà */
+}
+
+.text-warning .fa-star:hover {
+    color: #ffcc00; /* Màu vàng khi hover */
+}
+
+  

@@ -1,0 +1,74 @@
+<div class="container-fluid mt-4">
+    <h1>Danh sách Orders</h1>
+    <!-- order-table.component.html -->
+    <table>
+        <thead>
+            <tr>
+                <th>Mã Đơn Hàng</th>
+                <th>Mã Khách Hàng</th>
+                <th>Họ và Tên</th>
+                <th>Email</th>
+                <th>Số Điện Thoại</th>
+                <th>Trạng Thái</th>
+                <th>Ghi Chú</th>
+                <th>Tổng Tiền</th>
+                <th>Phương Thức Thanh Toán</th>
+                <th>Địa Chỉ Giao Hàng</th>
+                <th>Phương Thức Giao Hàng</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of orders">
+                <td>{{ order.id }}</td>
+                <td>{{ order.user_id }}</td>
+                <td>{{ order.fullname }}</td>
+                <td>{{ order.email }}</td>
+                <td>{{ order.phone_number }}</td>
+                <td>{{ order.status }}</td>
+                <td>{{ order.note }}</td>
+                <td>{{ order.total_money | currency }}</td>
+                <td>{{ order.payment_method }}</td>
+                <td>{{ order.shipping_address }}</td>
+                <td>{{ order.shipping_method }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="edit" (click)="viewOrder(order.id)">View Detail</button>
+                        <button class="delete" (click)="openConfirmDialog(order.id)">Delete</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="footer-pagination">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-9" style="padding-left:30%">
+                        <ngb-pagination [(page)]="currentPage"
+                                        [pageSize]="itemsPerPage"
+                                        [collectionSize]="totalElements"
+                                        (pageChange)="getAllOrders(currentPage,itemsPerPage)"
+                                        [maxSize]="5"
+                                        [boundaryLinks]="true">
+
+                        </ngb-pagination>
+                    </div>
+                    <div class="col-md-3 mt-2" style="text-align: center;">
+                    <span class="mr-2">
+                        Page size
+                    </span>
+                        <select #myPageSelect (change)="updatePageSize(myPageSelect.value)" >
+                            <option>2</option>
+                            <option>5</option>
+                            <option selected="true">10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
+                </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+
+.blurred {
+  filter: blur(5px); /* Apply blur to the table when isLoading is true */
+  pointer-events: none; /* Prevent interaction with blurred table */
+}
+
+.skeleton-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1100;
+  width: 100%;
+  height: 100%; /* Make sure it's tall enough */
+ 
+  background-color: rgba(234, 234, 234, 0.5);
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+}

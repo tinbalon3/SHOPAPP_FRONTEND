@@ -1,0 +1,78 @@
+<app-header></app-header>
+
+    <section class="ezy__signin1_VjHlH1lB d-flex align-items-center">
+        <div class="container">
+          <div class="row pt-4 justify-content-center">
+            <div class="col-lg-5">
+              <div class="card ezy__signin1_VjHlH1lB-form-card">
+                <div class="card-body pt-5 pe-5 ps-5 pb-0">
+                  <h2 class="ezy__signin1_VjHlH1lB-heading mb-4 mb-md-5">Đăng nhập</h2>
+      
+                  <form class="" [formGroup]="loginForm" (ngSubmit)="login()">
+                    <div formGroupName="user">
+                    <div class="form-group mb-4 mt-2">
+                      <label for="email" class="mb-2">Số điện thoại</label>
+                      <input type="text" formControlName="phoneNumber" class="form-control" id="email" placeholder="Enter Phone Number" />
+                      <div class="divider-nospace"></div>
+                      <div class="text-danger" *ngIf="phoneNumber?.invalid && (phoneNumber?.dirty || 
+                      phoneNumber?.touched)">
+                          <div *ngIf="phoneNumber?.errors?.['required']">
+                              Số điện thoại là bắt buộc
+                          </div>
+                      </div>
+                    </div>
+                    <div class="form-group mb-2 mt-2">
+                      <label for="password" class="mb-2">Mật khẩu</label>
+                      <input type="password" formControlName="password" class="form-control" id="password" placeholder="Enter Password" />
+                      <div class="divider-nospace"></div>
+                      <div class="text-danger" *ngIf="password?.invalid && (password?.dirty || 
+                      password?.touched)">
+                          <div *ngIf="password?.errors?.['required']">
+                              Mật khẩu là bắt buộc
+                          </div>
+                      </div>
+                    </div>
+                    <div class="form-group mb-3">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" formControlName="rememberMe" value="" id="remember-me" checked />
+                        <label class="form-check-label" for="remember-me" > Ghi nhớ đăng nhập </label>
+                      </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <select class="form-control access-right" formControlName="role">
+                            <option selected disabled>Quyền đăng nhập</option>
+                            <option *ngFor="let role of roles" [ngValue]="role.id">
+                                {{ role.name.toUpperCase() }}
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn ezy__signin1_VjHlH1lB-btn-submit w-100">Đăng nhập</button>
+                    <button class="btn w-100">Forget your password?</button>
+      
+                    <div class="position-relative ezy__signin1_VjHlH1lB-or-separator">
+                      <hr class="my-4 my-md-5" />
+                      <span class="px-2">Or</span>
+                    </div>
+      
+                    <button class="btn btn-primary ezy__signin1_VjHlH1lB-btn w-100 d-flex align-items-center mb-3">
+                      <span class="fab fa-facebook text-white fs-4"></span>
+                      <span class="w-100 text-center text-white">Continue with Facebook</span>
+                    </button>
+                    <button class="btn btn-danger ezy__signin1_VjHlH1lB-btn w-100 d-flex align-items-center">
+                      <span class="fab fa-google text-white fs-4"></span>
+                      <span class="w-100 text-center text-white">Continue with Google</span>
+                    </button>
+      
+                    <div class="text-center mt-4 mt-md-5">
+                      <p class="mb-0 opacity-50 lh-1">Don't have an account?</p>
+                      <a routerLink="/register" class="btn btn-link py-0 text-dark text-decoration-none">Create account</a>
+                    </div>
+                </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    <app-footer></app-footer>

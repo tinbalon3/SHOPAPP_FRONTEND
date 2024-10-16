@@ -1,0 +1,56 @@
+header {
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(173, 178, 203);
+}
+
+
+.navbar-brand img{
+    width: 50px;
+    height: auto;
+}
+.navbar .container {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.navbar .container .navbar-brand {
+    color: rgb(173, 178, 203);
+}
+
+.navbar .container .navbar-nav .nav-link {
+    color: rgb(173, 178, 203);
+    border-radius: 18px;
+    padding: 8px 16px;
+}
+
+.navbar .container .navbar-nav .nav-link.active {
+    background-color: rgb(127, 68, 255) !important;
+    color: white !important;
+}
+
+/* app.component.css */
+.dropdown-menu {
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .dropdown-item {
+    padding: 10px;
+    text-decoration: none;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f0f0f0; /* Nền khi hover vào các liên kết */
+    color: red;
+    font-weight: 600;
+    cursor: pointer;
+  }
+//   .dropdown:hover .dropdown-menu {
+//     display: block;
+//   }
+  
+//   .dropdown-menu {
+//     display: none;
+//   }
+  

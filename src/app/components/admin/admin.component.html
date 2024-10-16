@@ -1,0 +1,37 @@
+<div style="overflow-x: hidden" class="container-fluid">
+    <header class="header d-flex justify-content-between">
+        <h1 class="header-title">Dashboard Header</h1>
+        <button class="btn btn-danger btn-sm" (click)="logout()">Logout</button>
+    </header>
+    <div class="row flex-nowrap">
+        <nav id="sidebar" class="col-md-2 col-lg-2 d-md-block">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a routerLink="/admin/orders" class="nav-link">
+                            <i class="fab fa-first-order icon"></i> Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a routerLink="/admin/categories" class="nav-link">
+                            <i class="fab fa-canadian-maple-leaf icon"></i> Categories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a routerLink="/admin/products" class="nav-link">
+                            <i class="fab fa-codepen icon"></i> Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a routerLink="/admin/users" class="nav-link">
+                            <i class="fab fa-codepen icon"></i> User
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main class="col-md-10 col-lg-10">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>

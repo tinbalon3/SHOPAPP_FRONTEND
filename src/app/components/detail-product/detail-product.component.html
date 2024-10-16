@@ -1,0 +1,68 @@
+<app-header></app-header>
+<div class="container">
+    <div class="intro-section">
+        <h1>Đây là trang chi tiết sản phẩm</h1>
+        <p>Sử dụng Bootstrap</p>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div *ngFor="let image of product?.product_images; let i = index"
+                        [ngClass]="{'active':i== currentImageIndex }" class="carousel-item">
+                        <div class="square-image">
+                            <img [src]="image.images_url" class="product-image" alt="Product Image">
+                        </div>
+                    </div>
+
+                </div>
+                <button class="carousel-control-prev" type="button" (click)="previouseImage()"
+                    data-bs-target="#carouselExample" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" (click)="nextImage()"
+                    data-bs-target="#carouselExample" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="thumbnail-container">
+                    <div class="thumbnail-item" *ngFor="let image of product?.product_images; let i = index"
+                        (click)="thumbnailClick(i)" [ngClass]="{'active':i== currentImageIndex }">
+                        <img [src]="image.images_url" class="thumbnail-image" alt="Thumbnail Image">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="product-details">
+                <h2>{{product?.name}}</h2>
+                <p>{{product?.description}}</p>
+
+                <h3>Giá: {{ product?.price | currency: 'VND' }}</h3>
+
+                <div class="product-actions">
+                    <button class="btn btn-primary" (click)="addToCart()">Thêm vào giỏ hàng</button>
+                    <button class="btn btn-success">Mua ngay</button>
+                </div>
+                <div class="product-quantity">
+                    <div class="border-wrapper">
+                        <button (click)="decreaseQuantity()">-</button>
+                        <input type="text" [value]="quantity">
+                        <button (click)="increaseQuantity()">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>
+
+    <app-review-product *ngIf="theCartItem"  [theCartItem]="theCartItem"></app-review-product>
+
+
+
+<app-footer></app-footer>

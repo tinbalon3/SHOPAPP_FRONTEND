@@ -1,0 +1,217 @@
+<!-- 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Xác Thực Email</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <style type="text/css">
+        body {
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .content {
+            padding: 20px 30px;
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            background-color: #28a745;
+            color: #ffffff;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px 30px;
+            color: #666666;
+            font-size: 14px;
+        }
+        /* Style cho trường hợp thất bại */
+        .verify-error .header {
+            background-color: #dc3545; /* Màu đỏ cho lỗi */
+        }
+        .verify-error .button {
+            background-color: #007bff; /* Giữ màu xanh cho nút */
+        }
+    </style>
+</head>
+<body>
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td style="padding-top: 80px;">
+             
+                <div *ngIf="isSuccess; else falseVerify" class="container">
+                
+                    <div class="header">
+                        <h1>{{ message }}</h1>
+                    </div>
+                   
+                    <div class="content">
+                        <p>Chúc mừng bạn!</p>
+                        <p>Email của bạn đã được xác thực thành công. Bạn có thể bắt đầu sử dụng tài khoản của mình ngay bây giờ.</p>
+                        <p>Chúng tôi rất vui được chào đón bạn và hy vọng bạn sẽ có những trải nghiệm tuyệt vời.</p>
+                        <a routerLink="/" class="button">Trở về trang chính</a>
+                    </div>
+              
+                    <div class="footer">
+                        <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+                        <p><a href="#" style="color: #007bff;">Liên hệ hỗ trợ</a></p>
+                    </div>
+                </div>
+
+            
+                <ng-template #falseVerif>
+                    <div class="container verify-error">
+                     
+                        <div class="header">
+                            <h1>{{ message }}</h1>
+                        </div>
+                       
+                        <div class="content">
+                            <p>Rất tiếc!</p>
+                            <p>Email của bạn không thể được xác thực. Mã xác thực không hợp lệ hoặc đã hết hạn.</p>
+                            <p>Vui lòng thử lại hoặc liên hệ với chúng tôi để được hỗ trợ.</p>
+                            <a routerLink="/" class="button">Quay lại trang chính</a>
+                        </div>
+                    
+                        <div class="footer">
+                            <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+                            <p><a href="#" style="color: #007bff;">Liên hệ hỗ trợ</a></p>
+                        </div>
+                    </div>
+                </ng-template>
+            </td>
+        </tr>
+    </table>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   
+</head>
+<body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
+    <!-- HIDDEN PREHEADER TEXT -->
+    <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Montserrat', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> Go anywhere with anywheel!</div>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <!-- LOGO -->
+        <tr>
+            <td bgcolor="#f4f4f4" align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 2px 2px 0px 0px; color: #AADB1E; font-family: 'Montserrat', Helvetica, Arial, sans-serif; font-size: 45px; font-weight: 700; letter-spacing: 2px; line-height: 48px;">
+                            <h1 style="font-size: 40px; font-weight:700; margin: 0;">VNA Fruit</h1>
+                        </td>
+                       
+                    </tr>
+                </table>
+               
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 40px 30px; color: #333333; font-family: 'Montserrat', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 1.6; border-radius: 8px;">
+                            <div *ngIf="isSuccess; else falseVerify" class="container">
+                
+                                <div class="header">
+                                    <h1>{{ message }}</h1>
+                                </div>
+                               
+                                <div class="content">
+                                    <p>Chúc mừng bạn!</p>
+                                    <p>Email của bạn đã được xác thực thành công. Bạn có thể bắt đầu sử dụng tài khoản của mình ngay bây giờ.</p>
+                                    <p>Chúng tôi rất vui được chào đón bạn và hy vọng bạn sẽ có những trải nghiệm tuyệt vời.</p>
+                                    <button routerLink="/login" class="btn btn-success">Trở về trang chính</button>
+                                </div>
+                          
+                                <div class="footer">
+                                    <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+                                    <p><a href="#" style="color: #007bff;">Liên hệ hỗ trợ</a></p>
+                                </div>
+                            </div>
+            
+                        
+                            <ng-template #falseVerify>
+                                <div class="container verify-error">
+                                 
+                                    <div class="header">
+                                        <h1>{{ message }}</h1>
+                                    </div>
+                                   
+                                    <div class="content">
+                                        <p>Rất tiếc!</p>
+                                        <p>Email của bạn không thể được xác thực. Mã xác thực không hợp lệ hoặc đã hết hạn.</p>
+                                        <p>Vui lòng thử lại hoặc liên hệ với chúng tôi để được hỗ trợ.</p>
+                                        <button routerLink="/login" class="btn btn-success">Quay lại trang chính</button>
+                                    </div>
+                                
+                                    <div class="footer">
+                                        <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+                                        <p><a href="#" style="color: #007bff;">Liên hệ hỗ trợ</a></p>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </td>
+                    </tr>
+                    
+                   
+                   
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#f4f4f4" align="center" style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;">
+                            <br>
+                            <p style="margin: 0;"><a href="#" target="_blank" style="color: #111111; font-weight: 700;">Unsubscribe</a></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

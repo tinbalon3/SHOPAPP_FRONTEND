@@ -1,0 +1,204 @@
+
+<div *ngIf="isLoading">
+  <app-skeleton-loader></app-skeleton-loader>
+</div>
+
+  <app-header></app-header>
+  <div class="container" style="height: 86vh; position: relative;display: grid;">
+  <section class="ezy__signup16_LBMtewSK d-flex align-items-center justify-content-center">
+    <!-- đăng kí -->
+      <div *ngIf="!isSuccessSendEmailCode" class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8">
+            <div class="ezy__signup16_LBMtewSK-card p-3">
+              <div class="ezy__signup16_LBMtewSK-form-card p-4 p-lg-5">
+                <h2 class="ezy__signup16_LBMtewSK-heading text-center">ĐĂNG KÍ TÀI KHOẢN</h2>
+                <!-- form -->
+                <form class="mt-4" [formGroup]="registerForm" (ngSubmit)="register()">
+                  <div class="row" formGroupName="user">
+                    <div class="col-12 col-md-6">
+                      <div class="form-group position-relative mb-4">
+                        <label class="mb-2" for="uname">HỌ VÀ TÊN:</label>
+                        <input formControlName="fullname" type="text" placeholder="Họ và tên" class="form-control" id="uname" />
+                        <i class="fas fa-user ezy__signup16_LBMtewSK-icon"></i>
+                        <div class="divider-nospace"></div>
+                        <div class="text-danger" 
+                        *ngIf="fullname?.invalid 
+                        && (fullname?.dirty || 
+                        fullname?.touched)">
+                        <div *ngIf="fullname?.errors?.['required']  || fullname?.errors?.['notOnlyWhitespace']">
+                            Họ và tên là bắt buộc
+                            </div>  
+                    </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="form-group position-relative mb-4">
+                        <label class="mb-2" for="phoneNumber">SỐ ĐIỆN THOẠI:</label>
+                        <input type="text" formControlName="phoneNumber" placeholder="Số điện thoại" class="form-control" id="phoneNumber" />
+                        <i class="fas fa-at ezy__signup16_LBMtewSK-icon"></i>
+                        <div class="divider-nospace"></div>
+                        <div class="text-danger" 
+                            *ngIf="phoneNumber?.invalid 
+                            && (phoneNumber?.dirty || 
+                            phoneNumber?.touched)">
+                            <div *ngIf="phoneNumber?.errors?.['required']  || phoneNumber?.errors?.['notOnlyWhitespace']">
+                                Số điện thoại là bắt buộc
+                                </div>
+                            <div *ngIf="phoneNumber?.errors?.['pattern']">
+                                Số điện thoại phải có ít nhất 10 ký tự
+                                </div>
+                            </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="form-group position-relative mb-4">
+                        <label class="mb-2" for="email">EMAIL:</label>
+                        <input type="email" formControlName="email" placeholder="Email" class="form-control" id="email" />
+                        <i class="fas fa-at ezy__signup16_LBMtewSK-icon"></i>
+                        <div class="divider-nospace"></div>
+                        <div class="text-danger" 
+                            *ngIf="email?.invalid 
+                            && (email?.dirty || 
+                            email?.touched)">
+                            <div *ngIf="email?.errors?.['required']  || email?.errors?.['notOnlyWhitespace']">
+                               Email là bắt buộc
+                                </div>
+                            <div *ngIf="email?.errors?.['email']">
+                               Sai định dạng email
+                                </div>
+                            </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="form-group position-relative mb-4">
+                        <label class="mb-2" for="pass">MẬT KHẨU:</label>
+                        <input formControlName="password" type="password" class="form-control" id="pass" placeholder="******" />
+                        <i class="fas fa-lock ezy__signup16_LBMtewSK-icon"></i>
+                        <div class="divider-nospace"></div>
+                        <div class="text-danger" 
+                        *ngIf="password?.invalid && (password?.dirty || password?.touched)">
+                        <div *ngIf="password?.errors?.['required']  || password?.errors?.['notOnlyWhitespace']">
+                          Mật khẩu là bắt buộc
+                      </div>
+                      <div *ngIf="password?.errors?.['minlength']">
+                          Mật khẩu phải có ít nhất 3 ký tự
+                      </div>
+                            
+                    </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="form-group position-relative mb-4">
+                        <label class="mb-2" for="conPass">NHẬP LẠI MẬT KHẨU:</label>
+                        <input type="password" formControlName="retypePassword"
+                        (input)="checkPasswordsMatch()" class="form-control" id="conPass" placeholder="******" />
+                        <i class="fas fa-lock ezy__signup16_LBMtewSK-icon"></i>
+                        <div class="divider-nospace"></div>
+                      <div class="text-danger" 
+                      *ngIf="retypePassword?.invalid 
+                      && (retypePassword?.dirty || 
+                      retypePassword?.touched)">
+                      <div *ngIf="retypePassword?.errors?.['required']  || retypePassword?.errors?.['notOnlyWhitespace']">
+                          Mật khẩu là bắt buộc
+                          </div>
+                          <div *ngIf="retypePassword?.errors?.['minlength']">
+                              Mật khẩu phải có ít nhất 3 ký tự
+                              </div>
+                          <div *ngIf="retypePassword?.errors?.['passwordMismatch']">
+                              Mật khẩu nhập lại không khớp
+                          </div>
+                  </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="form-group mb-4 position-relative">
+                        <label for="email" class="mb-2">Ngày sinh:</label>
+                       <input type="date" formControlName="dateOfBirth" placeholder="mm/dd/yyyy" name="dateOfBirth" class="form-control">
+                       <i class="fa-solid fa-calendar-days ezy__signup16_LBMtewSK-icon"></i>
+                       <div class="divider-nospace"></div>
+                      <div class="text-danger" 
+                      *ngIf="dateOfBirth?.invalid 
+                      && (dateOfBirth?.dirty || dateOfBirth?.touched
+                      )">
+                      <div *ngIf="dateOfBirth?.errors?.['minAge']">
+                          Bạn chưa đủ 18 tuổi
+                      </div>
+                  </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="form-group mb-4 position-relative">
+                        <label for="email" class="mb-2">ĐỊA CHỈ:</label>
+                        <input type="text" class="form-control" placeholder="Địa chỉ" formControlName="address">
+                        <i class="fa-solid fa-address-book ezy__signup16_LBMtewSK-icon"></i>
+                        <div class="divider-nospace"></div>
+                        <div class="text-danger" 
+                        *ngIf="address?.invalid 
+                        && (address?.dirty || address?.touched
+                        )">
+                        <div *ngIf="address?.errors?.['required']">
+                            Địa chỉ là bắt buộc
+                        </div>
+                           
+                    </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="form-group d-flex align-items-center h-100 mb-3 mt-2">
+                        <div class="form-check">
+                          <input formControlName="isAccepted" class="form-check-input" type="checkbox" value="" id="remember-me" />
+                          <label class="form-check-label" for="remember-me"
+                            >Tôi đồng ý với các <a href="#">Điều khoản & Điều kiện</a>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-12">
+                      <div class="d-flex justify-content-md-end mt-3">
+                        <button type="submit" class="btn ezy__signup16_LBMtewSK-btn-submit">
+                          Tiếp theo <i class="fas fa-arrow-right"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isSuccessSendEmailCode" class="container-fluid bg-body-tertiary d-block">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
+                <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
+                    <div class="card-body p-5 text-center">
+                        <h4>Nhập mã xác nhận</h4>
+                        <p>Mã xác minh đã được gửi về email {{this.registerForm.controls['user'].value.email}}</p>
+    
+                        <div class="otp-field mb-4">
+                            <input *ngFor="let control of otp; let i = index"
+                                   type="text"
+                                   [(ngModel)]="otp[i]"
+                                   (input)="onInput(i)"
+                                   maxlength="1"
+                                   class="otp-input" />
+                        </div>
+    
+                        <button class="btn btn-primary mb-3" [disabled]="!isVerifyEnabled()" (click)="verifyEmailCode()">
+                            Xác nhận
+                        </button>
+    
+                        <p class="resend text-muted mb-0">
+                            Không nhận được mã? <a href="">Gửi lại</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>   
+    </section>
+  </div>
+  <app-footer></app-footer>
+
+

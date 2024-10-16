@@ -1,0 +1,9 @@
+.table img {
+    border-radius: 5px; /* Thêm bo góc cho ảnh nếu cần */
+    object-fit: cover; /* Đảm bảo ảnh không bị biến dạng */
+  }
+  .btn-primary {
+    background: linear-gradient(to right, #2255f7, #a52a2a);
+    border: none;
+  }
+  

@@ -1,0 +1,62 @@
+
+
+<div class="card" >
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-4">
+            <div class="d-flex">
+                <input type="text" class="form-control me-2" placeholder="Search for user name..." style="width: 250px;">
+                <button class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                <button class="btn btn-outline-secondary">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
+            </div>
+            <button class="btn btn-primary">+ Add New User</button>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <input type="checkbox">
+                    </th>
+                    <th scope="col">Tên người dùng</th>
+                    <th scope="col">Địa chỉ email</th>
+                    <th scope="col">Số điện thoại</th>
+                    <th scope="col">Vai trò</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Hành động</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of userList">
+                    <td><input type="checkbox"></td>
+                    <td>{{user.fullname}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.phone_number}}</td>
+                    <td>{{user.role_id.name}}</td>
+                    <td [ngClass]="{'text-success': user.active === true, 'text-danger': user.active === false}">
+                        {{user.active === true ? "Enable" : "Block"}}
+                      </td>
+                      
+                  
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" (click)="blockOrEnableUSer(user.id,user.active == true ? 0:1)">
+                                    {{user.active === true ? "Block" : "Enable"}}</a></li>
+                                <li><a class="dropdown-item" (click)="resetPasswordUser(user.id)">Reset Password</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+              
+            </tbody>
+        </table>
+    </div>
+</div>
+<app-skeleton-loader *ngIf="isLoading"></app-skeleton-loader>

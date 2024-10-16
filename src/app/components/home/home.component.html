@@ -1,0 +1,135 @@
+<app-header></app-header>
+
+<div class="container-fluid" >
+   <div class="intro-section">
+        <h1>Đây là trang Home</h1>
+        <p>Trang này hiển thị các danh sách sản phẩm và mua hàng tại đây</p>
+        <p>Các bạn có thể chọn xem sản phẩm và mua hàng tại đây</p>
+    </div>
+    <!-- Đoạn này có 1 ô searchbox bên trái, 1 combo box bên phải -->
+     <div class="search-box">
+        <input type="text" class="form-control search-input" placeholder="Tìm sản phẩm" [(ngModel)]="keyword">
+        <select [(ngModel)]="selectedCategoryId" class=" custom-option form-control product-category">
+            <option [value]="0" >Tất cả</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+               {{category.name}}
+            </option>
+        </select>
+        <button class="btn btn-primary ml-2" (click)="searchProducts()">Tìm kiếm</button>
+     </div>
+     <section class="ezy__epgrid8 dark-gray">
+        <div class="container">
+            <div class="row  ezy__epgrid8-row text-center justify-content-start">
+                <div class="col-12 col-md-6 col-xl-4" *ngFor="let product of products">
+                    <div class="card ezy__epgrid8-card">
+                      <div class="position-relative">
+                        <h6 class="ezy__epgrid8-new-text">New</h6>
+                        <!-- img starts -->
+                        <a routerLink="/products/{{product.id}}">
+                          <img
+                            src="{{product.url}}"
+                            alt="..."
+                            class="w-100 ezy__epgrid8-img"
+                          />
+                        </a>
+                      </div>
+                      <!-- card-body -->
+                      <div class="card-body text-start">
+                        <!-- title -->
+                        <a >
+                          <h5 class="ezy__epgrid8-title mb-1" routerLink="/products/{{product.id}}">{{product.name}}</h5>
+                        </a>
+                        <!-- sub title -->
+                        <a >
+                          <h5 class="ezy__epgrid8-sub-title">{{product.description}}</h5>
+                        </a>
+                        <!-- price -->
+                        <div class="py-2 d-flex align-items-center">
+                          <h5 class="ezy__epgrid8-discount-price">Giá: VNĐ{{product.price}}</h5>
+                          <!-- <h5 class="ezy__epgrid8-real-price ms-2">$2100</h5> -->
+                        </div>
+                        <!-- details -->
+                        <div class="ezy__epgrid8-details">
+                          <h6 class="ezy__epgrid8-shipping mb-1">Shipping Cost: VNĐ0</h6>
+                          <h6 class="ezy__epgrid8-stock">Stock: <span class="ezy__epgrid8-available">Available</span></h6>
+                        </div>
+                        <!-- icons -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                          <!-- rating -->
+                          <div class="d-flex align-items-center ezy__epgrid8-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star me-1"></i>
+                            <span class="count">(7)</span>
+                          </div>
+                          <div class="d-flex">
+                            <a href="#" class="btn btn-outline-danger ezy__epgrid8-fav me-2"><i class="fas fa-heart"></i> </a>
+                            <a href="#" class="btn btn-primary ezy__epgrid8-cart" (click)="buyNow(product.id)"><i class="fas fa-shopping-cart"></i> </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <!-- <div class="col-lg-4 col-md-6" *ngFor="let product of products">
+                    <div class="product-item">
+                        <img src="{{product.url}}" 
+                        alt="" class="product-image"  routerLink="/products/{{product.id}}">
+                        <h3 class="product-name" routerLink="/products/{{product.id}}">{{product.name}}</h3>
+                        <p class="product-description">{{product.description}}</p>
+                        <p class="product-warranty">Bảo hành: 12 tháng</p>
+                        <p class="product-price">Giá: ${{product.price}}</p>
+                        <div class="product-rating">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-alt"></i>
+                        </div>
+                        
+                    </div>
+                </div> -->
+             </div>
+        
+        </div>
+    </section>
+            
+    
+     <!-- footer -->
+     <div class="footer-pagination">
+        <div class="row">
+            <div class="col-md-6">
+
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-9" >
+                        <ngb-pagination [(page)]="currentPage"
+                                        [pageSize]="itemsPerPage"
+                                        [collectionSize]="totalElements"
+                                        (pageChange)="getProducts(keyword,selectedCategoryId,currentPage,itemsPerPage)"
+                                        [maxSize]="5"
+                                        [boundaryLinks]="true">
+
+                        </ngb-pagination>
+                    </div>
+                    <div class="col-md-3 mt-2" style="text-align: center;">
+                    <span class="mr-2">
+                        Page size
+                    </span>
+                        <select #myPageSelect (change)="updatePageSize(myPageSelect.value)" >
+                            <option>3</option>
+                            <option>6</option>
+                            <option selected="true">9</option>
+                            <option>21</option>
+                            <option>52</option>
+                        </select>
+                </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

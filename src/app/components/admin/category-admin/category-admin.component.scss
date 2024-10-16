@@ -1,0 +1,101 @@
+.container-fluid {
+    background-color: white  !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    height: 100vh;
+}
+/* order-table.component.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+}
+
+
+
+
+
+th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons button {
+    
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.action-buttons .delete {
+    background-color: #f44336;
+}
+
+.action-buttons .edit {
+    background-color: #4CAF50;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+h1 {
+    font-size: 2rem; /* Kích thước chữ lớn */
+    color: #333; /* Màu chữ */
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+    text-align: center; /* Căn giữa tiêu đề */
+}
+.btn-add{
+    display: flex;
+    justify-content: flex-end;
+    
+}
+
+
+
+
+.table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th, .table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-buttons .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}

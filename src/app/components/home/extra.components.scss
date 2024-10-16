@@ -1,0 +1,171 @@
+.ezy__epgrid8 {
+    /* Bootstrap variables */
+    --bs-body-color: #000;
+    --bs-body-bg: #fff;
+  
+    /* Easy Frontend variables */
+    --ezy-theme-color: rgb(13, 110, 253);
+    --ezy-theme-color-rgb: 13, 110, 253;
+    --ezy-card-border: #d8e2ef;
+    --ezy-success-color: #00d27a;
+    --ezy-new-text-color: #ffffff;
+    --ezy-warning-color: #f5803e;
+    --ezy-not-available-color: #e63757;
+    --ezy-button-color: #fff;
+    --ezy-rating-color: #eec200;
+  
+    // background-color: var(--bs-body-bg);
+    
+  }
+  
+ 
+  
+  
+  /* Gray Block Style */
+  .gray .ezy__epgrid8,
+  .ezy__epgrid8.gray {
+    /* Bootstrap variables */
+    --bs-body-bg: rgb(246, 246, 246);
+  }
+  
+  /* Dark Gray Block Style */
+  .dark-gray .ezy__epgrid8,
+  .ezy__epgrid8.dark-gray {
+    /* Bootstrap variables */
+    --bs-body-color: #ffffff;
+    --bs-body-bg: rgb(30, 39, 53);
+  
+    /* Easy Frontend variables */
+    --ezy-card-border: rgb(51, 61, 79);
+  }
+  
+  /* Dark Block Style */
+  .dark .ezy__epgrid8,
+  .ezy__epgrid8.dark {
+    /* Bootstrap variables */
+    --bs-body-color: #fff;
+    --bs-body-bg: rgb(11, 23, 39);
+  
+    /* Easy Frontend variables */
+    --ezy-card-border: rgb(30, 39, 53);
+  }
+  
+  .ezy__epgrid8-row {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+  
+  .ezy__epgrid8-row [class*="col-"] {
+    padding: 16px;
+  }
+  
+  .ezy__epgrid8-card {
+    border: 1px solid var(--ezy-card-border) !important;
+    background-color: transparent;
+    border-radius: 5px;
+    height: 100%;
+    overflow: hidden;
+  }
+  .ezy__epgrid8 img{
+    max-height: 300px;
+  }
+  .ezy__epgrid8-new-text {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--ezy-success-color);
+    color: var(--ezy-new-text-color);
+    padding: 5px 10px;
+    border-radius: 15px;
+  }
+  
+  .ezy__epgrid8-title {
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--bs-body-color);
+  }
+  
+  .ezy__epgrid8-title:hover {
+    text-decoration: underline;
+  }
+  
+  .ezy__epgrid8-sub-title {
+    font-size: 14px;
+    line-height: 1;
+    color: var(--bs-body-color);
+    opacity: 0.6;
+  }
+  
+  .ezy__epgrid8-sub-title:hover {
+    text-decoration: underline;
+  }
+  
+  .ezy__epgrid8-discount-price {
+    color: var(--ezy-theme-color);
+    font-size: 24px;
+  }
+  
+  .ezy__epgrid8-real-price {
+    color: var(--bs-body-color);
+    font-size: 15px;
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+  
+  .ezy__epgrid8-details {
+    color: var(--bs-body-color);
+    opacity: 0.8;
+  }
+  
+  .ezy__epgrid8-available {
+    color: var(--ezy-success-color);
+  }
+  
+  .ezy__epgrid8-not-available {
+    color: var(--ezy-not-available-color);
+  }
+  
+  .ezy__epgrid8-shipping,
+  .ezy__epgrid8-stock {
+    font-size: 14px;
+  }
+  
+  .ezy__epgrid8-rating {
+    color: var(--ezy-rating-color);
+    font-size: 15px;
+  }
+  
+  .ezy__epgrid8-rating .count {
+    color: var(--bs-body-color);
+    font-size: 18px;
+    opacity: 0.7;
+  }
+  
+  .ezy__epgrid8-fav,
+  .ezy__epgrid8-cart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    color: var(--ezy-theme-color);
+    border-color: var(--ezy-theme-color);
+  }
+  
+  .ezy__epgrid8-fav:hover {
+    background-color: var(--ezy-theme-color);
+    border-color: var(--ezy-theme-color);
+  }
+  
+  .ezy__epgrid8-cart {
+    color: #fff;
+    background-color: var(--ezy-theme-color);
+  }
+  
+  .ezy__epgrid8-cart:hover {
+    background-color: rgba(var(--ezy-theme-color-rgb), 0.9);
+    border-color: rgba(var(--ezy-theme-color-rgb), 0.9);
+  }
+  
+  .ezy__epgrid8 a {
+    text-decoration: none;
+  }

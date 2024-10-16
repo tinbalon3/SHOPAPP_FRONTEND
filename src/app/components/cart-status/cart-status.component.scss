@@ -1,0 +1,31 @@
+.total{
+    background:rgb(127, 68, 255) !important;
+    line-height:39px;
+    color:#fff;
+    border-radius:30px;
+    border:1px solid #0da8e4;
+    float:left;
+    padding-left:17px
+}
+
+.total span{
+    display:inline-block;
+    background:#fff;
+    padding:0 13px;
+    color:#000;
+    border-top-right-radius:20px;
+    border-bottom-right-radius:20px;
+    margin-left:11px
+}
+
+.cart-area.d-n{
+    display:block
+}
+
+.cart-area i{
+    font-size:22px;
+    float:left;
+    margin-top:11px;
+    color:#fff;
+    margin-left:15px
+}

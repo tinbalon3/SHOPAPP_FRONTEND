@@ -1,0 +1,246 @@
+<app-header></app-header>
+<section class="ezy__eporder3_hQXDdI1y">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <!-- progress bar -->
+      <div class="col-12">
+        <div class="ezy__eporder3_hQXDdI1y-progress d-flex justify-content-between position-relative mb-5">
+          <span routerLink="/orders" class="ezy__eporder3_hQXDdI1y-cart active">1</span>
+          <span class="ezy__eporder3_hQXDdI1y-bill active">2</span>
+          <span class="ezy__eporder3_hQXDdI1y-completed">3</span>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="ezy__eporder3_hQXDdI1y-wrapper row justify-content-between p-4 p-lg-5 mt-4">
+          <!-- form -->
+          <div class="col-12 col-lg-5">
+            <form [formGroup]="orderForm">
+
+              <!-- Customer Information -->
+              <h4>Chi tiết thanh toán của bạn</h4>
+              <div formGroupName="customer">
+                <div class="form-group mt-4">
+                  <label for="fullname" class="form-label">Họ và tên <span>*</span></label>
+                  <input type="text" class="form-control" id="fullname" placeholder="Jon Doe" formControlName="fullname"
+                    required />
+                  <div *ngIf="fullname?.invalid &&  (fullname?.dirty ||  fullname?.touched)"
+                    class="alert alert-danger mt-1">
+                    <div *ngIf="fullname?.errors?.['required']  || fullname?.errors?.['notOnlyWhitespace']">
+                      Họ và tên là bắt buộc
+                    </div>
+                    <div *ngIf="fullname?.errors?.['minlength']">
+                      Họ và tên phải có độ dài tối thiếu là 2
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="email" class="form-label">Email <span>*</span></label>
+                  <input type="email" formControlName="email" class="form-control" id="email"  placeholder="example@gmail.com" required />
+
+                  <div *ngIf="email?.invalid && email?.touched" class="alert alert-danger mt-2">
+                    <div *ngIf="email?.errors?.['required']">
+                      Email là bắt buộc
+                    </div>
+                    <div *ngIf="email?.errors?.['email']">
+                      Email phải hợp lệ
+                    </div>
+                  </div>
+
+                </div>
+                <div class="form-group mt-4">
+                  <label for="phone_number" class="form-label">Số điện thoại <span>*</span></label>
+                  <input type="text" class="form-control" id="phone_number" placeholder="+88016******78"
+                    formControlName="phone_number" required />
+                  <div *ngIf="phone_number?.invalid &&  (phone_number?.dirty ||  phone_number?.touched)"
+                    class="alert alert-danger mt-1">
+                    <div *ngIf="phone_number?.errors?.['required']">
+                      Số điện thoại là bắt buộc
+                    </div>
+                    <div *ngIf="phone_number?.errors?.['pattern']">
+                      Số điện thoại phải hợp lệ
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Shipping Address -->
+              <h4 class="mt-3">Địa chỉ giao hàng</h4>
+              <div formGroupName="shipping_address">
+
+
+                <div class="form-group mt-4">
+                  <label for="shippingCountry" class="form-label">Tỉnh<span>*</span></label>
+                  <select formControlName="state" class="form-control my-select"
+                    (change)="getCities('shipping_address')">
+                    <option *ngFor="let state of states" [ngValue]="state.name">
+                      {{state.name}}</option>
+                  </select>
+                  <div *ngIf="shippingAddressState?.invalid &&  (shippingAddressState?.dirty ||  shippingAddressState?.touched)"  class="alert alert-danger mt-1">
+                    <div *ngIf="shippingAddressState?.errors?.['required']">
+                    Tỉnh là bắt buộc
+                    </div>
+                    
+                </div>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="shippingCity" class="form-label">Thành phố <span>*</span></label>
+                  <select formControlName="city" class="form-control my-select">
+                    <option *ngFor="let city of shippingAddressStates" [ngValue]="city.name">
+                      {{city.name}}</option>
+                  </select>
+                  <div *ngIf="shippingAddressCity?.invalid &&  (shippingAddressCity?.dirty ||  shippingAddressCity?.touched)"  class="alert alert-danger mt-1">
+                    <div *ngIf="shippingAddressCity?.errors?.['required'] || shippingAddressCity?.errors?.['notOnlyWhitespace']">
+                    Thành phố là bắt buộc
+                    </div>
+                    
+            </div>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="shippingStreet" class="form-label">Địa chỉ giao hàng <span>*</span></label>
+                  <input type="text" class="form-control" id="shippingStreet" placeholder="Dương Bá Trạc 109/24/1"
+                    formControlName="street" required />
+                    <div *ngIf="shippingAddressStreet?.invalid &&  (shippingAddressStreet?.dirty ||  shippingAddressStreet?.touched)"
+                    class="alert alert-danger mt-1">
+                    <div *ngIf="shippingAddressStreet?.errors?.['required']">
+                      Địa chỉ giao hàng là bắt buộc
+                    </div>
+                    <div *ngIf="shippingAddressStreet?.errors?.['minlength']">
+                      Địa chỉ giao hàng phải dài ít nhất 2 
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <div class="input-space mt-2">
+                <label class="au-checkbox">
+                  <input type="checkbox" (change)="copyShippingAddressToBillingAddress($event)">
+                  <span class="au-checkmark"></span>Địa chỉ thanh toán giống với địa chỉ giao hàng
+                </label>
+              </div>
+              <!-- Billing Address -->
+              <h4 class="mt-3">Địa chỉ thanh toán</h4>
+              <div formGroupName="billing_address">
+                <div class="form-group mt-4">
+                  <label for="billingCity" class="form-label">Tỉnh <span>*</span></label>
+                  <select formControlName="state" class="form-control my-select"
+                    (change)="getCities('billing_address')">
+                    <option *ngFor="let state of states" [ngValue]="state.name">
+                      {{state.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="billingCity" class="form-label">Thành phố <span>*</span></label>
+                  <select formControlName="city" class="form-control my-select">
+                    <option *ngFor="let city of billingAddressStates" [ngValue]="city.name">
+                      {{city.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group mt-4">
+                  <label for="billingStreet" class="form-label">Địa chỉ thanh toán <span>*</span></label>
+                  <input type="text" class="form-control" id="billingStreet" placeholder="Dương Bá Trạc 109/24/1"
+                    formControlName="street" required />
+                    <div *ngIf="billingAddressStreet?.invalid &&  (billingAddressStreet?.dirty ||  billingAddressStreet?.touched)"
+                    class="alert alert-danger mt-1">
+                    <div *ngIf="billingAddressStreet?.errors?.['required']">
+                      Địa chỉ giao hàng là bắt buộc
+                    </div>
+                    <div *ngIf="billingAddressStreet?.errors?.['minlength']">
+                      Địa chỉ giao hàng phải dài ít nhất 2 
+                      </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Note -->
+              <div class="form-group mt-4">
+                <label for="note" class="form-label">Ghi chú</label>
+                <textarea class="form-control" id="note" placeholder="Ghi chú về đơn hàng..."
+                  formControlName="note"></textarea>
+              </div>
+
+              <!-- Shipping Method -->
+              <div class="form-group mt-4">
+                <label for="shipping_method" class="form-label">Phương thức vận chuyển</label>
+                <select class="form-control" id="shipping_method" formControlName="shipping_method" required>
+                  <option value="standard">Standard</option>
+                  <option value="express">Express</option>
+                </select>
+              </div>
+
+              <!-- Payment Method -->
+
+            </form>
+
+          </div>
+
+          <!-- payment -->
+          <div class="col-12 col-lg-6">
+            <div class="ezy__eporder3_hQXDdI1y-card card border-0 mt-4 mt-lg-0">
+              <div class="p-3 px-lg-5 pt-lg-5 card-body">
+                <h4 class="mb-5">Đơn hàng của bạn</h4>
+                <div class="row">
+                  <div class="col-8">
+                    <h6 class="mb-0">Sản phẩm</h6>
+                  </div>
+                  <div class="col-4">
+                    <h6 class="mb-0">Tổng phụ</h6>
+                  </div>
+                </div>
+                <hr class="my-4" />
+                <div class="row" *ngFor="let item of cartItems">
+                  <div class="col-8">
+                    <h6 class="mb-0">{{item.name}} x {{item.quantity}}</h6>
+                  </div>
+                 
+                  <div class="col-4">
+                    <p class="mb-0">{{item.price * item.quantity}} VND</p>
+                  </div>
+                </div>
+                <ng-container *ngIf="this.isApplyCoupon">
+                  <hr class="my-4" />
+                  <div class="border border-secondary p-2 mb-2">
+                    <div class="small " style="color: rgb(153 181 209 / 75%) !important;">
+                        Mã giảm giá <span class="font-weight-bold text-white">HEAVEN</span> đã được sử dụng.
+                    </div>
+                </div>
+                </ng-container>
+                <ng-container *ngIf="!this.isApplyCoupon">
+                  <hr class="my-4" />
+                </ng-container>
+                <div class="row">
+                  <div class="col-8">
+                    <h6 class="mb-0">Tổng cộng</h6>
+                  </div>
+                  <div class="col-4">
+                    <h6 class="mb-0">{{totalAmount }} VND</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body pt-0 p-3 p-lg-5">
+                <form class="ezy__eporder3_hQXDdI1y-payment p-4">
+
+
+                  <h6>Debit or Credit Card</h6>
+                  <div class="form-check d-flex align-items-center mt-3 mb-4">
+                    <input class="form-check-input me-3" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
+                      checked />
+                    <img src="https://cdn.easyfrontend.com/pictures/Debit%20or%20Credit.png" alt="" class="img-fluid" />
+                  </div>
+
+                  <div class="form-check my-5">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Tôi đã đọc và đồng ý với các điều khoản và điều kiện của trang web *
+                    </label>
+                  </div>
+                  <buton class="btn ezy__eporder3_hQXDdI1y-btn w-100" (click)="placeOrder()">Thanh toán ngay</buton>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>

@@ -1,0 +1,138 @@
+
+
+
+
+<app-header></app-header>
+<section class="ezy__epcheckout7_WIEp2n5P" id="ezy__epcheckout7_WIEp2n5P">
+	<div class="container">
+		<div class="row">
+      <div class="col-12">
+        <div class="ezy__eporder3_hQXDdI1y-progress d-flex justify-content-between position-relative mb-5">
+          <span class="ezy__eporder3_hQXDdI1y-cart active">1</span>
+          <span class="ezy__eporder3_hQXDdI1y-bill ">2</span>
+          <span class="ezy__eporder3_hQXDdI1y-completed">3</span>
+        </div>
+      </div>
+			<div class="col-lg-8">
+                <ng-container *ngIf="cartItems.length > 0;else notFound" >
+                   
+                    <div *ngFor="let item of cartItems;let i = index" class="card ezy__epcart4_5qxiUBozF_Q3qZ-card mb-3">
+                        <div class="card-body d-flex align-items-start p-md-4">
+                          <div class="ezy__epcheckout7_WIEp2n5P-image me-3 me-md-4">
+                            <a href="#!">
+                              <img
+                                [src]="item.thumbnail"
+                                alt=""
+                                class="img-fluid"
+                              />
+                            </a>
+                          </div>
+                          <div>
+                            <div class="ezy__epcart4_OdTjk3TS-heading mb-3">
+                              <a href="/products/{{item.id}}">
+                                {{item.name}}
+                              </a>
+                            </div>
+                            <div>
+                              <div class="input-group ezy__epcart4_OdTjk3TS-qty mb-3">
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  placeholder=""
+                                  [value]="item.quantity"
+                                  aria-label="Example text with button addon"
+                                  aria-describedby="button-addon1"
+                                />
+                                <div class="input-group-text d-flex flex-column bg-transparent p-0">
+                                  <button class="btn" type="button" (click)="increaseProduct(item)"><i class="fas fa-chevron-up"></i></button>
+                                  <button class="btn" type="button" (click)="decreaseProduct(item)"><i class="fas fa-chevron-down"></i></button>
+                                </div>
+                              </div>
+                              <h3 class="ezy__epcart4_OdTjk3TS-price mb-0">{{ (item.price * item.quantity)}} VND
+                            </h3>
+                            </div>
+                          </div>
+                          <div>
+                            <button (click)="remove(item)" class="btn ezy__epcheckout7_WIEp2n5P-del d-inline-flex align-items-center rounded-circle"><i
+                                    class="fas fa-trash-alt fs-6"></i></button>
+                        </div>
+                        </div>
+                        </div>
+                        
+                </ng-container>
+				<ng-template #notFound>
+                    <h2 class="not-found-message">Không có sản phẩm trong giỏ hàng</h2>
+                  </ng-template>
+			</div>
+			<!-- <div class="col-lg-4">
+				<div class="card ezy__epcheckout7_WIEp2n5P-card">
+					<div class="card-body p-md-4">
+						<h5 class="fs-4 fw-bold mb-4">Tổng kết đơn hàng</h5>
+
+					
+						<div class="mt-3">
+							<p class="ezy__epcheckout7_WIEp2n5P-content mb-1">Promo Code
+							</p>
+							<div class="input-group ezy__epcheckout7_WIEp2n5P-promo-code">
+								<input type="text" class="form-control me-2 rounded-3" 
+									aria-label="Recipient's username" aria-describedby="button-addon2">
+								<button class="btn ezy__epcheckout7_WIEp2n5P-btn-outline h-auto rounded-3" type="button"
+									id="button-addon2">Apply</button>
+							</div>
+						</div>
+
+						<hr class="ezy__epcheckout7_WIEp2n5P-hr mb-3 mt-4">
+						<div class="d-flex justify-content-between align-items-center">
+							<span class="fw-bold">Total</span>
+							<span class="fs-4 fw-bold">VND: {{totalAmount | currency:'VND'}}</span>
+						</div>
+						
+
+						<button class="btn ezy__epcheckout7_WIEp2n5P-btn w-100 mt-4 fs-6" (click)="placeOrder()">Đặt hàng</button>
+					</div>
+				</div>
+			</div> -->
+            <div class="col-lg-4">
+                <div class="card ezy__epcart4_5qxiUBozF_Q3qZ-card sticky-top">
+                  <div class="card-body p-md-4">
+                    <h6 class="mb-4 opacity-75">Tổng đơn hàng</h6>
+        
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span>Tổng phụ</span>
+                      <span class="fw-bold">{{totalAmount | number:'1.0-2'}} VND</span>
+                    </div>
+                    <hr class="ezy__epcart4_OdTjk3TS-hr" />
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span>Phí giao hàng</span>
+                      <span class="fw-bold">0 VND</span>
+                    </div>
+                    <hr class="ezy__epcart4_OdTjk3TS-hr" />
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span>Thuế</span>
+                      <span class="fw-bold">0 VND</span>
+                    </div>
+                    <hr class="ezy__epcart4_OdTjk3TS-hr" />
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fs-5 fw-bold">Tổng cộng</span>
+                      <span class="fw-bold">{{totalAmount | number:'1.0-2'}} VND</span>
+                    </div>
+                  </div>
+                  <div class="card-body ">
+                    <div class="input-group">
+                      <input type="text" [(ngModel)]="couponCode"  class="form-control format-input" placeholder="Nhập mã giảm giá" aria-label="Coupon code">
+                      <button class="btn btn-dark" (click)="applyCoupon()" type="button">Apply</button>
+                    </div>
+                  
+                  </div>
+                  
+                  <div class="card-body px-md-4 pb-md-4">
+                    <button [disabled]="totalProduct === 0" (click)="goToCheckout()" class="btn ezy__epcart4_5qxiUBozF_Q3qZ-btn w-100">MUA ({{totalProduct}})</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+        
+	</div>
+</section>
+<app-footer></app-footer>

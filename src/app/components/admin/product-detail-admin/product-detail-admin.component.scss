@@ -1,0 +1,38 @@
+/* Ensure images are responsive and fit within their container */
+
+
+
+
+
+.product-image {
+    width: 100%;
+    height: 200px; /* Set the desired height for all images */
+    object-fit: cover; /* This ensures the image covers the container without distorting */
+}
+
+.form-control-file {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+button.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+button.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.mt-2 {
+    margin-top: 0.5rem !important;
+}
+
+.mt-3 {
+    margin-top: 1rem !important;
+}

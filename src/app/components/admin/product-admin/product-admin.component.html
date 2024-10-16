@@ -1,0 +1,84 @@
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between">
+        <h2>Danh sách sản phẩm</h2>
+        <div class="form-group w-25">
+            <label for="categorySelect">Chọn danh mục:</label>
+            <select id="categorySelect" class="form-control" (change)="filterByCategory($event.target)">
+                
+                <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Bảng sản phẩm -->
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Mã sản phẩm</th>
+                    <th>Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Mô tả</th>
+                    <th>Hành động</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of products">
+                    <td>{{ product.id }}</td>
+                    <td><img [src]="product.url" alt="{{product.name }}" width="100"></td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price | currency }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item"(click)="viewProductDetail(product.id)" routerLink="/admin/products/{{product.id}}">
+                                    Xem chi tiết</a></li>
+                                <li><a class="dropdown-item" (click)="openConfirmDialog(product.id)">Xóa</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- footer -->
+    <div class="footer-pagination">
+        <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-9">
+                        <ngb-pagination [(page)]="currentPage"
+                                        [pageSize]="itemsPerPage"
+                                        [collectionSize]="totalElements"
+                                        (pageChange)="getProducts(keyword,selectedCategoryId,currentPage,itemsPerPage)"
+                                        [maxSize]="5"
+                                        [boundaryLinks]="true">
+
+                        </ngb-pagination>
+                    </div>
+                    <div class="col-md-3 mt-2" style="text-align: center;">
+                    <span class="mr-2">
+                        Page size
+                    </span>
+                        <select #myPageSelect (change)="updatePageSize(myPageSelect.value)" >
+                            <option>2</option>
+                            <option >5</option>
+                            <option selected="true">10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
+                </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

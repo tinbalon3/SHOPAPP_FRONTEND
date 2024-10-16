@@ -1,0 +1,88 @@
+.table img {
+    max-width: 100px; /* Đảm bảo hình ảnh không quá lớn */
+    height: auto;
+}
+
+.table td {
+    vertical-align: middle; /* Căn giữa nội dung trong các ô */
+}
+.container-fluid {
+    background-color: white  !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    height: 100vh;
+}
+/* order-table.component.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.action-buttons .delete {
+    background-color: #f44336;
+}
+
+.action-buttons .edit {
+    background-color: #4CAF50;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+h1 {
+    font-size: 2rem; /* Kích thước chữ lớn */
+    color: #333; /* Màu chữ */
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+    text-align: center; /* Căn giữa tiêu đề */
+}

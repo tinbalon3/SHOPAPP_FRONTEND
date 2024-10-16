@@ -1,0 +1,54 @@
+
+  <div class="bg-light  align-items-center justify-content-center ">
+    <div class="bg-white p-4 rounded shadow-lg w-auto max-w-lg">
+      <h2 class="h4 font-weight-bold mb-4">Đánh Giá Sản Phẩm</h2>
+     
+      <div class="d-flex mb-4">
+        <img
+          alt="Găng tay tập gym"
+          class="rounded me-3"
+          height="60"
+          src="{{theCartItem.thumbnail}}"
+          width="60"
+        />
+        <div>
+          <p class="mb-1">
+            {{theCartItem.name}}
+          </p>
+          
+        </div>
+      </div>
+      <div class="mb-4">
+        <p class="font-weight-bold">Chất lượng sản phẩm</p>
+        <div class="d-flex align-items-center">
+            <div class="text-warning">
+                <i class="fas fa-star" [ngClass]="{'text-warning': rate >= 1}" (click)="rateProduct(1)"></i>
+                <i class="fas fa-star" [ngClass]="{'text-warning': rate >= 2}" (click)="rateProduct(2)"></i>
+                <i class="fas fa-star" [ngClass]="{'text-warning': rate >= 3}" (click)="rateProduct(3)"></i>
+                <i class="fas fa-star" [ngClass]="{'text-warning': rate >= 4}" (click)="rateProduct(4)"></i>
+                <i class="fas fa-star" [ngClass]="{'text-warning': rate >= 5}" (click)="rateProduct(5)"></i>
+              </div>
+              
+              <span class="ms-2 text-warning">{{ ratingText }}</span>
+        </div>
+      </div>
+      <div class="bg-light p-4 rounded mb-4">
+       
+        <p class="text-muted mb-2">Chất lượng sản phẩm:</p>
+        <textarea
+        [(ngModel)]="content"
+          class="form-control"
+          placeholder="Hãy chia sẻ những điều bạn thích về sản phẩm này với những người mua khác nhé."
+          rows="3"
+        ></textarea>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button style="margin-right: 12px;" (click)="bsModalRef.hide()" class="btn btn-light">TRỞ LẠI</button>
+        <button class="btn btn-danger text-white" (click)="ratingProduct()">Hoàn Thành</button>
+      </div>
+    </div>
+
+    <!-- Link Bootstrap JS -->
+   
+
+</div>
