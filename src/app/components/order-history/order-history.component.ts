@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { OrderDetailsHistoryDTo } from '../../dtos/order_details.dto';
 import { TokenService } from '../../services/token.service';
 import { environment } from '../../../enviroments/environment';
+import { Response } from '../../response/response';
 
 @Component({
   selector: 'app-order-history',
@@ -82,18 +83,18 @@ export class OrderHistoryComponent implements OnInit {
     
     const userId = this.tokenService.getUserId();
     this.orderService.getOrderDetailHistory(userId!,status,currentPage-1,itemsPerPage).subscribe({
-      next: (response: OrderDetailHistoryResponse) => {
-        if(response == null){
+      next: (response: Response) => {
+        if(response.data.orderDetails == null){
           
           this.orderHistory = [];
           return;
         }
        
-        this.orderHistory = response.orderDetails;
-        this.totalElements = response.totalElements;
+        this.orderHistory = response.data.orderDetails;
+        this.totalElements = response.data.totalElements;
         
         
-        this.orderHistory = response.orderDetails.map((orderDetail:OrderDetailsHistoryDTo) => {
+        this.orderHistory = response.data.orderDetails.map((orderDetail:OrderDetailsHistoryDTo) => {
           orderDetail.thumbnail = `${environment.apiBaseUrl}/products/images/${orderDetail.thumbnail}`;
           return orderDetail;
         }

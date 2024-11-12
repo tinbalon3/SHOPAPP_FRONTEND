@@ -5,6 +5,7 @@ import { Observable, Observer } from 'rxjs';
 import { ProductResponse } from '../response/product/product.response';
 import { environment } from '../../enviroments/environment';
 import { CartItem } from '../class/cart-item';
+import { Response } from '../response/response';
 
 @Injectable({
   providedIn: 'root'
@@ -14,25 +15,28 @@ export class ProductService {
   
   constructor(private http: HttpClient) { }
 
-  getProducts(keyword:string,category_id:number,page:number,limit:number): Observable<ProductResponse>{
+  getProducts(keyword:string,category_id:number,minPrice:number,maxPrice:number,rateStar:number,page:number,limit:number): Observable<Response>{
     let params = new HttpParams()
     .set('keyword', keyword.toString())
     .set('category_id', category_id.toString())
+    .set('minPrice', minPrice.toString())
+    .set('maxPrice', maxPrice.toString())
+    .set('rateStar', rateStar.toString())
     .set('page', page.toString())
     .set('limit', limit.toString());
-    return this.http.get<ProductResponse>(this.apiProducts, {params})
+    return this.http.get<Response>(this.apiProducts, {params})
   }
-  getProductDetail(productId:number): Observable<any> {
-    return this.http.get<any>(`${this.apiProducts}/${productId}`);
+  getProductDetail(productId:number): Observable<Response> {
+    return this.http.get<Response>(`${this.apiProducts}/${productId}`);
   }
   updateImages(formData:FormData,productId:number): Observable <any>{
     
     return this.http.put(`${this.apiProducts}/upload/${productId}`,formData);
   }
-  updateProduct(product:any,id:number):Observable<any>{
-    return this.http.put(`${this.apiProducts}/update/${id}`,product);
+  updateProduct(product:any,id:number):Observable<Response>{
+    return this.http.put<Response>(`${this.apiProducts}/update/${id}`,product);
   }
-  deleteProduct(id:number):Observable<any> {
-    return this.http.delete(`${this.apiProducts}/${id}`);
+  deleteProduct(id:number):Observable<Response> {
+    return this.http.delete<Response>(`${this.apiProducts}/${id}`);
   }
 }

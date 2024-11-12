@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { RoleResponse } from '../response/roles/role.response';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../enviroments/environment';
+import { Response } from '../response/response';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +22,9 @@ export class RoleService {
   }
   constructor(private http: HttpClient) { }
 
-  getRoles():Observable<any>{
+  getRoles():Observable<Response>{
 
-    return this.http.get<RoleResponse>(this.apiRoles,this.apiConfig);
+    return this.http.get<Response>(this.apiRoles,this.apiConfig);
   }
 }
 

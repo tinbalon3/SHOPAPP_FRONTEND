@@ -26,6 +26,8 @@ export class RegisterDTO {
 
     google_account_id: number;
 
+    auth_provider:string
+
     role_id: number;
     constructor(data: any){
         this.fullname = data.fullname;
@@ -38,5 +40,6 @@ export class RegisterDTO {
         this.facebook_account_id=data.facebook_account_id || 0;
         this.google_account_id=data.google_account_id || 0;
         this.role_id=data.role_id || 1;
+        this.auth_provider = 'LOCAL'
     }
 }

@@ -9,6 +9,7 @@ import { OrderDetail } from '../../../models/order_detail.interface';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../enviroments/environment';
 import { OrderDetailAdminDTO } from '../../../models/order_detail_admin.interface';
+import { Response } from '../../../response/response';
 
 @Component({
   selector: 'app-order-detail-admin',
@@ -35,9 +36,11 @@ getOrderDetail(){
  
   const orderID = this.router.snapshot.paramMap.get('id')!;
   this.orderService.getOrderById(orderID).subscribe({
-    next:(response:any)=>{
-      this.orderDetailRequest = response;
-      this.orderDetailRequest!.order_details = response.order_details.map((orderDetail:OrderDetail)=>{
+    next:(response:Response)=>{
+      console.log(response);
+      
+      this.orderDetailRequest = response.data;
+      this.orderDetailRequest!.order_details = response.data.order_details.map((orderDetail:OrderDetail)=>{
         orderDetail.product.thumbnail =  `${environment.apiBaseUrl}/products/images/${ orderDetail.product.thumbnail}`;
         return orderDetail;
       }

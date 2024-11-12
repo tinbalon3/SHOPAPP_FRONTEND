@@ -55,16 +55,11 @@ export class TokenService {
     return null;
   }
   getTokenExpiration(token: string): Date | null {
-    if (!token) {
-      return null;
-    }
+    if (!token) return null;
     
-    // Lấy thời gian hết hạn của token
     const expirationDate = this.jwtHelperService.getTokenExpirationDate(token);
-   
-
-    return expirationDate;
-  }
+    return expirationDate ? expirationDate : null;
+}
   removeTokenInCookie(){
     this.cookieService.delete('token');
 

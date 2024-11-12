@@ -9,7 +9,9 @@ import { Router } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { environment } from '../../../enviroments/environment';
 import { CouponService } from '../../services/coupon.service';
-import { CouponResponse } from '../../response/coupon/coupon.response';
+
+import { Response } from '../../response/response';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-order',
@@ -46,7 +48,8 @@ export class OrderComponent implements OnInit {
     private tokenService: TokenService,
     private couponService: CouponService,
     private cdr: ChangeDetectorRef,
-    private router :Router
+    private router :Router,
+    private toastr1: ToastrService
   ) {
 
   }
@@ -154,7 +157,7 @@ export class OrderComponent implements OnInit {
   get paymentMethod() { return this.orderForm.get('payment_method') }
 
   goToCheckout() {
-    console.log(this.isApplyCoupon)
+   
    if(!this.isApplyCoupon) {
     this.cartService.updateTotalPrice(0);
    }
@@ -166,14 +169,20 @@ export class OrderComponent implements OnInit {
     this.isApplyCoupon = true;
     let couponCode = this.couponCode;
     let totalAmount = this.totalAmount;
-    this.couponService.applyCoupon(couponCode,totalAmount).subscribe({
-      next: (response: CouponResponse) => {
-          this.totalAmount = response.result
-          this.cartService.updateTotalPrice(this.totalAmount);
+    this.couponService.applyCoupon(couponCode, totalAmount).subscribe({
+      next: (response: Response) => {
+        this.totalAmount = response.data;
+        this.cartService.updateTotalPrice(this.totalAmount);
       },
-      error(err) {
-          console.log(err.errorMessage)
+      error: (err: any) => {
+        const message = err.error.message;
+  
+        // Hiển thị thông báo thành công hoặc lỗi
+        this.toastr1.error(message, 'Xác thực thành công', {
+          timeOut: 2000
+        });
+  
       },
-    })
-  }
+    });
+}
 }

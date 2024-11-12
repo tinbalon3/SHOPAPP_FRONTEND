@@ -44,24 +44,33 @@
 
                 <h3>Giá: {{ product?.price | currency: 'VND' }}</h3>
 
-                <div class="product-actions">
+                <div *ngIf="product && product.stock > 0; else outOfStock" class="product-actions">
                     <button class="btn btn-primary" (click)="addToCart()">Thêm vào giỏ hàng</button>
-                    <button class="btn btn-success">Mua ngay</button>
+                    <button class="btn btn-success" (click)="buyNow()">Mua ngay</button>
+
                 </div>
-                <div class="product-quantity">
-                    <div class="border-wrapper">
-                        <button (click)="decreaseQuantity()">-</button>
-                        <input type="text" [value]="quantity">
-                        <button (click)="increaseQuantity()">+</button>
+                <ng-container *ngIf="product && product.stock > 0">
+                    <div class="product-quantity">
+                        <div class="border-wrapper">
+                            <button (click)="decreaseQuantity()">-</button>
+                            <input type="text" [value]="quantity">
+                            <button (click)="increaseQuantity()">+</button>
+                        </div>
                     </div>
-                </div>
+                </ng-container>
+                
+                
+                <ng-template #outOfStock>
+                    <button class="btn btn-danger" disabled>Hết hàng</button>
+                </ng-template>
+
             </div>
         </div>
     </div>
-   
+
 </div>
 
-    <app-review-product *ngIf="theCartItem"  [theCartItem]="theCartItem"></app-review-product>
+<app-review-product *ngIf="theCartItem" [theCartItem]="theCartItem"></app-review-product>
 
 
 

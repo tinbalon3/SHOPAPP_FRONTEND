@@ -9,6 +9,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../../enviroments/environment';
+import { Response } from '../../../response/response';
 
 @Component({
   selector: 'app-product-admin',
@@ -38,13 +39,13 @@ export class ProductAdminComponent {
 ){}
   ngOnInit(): void {
     this.getCategories()
-    this.getProducts(this.keyword,this.selectedCategoryId,this.currentPage,this.itemsPerPage);
+    this.getProducts(this.keyword,this.selectedCategoryId,0,100000,0,this.currentPage,this.itemsPerPage);
   }
 
   updatePageSize(pageSize: string) {
     this.itemsPerPage = +pageSize;
     this.currentPage = 1;
-    this.getProducts(this.keyword,this.selectedCategoryId,this.currentPage,this.itemsPerPage);
+    this.getProducts(this.keyword,this.selectedCategoryId,0,100000,0,this.currentPage,this.itemsPerPage);
   }
   shortenDescription(description: string, maxLength: number): string {
     if (description.length <= maxLength) {
@@ -69,9 +70,9 @@ export class ProductAdminComponent {
   
     if(categoryId.value != null){
       this.selectedCategoryId = categoryId.value;
-      this.currentPage = 0;
+      this.currentPage = 1;
       this.itemsPerPage = 10;
-      this.getProducts(this.keyword,this.selectedCategoryId,this.currentPage,this.itemsPerPage)
+      this.getProducts(this.keyword,this.selectedCategoryId,0,100000,0,this.currentPage,this.itemsPerPage)
     }
     else
       this.selectedCategoryId = 0
@@ -80,7 +81,7 @@ export class ProductAdminComponent {
    
     this.categoryService.getCategory().subscribe({
       next:(response) => {
-        this.categories = response.filter(category => category && category.id && category.name); 
+        this.categories = response.data.filter((category:any) => category && category.id && category.name); 
         this.selectedCategoryId = this.categories[0].id
       },
       error:()=> {
@@ -89,18 +90,20 @@ export class ProductAdminComponent {
     })
   }
 
-  getProducts(keyword:string,selectedCategoryId:number,currentPage: number, itemsPerPage: number) {
+  getProducts(keyword:string,selectedCategoryId:number,minPrice:number,maxPrice:number,rateStar:number,currentPage: number, itemsPerPage: number) {
  
-    this.productService.getProducts(keyword,selectedCategoryId,currentPage-1,itemsPerPage).subscribe({
-      next: (response:any) => {
+    this.productService.getProducts(keyword,selectedCategoryId,minPrice,maxPrice,rateStar,currentPage-1,itemsPerPage).subscribe({
+      next: (response:Response) => {
    
-        response.products.forEach((product: Product) => {
+        response.data.products.forEach((product: Product) => {
           product.url = `${environment.apiBaseUrl}/products/images/${product.thumbnail}`;
           product.description = this.shortenDescription(product.description,100)
         });
-       
-        this.products = response.products;
-        this.totalElements = response.totalElements;
+        
+        this.products = response.data.products;
+        this.totalElements = response.data.totalElements;
+        console.log(this.products);
+
       } ,
       complete:() => {
       },
@@ -114,8 +117,8 @@ export class ProductAdminComponent {
   }
   deleteProduct(id:number){
     this.productService.deleteProduct(id).subscribe({
-      next:(response:any) =>{
-        this.toastr.success(response,"Delete", {
+      next:(response:Response) =>{
+        this.toastr.success(response.message,"Delete", {
           timeOut: 1000,
         }).onHidden.subscribe(()=>{
         

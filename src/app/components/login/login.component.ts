@@ -8,6 +8,10 @@ import { UserService } from '../../services/user.service';
 import { RoleService } from '../../services/role.service';
 import { Role } from '../../models/role.interface';
 import { UserDetailResponse } from '../../response/user/user.response';
+import { environment } from '../../../enviroments/environment';
+import { AppConstants } from '../common/app.constant';
+import { Response } from '../../response/response';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +21,7 @@ import { UserDetailResponse } from '../../response/user/user.response';
 export class LoginComponent {
   loginForm!: FormGroup;
 
-
+  googleURL = AppConstants.GOOGLE_AUTH_URL;
   roles: Role[] = []; // Mảng roles
 
   userResponse!: UserDetailResponse;
@@ -27,14 +31,15 @@ export class LoginComponent {
     private userService: UserService,
     private tokenService: TokenService,
     private roleService: RoleService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private toastr: ToastrService
    
   ) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       user: this.formBuilder.group({
-        phoneNumber: new FormControl('', Validators.required),
+        user_name: new FormControl('', [Validators.required]),
         password: new FormControl('', Validators.required),
         role: new FormControl(1, Validators.required),
         rememberMe: new FormControl(true)
@@ -43,36 +48,45 @@ export class LoginComponent {
     // Gọi API lấy danh sách roles và lưu vào biến roles
   
     this.roleService.getRoles().subscribe({
-      next: (roles: Role[]) => { // Sử dụng kiểu Role[]
+      next: (roles: Response) => { // Sử dụng kiểu Role[]
       
-        this.roles = roles;
-        this.loginForm.controls['user'].value.role = roles.length > 0 ? roles[0] : undefined;
+        this.roles = roles.data;
+        this.loginForm.controls['user'].value.role = roles.data.length > 0 ? roles.data[0] : undefined;
       },
       error: (error: any) => {
      
-        console.error('Error getting roles:', error.message);
+        const message = error.error.message;
+        this.toastr.error(message, "LỖI", {
+          timeOut: 2000
+        });
       }
     });
   }
-  get phoneNumber() { return this.loginForm.get('user.phoneNumber'); }
+  get user_name() { return this.loginForm.get('user.user_name'); }
   get password() { return this.loginForm.get('user.password'); }
   
-
+  loginWithGoogle(): void {
+    // Điều hướng đến URL OAuth của server
+    
+    window.location.href = this.googleURL;
+  }
 
   login() {
 
     const loginDTO: LoginDTO = {
-      phone_number: this.loginForm.controls['user'].value.phoneNumber,
+      user_name: this.loginForm.controls['user'].value.user_name,
       password: this.loginForm.controls['user'].value.password,
       role_id: this.loginForm.controls['user'].value.role ?? 1,
       remember_me: !!this.loginForm.controls['user'].value.rememberMe
     };
   
-    this.userService.login(loginDTO).subscribe({
-      next: (response) => {
+   
     
-        const token = response.token;
-        const refresh_token = response.refresh_token;
+    this.userService.login(loginDTO).subscribe({
+      next: (response:Response) => {
+    
+        const token = response.data.token;
+        const refresh_token = response.data.refresh_token;
   
         // Đặt token và refresh token vào cookie
         this.tokenService.setTokenInCookie(token);
@@ -82,17 +96,21 @@ export class LoginComponent {
         this.getUserDetailsAndNavigate(token,  loginDTO.remember_me);
       },
       error: (error) => {
-        alert(error.message);
+        
+        const message = error.error.message;
+        this.toastr.error(message, "LỖI", {
+          timeOut: 2000
+        });
       }
     });
   }
   
   getUserDetailsAndNavigate(token: string, rememberMe: boolean) {
     this.userService.getUserDetails(token).subscribe({
-      next: (userResponse) => {
+      next: (userResponse:Response) => {
         this.userResponse = {
-          ...userResponse,
-          date_of_birth: new Date(userResponse.date_of_birth)
+          ...userResponse.data,
+          date_of_birth: new Date(userResponse.data.date_of_birth)
         };
   
         // Lưu trữ chi tiết người dùng dựa trên tùy chọn "remember me"
@@ -100,12 +118,17 @@ export class LoginComponent {
           // Lưu trữ lâu dài
           this.userService.saveUserDetailToLocalStorage(this.userResponse);
         }
-  
+        else {
+          this.userService.saveUserDetailToSessionStorage(this.userResponse);
+        }
         // Điều hướng dựa trên vai trò người dùng
-        this.navigateBasedOnUserRole(userResponse.role_id.name);
+        this.navigateBasedOnUserRole(userResponse.data.role_id.name);
       },
       error: (error) => {
-        console.error('Error getting user details:', error);
+        const message = error.error.message;
+        this.toastr.error(message, "LỖI", {
+          timeOut: 2000
+        });
       }
     });
   }

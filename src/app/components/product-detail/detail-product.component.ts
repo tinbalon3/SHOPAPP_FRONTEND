@@ -5,11 +5,13 @@ import { ProductDetail } from '../../models/productdetail.interface';
 import { ProductImages } from '../../models/productimgaes.interface';
 
 import { CartItem } from '../../class/cart-item';
-import { Item } from '../../class/products';
-import { Product } from '../../models/product.interface';
+
 import { CartService } from '../../services/cart.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../enviroments/environment';
+import { ProductDetailDTO } from '../../dtos/product_detail.dto';
+import { Response } from '../../response/response';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-detail-product',
@@ -19,7 +21,7 @@ import { environment } from '../../../enviroments/environment';
 export class DetailProductComponent implements OnInit {
 
 
-  product?: Product;
+  product?: ProductDetailDTO;
   productId: number = 0;
   currentImageIndex: number = 0;
   quantity: number = 1;
@@ -27,18 +29,16 @@ export class DetailProductComponent implements OnInit {
   constructor(private productService: ProductService,
               private cartService: CartService,
               private router: ActivatedRoute,
-              private routerNavigate: Router
+              private routerNavigate: Router,
+              private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
-  
     const idParam =  this.router.snapshot.paramMap.get('id');
     if (idParam !== null) {
       this.productId = +idParam;
       this.getProductDetail(this.productId)
-
     }
-  
    
   }
 
@@ -47,9 +47,9 @@ export class DetailProductComponent implements OnInit {
   getProductDetail(productId:number){
     if (!isNaN(productId)) {
       this.productService.getProductDetail(productId).subscribe({
-        next: (response) => {
+        next: (response:Response) => {
 
-          const productDetail = response.productDetailDTO;
+          const productDetail:ProductDetailDTO = response.data;
 
           if (productDetail.product_images && productDetail.product_images.length > 0) {
             productDetail.product_images.forEach((product_image: ProductImages) => {
@@ -64,11 +64,12 @@ export class DetailProductComponent implements OnInit {
          
           this.showImages(0);
         },
-        complete: () => {
-            console.log(this.product)
-        },
-        error: (e) => {
-          console.error(e.message)
+        
+        error: (error) => {
+          const message = error.error.message;
+          this.toastr.error(message, "LỖI", {
+            timeOut: 2000
+          });
         }
       })
     }
@@ -110,7 +111,7 @@ export class DetailProductComponent implements OnInit {
   addToCart() {
     this.cartService.addToCart(this.theCartItem,this.quantity);
   }
-  buyNow(id:number){
+  buyNow(){
     this.cartService.addToCart(this.theCartItem,this.quantity);
     this.routerNavigate.navigate(['/orders'])
   }

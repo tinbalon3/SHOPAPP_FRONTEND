@@ -4,7 +4,7 @@
 </div>
 
   <app-header></app-header>
-  <div class="container" style="height: 86vh; position: relative;display: grid;">
+  <div class="container" style="height: 100vh; position: relative;display: grid;">
   <section class="ezy__signup16_LBMtewSK d-flex align-items-center justify-content-center">
     <!-- đăng kí -->
       <div *ngIf="!isSuccessSendEmailCode" class="container">
@@ -190,8 +190,11 @@
                         </button>
     
                         <p class="resend text-muted mb-0">
-                            Không nhận được mã? <a href="">Gửi lại</a>
+                          Không nhận được mã? 
+                          <a  (click)="registerRequest(registerDTO)" *ngIf="!isResendDisabled">Gửi lại</a>
+                          <span *ngIf="isResendDisabled">Chờ {{ countdown }} giây...</span>
                         </p>
+                        
                     </div>
                 </div>
             </div>

@@ -10,6 +10,8 @@ import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/category.interface';
 import { environment } from '../../../../enviroments/environment';
 import { ToastrService } from 'ngx-toastr';
+import { ProductDetailDTO } from '../../../dtos/product_detail.dto';
+import { Response } from '../../../response/response';
 
 @Component({
   selector: 'app-product-detail-admin',
@@ -20,7 +22,7 @@ export class ProductDetailAdminComponent implements OnInit {
   files: File[] = [];
   idImages: number [] = [];
   productInfoForm!: FormGroup;
-  product?: Product;
+  product?: ProductDetailDTO;
   productId: number = 0;
   categories: Category[] = [];
   productImages: any[] = []
@@ -60,8 +62,8 @@ export class ProductDetailAdminComponent implements OnInit {
   }
   getCategory() {
     this.categoryService.getCategory().subscribe({
-      next: (response: any) => {
-        this.categories = response;
+      next: (response: Response) => {
+        this.categories = response.data;
       },
       complete: () => {
 
@@ -75,9 +77,11 @@ export class ProductDetailAdminComponent implements OnInit {
     this.isLoading = true
     if (!isNaN(productId)) {
       this.productService.getProductDetail(productId).subscribe({
-        next: (response) => {
+        next: (response:Response) => {
           this.isLoading = false
-          const productDetail = response.productDetailDTO;
+          console.log(response);
+          
+          const productDetail = response.data;
 
           if (productDetail.product_images && productDetail.product_images.length > 0) {
             productDetail.product_images.forEach((product_image: ProductImages) => {
@@ -114,12 +118,12 @@ export class ProductDetailAdminComponent implements OnInit {
     }
     this.isLoading = true
     this.productService.updateProduct(product,this.productId).subscribe({
-      next:(response) => {
+      next:(response:Response) => {
         this.isLoading = false
         this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÀNH CÔNG", {
           timeOut: 2000
         })
-        this.product = response;
+        this.product = response.data;
         this.product!.id = this.productId;
         location.reload()
       },

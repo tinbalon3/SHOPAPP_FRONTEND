@@ -33,7 +33,17 @@
 //     background-color: #0056b3;
 //     cursor: pointer;
 // }
-
+.dashboard {
+    align-items: center;
+    justify-content: center;
+}
+.navbar-brand img{
+    width: 50px;
+    height: auto;
+}
+.navbar .container {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
 html, body {
     height: 100%;
     margin: 0;

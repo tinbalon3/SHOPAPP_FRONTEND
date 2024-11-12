@@ -1,8 +1,7 @@
 <app-header></app-header>
 
 <div style="padding: 100px;
-    margin-bottom: 90px;
-    height: 100vh;">
+    height: 86vh;">
     <div class="container-fluid" style="display: flex; justify-content: center; ;">
         <!-- Sidebar -->
         <div class="row">
@@ -37,8 +36,14 @@
                                 <label class="col-sm-3 col-form-label">{{ field.label }}:</label>
                                 <div class="col-sm-9 d-flex justify-content-between align-items-center">
                                     <ng-container *ngIf="isEditingField !== field.name; else editFieldTemplate">
-                                        {{ field.name === 'date_of_birth' ? formatDate_2(editedUserResponse[field.name]) : editedUserResponse[field.name] }}
-                                        <button class="btn btn-secondary" (click)="startEditing(field.name)">Thay Đổi</button>
+                                        <ng-container *ngIf="editedUserResponse[field.name]; else noValueTemplate">
+                                            {{ field.name === 'date_of_birth' ? formatDate_2(editedUserResponse[field.name]) : editedUserResponse[field.name] }}
+                                            <button class="btn btn-secondary" (click)="startEditing(field.name)">Thay Đổi</button>
+                                        </ng-container>
+                                        <ng-template #noValueTemplate>
+                                            Chưa cập nhật
+                                            <button class="btn btn-primary" (click)="startEditing(field.name)">Thêm</button>
+                                        </ng-template>
                                       </ng-container>
                                       
                                     <ng-template #editFieldTemplate>

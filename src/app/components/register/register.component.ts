@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { UserService } from '../../services/user.service';
 import { RegisterDTO } from '../../dtos/register.dto';
 import { ToastrService } from 'ngx-toastr';
+import { Response } from '../../response/response';
 
 @Component({
   selector: 'app-register',
@@ -15,13 +16,15 @@ import { ToastrService } from 'ngx-toastr';
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   // Khai báo các biến tương ứng với các trường dữ liệu trong form
-
+  countdown: number = 60; // Thời gian đếm ngược ban đầu là 60 giây
+  isResendDisabled: boolean = false; // Biến kiểm tra trạng thái của nút Gửi lại
   isDisabled = false;
   verifyCode: string = '';
   user: any;
   otp: string[] = ['', '', '', '', '', ''];
   isSuccessSendEmailCode = false
   isLoading = false;
+  registerDTO!: RegisterDTO;
   constructor(private router: Router,
     private userService: UserService,
     private formBuilder: FormBuilder,
@@ -31,8 +34,8 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       user: this.formBuilder.group({
-        phoneNumber: new FormControl('0999999998', [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
-        email: new FormControl('alosinl048@gmail.com', [Validators.required, Validators.email, ShopValidators.notOnlyWhitespace]),
+        phoneNumber: new FormControl('0999999298', [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
+        email: new FormControl('tinbalon3@gmail.com', [Validators.required, Validators.email, ShopValidators.notOnlyWhitespace]),
         password: new FormControl('123456', [Validators.required, Validators.minLength(3), ShopValidators.notOnlyWhitespace]),
         retypePassword: new FormControl('123456', [Validators.required, Validators.minLength(3), ShopValidators.notOnlyWhitespace]),
         fullname: new FormControl('testcase1', [Validators.required, ShopValidators.notOnlyWhitespace]),
@@ -59,14 +62,24 @@ export class RegisterComponent implements OnInit {
   get dateOfBirth() { return this.registerForm.get('user.dateOfBirth'); }
   get email() { return this.registerForm.get('user.email'); }
 
+  startCountdown() {
+    const countdownInterval = setInterval(() => {
+      if (this.countdown > 0) {
+        this.countdown--; // Giảm thời gian đếm ngược
+      } else {
+        clearInterval(countdownInterval); // Dừng đếm ngược khi thời gian còn lại là 0
+        this.isResendDisabled = false;     // Kích hoạt lại nút gửi
+        this.countdown = 60;               // Đặt lại thời gian đếm ngược
+      }
+    }, 1000); // Đếm ngược mỗi giây
+  }
   register() {
-
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
-    const registerDTO: RegisterDTO = {
+     this.registerDTO = {
       "fullname": this.registerForm.controls['user'].value.fullname,
       "phone_number": this.registerForm.controls['user'].value.phoneNumber,
       "email": this.registerForm.controls['user'].value.email,
@@ -76,11 +89,23 @@ export class RegisterComponent implements OnInit {
       "date_of_birth": this.registerForm.controls['user'].value.dateOfBirth,
       "facebook_account_id": 0,
       "google_account_id": 0,
+      "auth_provider": 'LOCAL',
       "role_id": 1
     }
    
     this.isLoading=true
-    this.userService.register(registerDTO).subscribe({
+    this.registerRequest(this.registerDTO);
+   
+
+  }
+  registerRequest(register:RegisterDTO){
+    if (this.isResendDisabled) {
+      this.isLoading = false
+      return; 
+     } // Nếu đang đếm ngược thì không làm gì
+    this.isResendDisabled = true;        // Vô hiệu hóa nút gửi lại
+    this.startCountdown();      
+    this.userService.register(register).subscribe({
       next: (response: any) => {
         this.isSuccessSendEmailCode = true
         this.isLoading = false
@@ -88,17 +113,17 @@ export class RegisterComponent implements OnInit {
         this.toastr.success(message, "ĐÃ GỬI", {
           timeOut: 2000
         });
-
-
-
       },
 
       error: (error: any) => {
-        console.log(`Cannot register, error: ${error.message}`);
+        const message = error.message;
+        this.toastr.error(message, "LỖI", {
+          timeOut: 2000
+        });
+        this.isResendDisabled = false
         this.isLoading = false
       }
     })
-
   }
   onInput(index: number): void {
     if (this.otp[index] && index < this.otp.length - 1) {
@@ -120,10 +145,12 @@ export class RegisterComponent implements OnInit {
   verifyEmailCode() {
     this.isLoading = true
     const otp = this.otp.join('');
-    this.userService.verify(otp).subscribe({
-      next: (response: HttpResponse<any>) => {
-        if (response.status == 200) {
-         
+    this.userService.verify(otp,this.registerForm.controls['user'].value.email).subscribe({
+      next: (response: Response) => {
+       
+        
+        if (response.status == "OK") {
+          this.isLoading = false
           this.toastr.success("Đăng kí thành công", "THÀNH CÔNG", {
             timeOut: 2000,
 

@@ -120,7 +120,7 @@
                   <div class="card-body ">
                     <div class="input-group">
                       <input type="text" [(ngModel)]="couponCode"  class="form-control format-input" placeholder="Nhập mã giảm giá" aria-label="Coupon code">
-                      <button class="btn btn-dark" (click)="applyCoupon()" type="button">Apply</button>
+                      <button class="btn btn-dark" [disabled]="isApplyCoupon" (click)="applyCoupon()" type="button">Apply</button>
                     </div>
                   
                   </div>

@@ -5,6 +5,7 @@ import { RatingDTO } from '../dtos/rate.dto';
 import { Observable } from 'rxjs';
 import { Rating } from '../response/rating/rating.response';
 import { RatingResponse } from '../response/rating/ratingResponse.response';
+import { Response } from '../response/response';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +19,10 @@ export class ReviewProductRatingService {
     return this.http.post<HttpResponse<any>>(this.apiUrl, rateDTO);
   }
 
-  getAllRating(product_id:number):Observable<RatingResponse[]> {
+  getAllRating(product_id:number):Observable<Response> {
     let params = new HttpParams()
-    .set('product', product_id.toString());
+    .set('product_id', product_id.toString());
    
-    return this.http.get<RatingResponse[]>(this.apiUrl,{params});
+    return this.http.get<Response>(this.apiUrl,{params});
   }
 }

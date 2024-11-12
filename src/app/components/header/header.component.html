@@ -15,17 +15,17 @@
                         <a class="nav-link active" routerLink="/">Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" routerLink="#">Thông báo</a>
+                        <a class="nav-link" routerLink="/thongbao">Thông báo</a>
                     </li>
                     <li class="nav-item">
                         <app-cart-status></app-cart-status>
                     </li>
                     <li class="nav-item">
-                        <ng-container *ngIf="userReponse">
+                        <ng-container *ngIf="userResponse">
                           <!-- Dropdown Trigger -->
                           <div class="dropdown" ngbDropdown>
                             <a class="nav-link dropdown-toggle" id="dropdownMenuButton" ngbDropdownToggle>
-                              {{userReponse.fullname}}
+                              {{userResponse.fullname}}
                             </a>
                             <!-- Dropdown Menu -->
                             <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="dropdownMenuButton">
@@ -37,7 +37,7 @@
                         </ng-container>
                         
                         <!-- If userReponse is not present, show login link -->
-                        <ng-container *ngIf="!userReponse">
+                        <ng-container *ngIf="!userResponse">
                           <a class="nav-link" routerLink="/login">Đăng nhập</a>
                         </ng-container>
                       </li>
@@ -47,3 +47,6 @@
         </div>
     </nav>
 </header>
+<div *ngIf="isLoading">
+  <app-skeleton-loader></app-skeleton-loader>
+</div>

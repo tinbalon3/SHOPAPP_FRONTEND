@@ -1,4 +1,3 @@
-import { ProductImages } from "./productimgaes.interface"
 
 export interface Product {
     id:number
@@ -7,7 +6,8 @@ export interface Product {
     thumbnail:string
     description:string
     category_id:number
+    stock:number
     url:string
-    color:string;
-    product_images: ProductImages[]
+    number_of_rating:number
+    sum_of_rating:number
 }

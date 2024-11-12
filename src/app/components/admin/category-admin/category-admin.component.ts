@@ -5,6 +5,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { CategoryDialogComponent } from '../../category-dialog/category-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { Response } from '../../../response/response';
 
 @Component({
   selector: 'app-category-admin',
@@ -29,8 +30,8 @@ export class CategoryAdminComponent implements OnInit {
   getCategories() {
 
     this.categoryService.getCategory().subscribe({
-      next: (response) => {
-        this.categories = response.filter(category => category && category.id && category.name);
+      next: (response:Response) => {
+        this.categories = response.data.filter((category:any) => category && category.id && category.name);
 
       },
       error: () => {
@@ -86,8 +87,8 @@ export class CategoryAdminComponent implements OnInit {
   }
   createCategory(name:any) {
     this.categoryService.createCategory(name).subscribe({
-      next:(response) => {
-        this.toastr.success(response,"Create", {
+      next:(response:Response) => {
+        this.toastr.success(response.message,"Create", {
           timeOut: 1000,
         }).onHidden.subscribe(()=>{
         

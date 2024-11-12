@@ -1,8 +1,3 @@
-/* Ensure images are responsive and fit within their container */
-
-
-
-
 
 .product-image {
     width: 100%;
@@ -13,6 +8,7 @@
 .form-control-file {
     border: 1px solid #ced4da;
     border-radius: 4px;
+    max-width: 98px;
 }
 
 button.btn-primary {

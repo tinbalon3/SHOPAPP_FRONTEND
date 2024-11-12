@@ -2,12 +2,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { OrderDetail } from '../models/order_detail.interface';
-import { Order } from '../models/order.interface';
-import { OrdersResponse } from '../response/order/orders.response';
+
 import { OrderDetailsHistoryDTo } from '../dtos/order_details.dto';
 import { Purchase } from '../class/purchase';
 import { environment } from '../../enviroments/environment';
+import { Response } from '../response/response';
 
 @Injectable({
   providedIn: 'root'
@@ -18,31 +17,31 @@ export class OrderService {
 
   constructor(private http: HttpClient) { }
 
-  getOrderById(orderId:string):Observable<any>{
-    return this.http.get(`${this.apiOrder}/${orderId}`);
+  getOrderById(orderId:string):Observable<Response>{
+    return this.http.get<Response>(`${this.apiOrder}/${orderId}`);
   }
   
-  placeOrder(purchase:Purchase):Observable<any> {
-    return this.http.post(`${this.apiOrder}`,purchase);
+  placeOrder(purchase:Purchase):Observable<Response> {
+    return this.http.post<Response>(`${this.apiOrder}`,purchase);
   }
-  getAllOrders(page:number,limit:number): Observable<OrdersResponse>{
+  getAllOrders(page:number,limit:number): Observable<Response>{
     let params = new HttpParams()
     .set('page', page.toString())
     .set('limit', limit.toString());
-    return this.http.get<OrdersResponse>(`${this.apiOrder}/get-orders`,{params});
+    return this.http.get<Response>(`${this.apiOrder}/get-orders`,{params});
   }
-  updateOrder(id:number,orderUpdate:any): Observable<any> {
-    return this.http.put(`${this.apiOrder}/${id}`,orderUpdate);
+  updateOrder(id:number,orderUpdate:any): Observable<Response> {
+    return this.http.put<Response>(`${this.apiOrder}/${id}`,orderUpdate);
   }
-  deleteOrder(id:number):Observable<any> {
-    return this.http.delete(`${this.apiOrder}/${id}`,{responseType: 'text'});
+  deleteOrder(id:number):Observable<Response> {
+    return this.http.delete<Response>(`${this.apiOrder}/${id}`);
   }
-  getOrderDetailHistory(id:number,status:string,page:number,limit:number):Observable <OrderDetailHistoryResponse> {
+  getOrderDetailHistory(id:number,status:string,page:number,limit:number):Observable <Response> {
     let params = new HttpParams()
     .set('status',status.toString())
     .set('page', page.toString())
     .set('limit', limit.toString());
-    return this.http.get<OrderDetailHistoryResponse>(`${this.apiOrder}/order-history/${id}`,{params});
+    return this.http.get<Response>(`${this.apiOrder}/order-history/${id}`,{params});
   }
 }
 export interface OrderDetailHistoryResponse {

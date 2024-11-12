@@ -36,7 +36,7 @@
                     <div class="col-md-4 mb-4" *ngFor="let image of product?.product_images">
                         <div class="image-container">
                             <img [src]="image.images_url" class="product-image img-fluid mb-2" [id]="'productImage-' + image.id">
-                            <input type="file" class="form-control-file mt-2" (change)="onFileChange($event, image.id, false)">
+                            <input type="file"  class="form-control-file mt-2" (change)="onFileChange($event, image.id, false)">
                             <button type="button" class="btn btn-secondary mt-2" (click)="undoImageChange(image.id)" [id]="'undoButton-' + image.id" style="display:none;">Hoàn tác</button>
                         </div>
                     </div>

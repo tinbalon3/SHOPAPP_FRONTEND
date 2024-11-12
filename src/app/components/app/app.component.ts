@@ -15,10 +15,16 @@ export class AppComponent implements OnInit{
   constructor(private tokenService: TokenService,
     private router: Router,
     private userService:UserService,
-    private cartService: CartService
+    private cartService: CartService,
+    
 ){}
 ngOnInit(): void {
- 
+ const refreshToken = this.tokenService.getRefreshTokenFromCookie();
+ const token = this.tokenService.getTokenFromCookie();
+
+ if(refreshToken && token == null) {
+    alert("Bị lỗi refreshTOken")
+ }
   
 }
 

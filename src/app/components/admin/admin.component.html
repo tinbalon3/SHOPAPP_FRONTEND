@@ -1,7 +1,16 @@
 <div style="overflow-x: hidden" class="container-fluid">
     <header class="header d-flex justify-content-between">
-        <h1 class="header-title">Dashboard Header</h1>
+        <div class="dashboard d-flex justify-content-between">
+            <a class="navbar-brand" routerLink="/">
+                <img src="../../../assets/logo/logo.png" alt="">
+                
+             </a>
+            <h4 class="header-title">VNAFruit</h4>
+        </div>
+       <div>
         <button class="btn btn-danger btn-sm" (click)="logout()">Logout</button>
+       </div>
+       
     </header>
     <div class="row flex-nowrap">
         <nav id="sidebar" class="col-md-2 col-lg-2 d-md-block">

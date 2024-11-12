@@ -12,8 +12,8 @@ export class CheckoutService {
 
   private apiVnPayment = environment.apiBaseUrl + '/vnpay/submitOrder'
   constructor(private http: HttpClient) { }
+  
   submitOrder(checkoutModel: Purchase):Observable<any> {
-    
     
     return this.http.post(`${this.apiVnPayment}`,checkoutModel,{ responseType: 'text' })
   }

@@ -18,6 +18,7 @@ import { CheckoutService } from '../../services/checkout.service';
 import { CheckoutDTO } from '../../dtos/checkout.dto';
 import { HttpResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { Response } from '../../response/response';
 
 
 @Component({
@@ -73,12 +74,12 @@ export class CheckOutComponent implements OnInit {
     this.orderForm = this.formbuilder.group({
       customer: this.formbuilder.group({
         fullname: new FormControl(this.userService.getUserDetailFromSessionStorage().fullname, [Validators.required]),
-        email: new FormControl('', [Validators.email]),
+        email: new FormControl('tinbalon3@gmail.com', [Validators.email]),
         phone_number: new FormControl(this.userService.getUserDetailFromSessionStorage().phone_number, [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
       }),
       shipping_address: this.formbuilder.group({
-        street: new FormControl('', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
-        city: new FormControl('', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
+        street: new FormControl('108D/30 Trương Định', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
+        city: new FormControl('Châu Đốc', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
         state: new FormControl('An Giang', [Validators.required]),
 
       }),
@@ -90,8 +91,11 @@ export class CheckOutComponent implements OnInit {
       }),
       note: [''],
       shipping_method: ['express'],
-      payment_method: ['cod']
+      payment_method: ['cod'],
+      
     })
+
+    
 
     //Lấy đơn hàng đã thêm vào giỏ hàng
     this.cdr.detectChanges();
@@ -103,13 +107,6 @@ export class CheckOutComponent implements OnInit {
         this.getCities('shipping_address');
       })
     
-      // this.route.queryParams.subscribe(params => {
-      //   if(params['paymentStatus'] == 1){
-      //     console.log(this.purchase);
-          
-      //     this.finalizeOrder()
-      //   }
-      // })
 
   }
 
@@ -132,7 +129,8 @@ export class CheckOutComponent implements OnInit {
       })
   }
   placeOrder() {
-    if (this.orderForm.valid) {
+    const termsCheckbox = document.getElementById('termsCheckbox') as HTMLInputElement;
+    if (this.orderForm.valid && termsCheckbox.checked) {
       this.prepareOrder();
       this.handlePaymentAndOrder();
     } else {
@@ -165,24 +163,29 @@ export class CheckOutComponent implements OnInit {
     this.checkoutService.submitOrder(this.purchase).subscribe({
       next: (paymentUrl:string) => {
         paymentUrl = paymentUrl.replace(" ","");
-      
         window.location.href = paymentUrl
       }, 
-      error: e => console.error("Submit order failed: ", e)
+      error: e => {
+        
+        this.toastr.error("Sản phẩm không đủ tồn kho, vui lòng kiểm tra lại đơn hàng.","LỖI",{
+          timeOut: 2000
+        })
+      }
+        
     });
   }
   
  
   
-  finalizeOrder() {
-    this.orderService.placeOrder(this.purchase).subscribe({
-      next: response => {
+  // finalizeOrder() {
+  //   this.orderService.placeOrder(this.purchase).subscribe({
+  //     next: (response:Response) => {
        
-        this.router.navigate(['/checkout-successfull/', response.orderTrackingNumber]);
-      },
-      error: e => console.error("Đặt hàng thất bại: ", e)
-    });
-  }
+  //       this.router.navigate(['/checkout-successfull/', response.data.orderTrackingNumber]);
+  //     },
+  //     error: e => console.error("Đặt hàng thất bại: ", e)
+  //   });
+  // }
   
   get fullname() { return this.orderForm.get('customer.fullname'); }
   get email() { return this.orderForm.get('customer.email'); }

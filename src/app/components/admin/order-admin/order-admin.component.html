@@ -1,5 +1,5 @@
 <div class="container-fluid mt-4">
-    <h1>Danh sách Orders</h1>
+    <h1>Danh sách đơn hàng</h1>
     <!-- order-table.component.html -->
     <table>
         <thead>
@@ -32,11 +32,18 @@
                 <td>{{ order.shipping_address }}</td>
                 <td>{{ order.shipping_method }}</td>
                 <td>
-                    <div class="action-buttons">
-                        <button class="edit" (click)="viewOrder(order.id)">View Detail</button>
-                        <button class="delete" (click)="openConfirmDialog(order.id)">Delete</button>
+                    <div class="dropdown">
+                        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" (click)="viewOrder(order.id)">
+                                Chi tiết đơn hàng</a></li>
+                            <li><a class="dropdown-item" (click)="openConfirmDialog(order.id)">Xóa đơn hàng</a></li>
+                        </ul>
                     </div>
                 </td>
+              
             </tr>
         </tbody>
     </table>

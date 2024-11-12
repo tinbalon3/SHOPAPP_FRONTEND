@@ -7,8 +7,8 @@ import { UpdateUserDTO } from '../../dtos/update-user.dto';
 import { TokenService } from '../../services/token.service';
 
 import { ToastrService } from 'ngx-toastr';
-import { HttpResponse } from '@angular/common/http';
 import { UserDetailResponse } from '../../response/user/user.response';
+import { Response } from '../../response/response';
 
 @Component({
   selector: 'app-user-profile',
@@ -47,14 +47,14 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.token = this.tokenService.getTokenFromCookie()!;
     this.userService.getUserDetails(this.token).subscribe({
-      next: (response:UserDetailResponse) => {
+      next: (response:Response) => {
       
         
         this.userResponse = {
-          ...response,
-          date_of_birth: new Date(response.date_of_birth)
+          ...response.data,
+          date_of_birth: new Date(response.data.date_of_birth)
         }
-        this.editedUserResponse = { ...this.userResponse ,date_of_birth: new Date(response.date_of_birth)};
+        this.editedUserResponse = { ...this.userResponse ,date_of_birth: new Date(response.data.date_of_birth)};
        
         
       },
@@ -191,8 +191,8 @@ export class UserProfileComponent implements OnInit {
       let token = this.tokenService.getTokenFromCookie()!;
       let userId = this.tokenService.getUserId()!;
       this.userService.updatePassword(token, userId, this.password_new, this.password_new_check).subscribe({
-        next: (response: HttpResponse<any>) => {
-          if (response.status == 200) {
+        next: (response: Response) => {
+          if (response.status == "OK") {
             this.isLoading = false
 
             this.toastr.success("Thay đổi mật khẩu thành công", "THÀNH CÔNG", {
@@ -227,13 +227,14 @@ export class UserProfileComponent implements OnInit {
 
     this.userService.updateUser(this.token, UpdateUserDTO).subscribe({
       next: (response:UpdateUserDTO) => {
-        this.isLoading = true
+        this.isLoading = false
 
         this.toastr.success("Cập nhật thành công", "CẬP NHẬT HỒ SƠ", {
           timeOut: 2000,
         })
       },
       error: (error: any) => {
+        this.isLoading = false
         alert(`Cannot update user, error: ${error.error}`)
       }
     })
@@ -281,10 +282,10 @@ export class UserProfileComponent implements OnInit {
     if (token) {
       if (type == 'password') {
         this.userService.sendVerificationCode(userId, token).subscribe({
-          next: (response: HttpResponse<any>) => {
+          next: (response: Response) => {
             this.isLoading = false
 
-            if (response.status == 200) { // Kiểm tra response không null
+            if (response.status == "OK") { // Kiểm tra response không null
               this.isSuccessVerifyCode = true
               this.isSuccessSendCode = true;
               const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
@@ -323,9 +324,9 @@ export class UserProfileComponent implements OnInit {
       if (type == 'email') {
         
         this.userService.sendVerificationEmailCode(userId, token, this.email_new).subscribe({
-          next: (response: HttpResponse<any>) => {
+          next: (response: Response) => {
             this.isLoading = false
-            if (response.status == 200) { // Kiểm tra response không null
+            if (response.status == "OK") { // Kiểm tra response không null
               this.isChangeEmail = false;
               this.isSuccessSendEmailCode = true;
               const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
@@ -365,15 +366,15 @@ export class UserProfileComponent implements OnInit {
   verifyEmailCode() {
     this.isLoading = true
     const otp = this.otp.join('');
-    this.userService.verify(otp).subscribe({
-      next: (response: HttpResponse<any>) => {
+    this.userService.verify(otp,this.userResponse.email).subscribe({
+      next: (response: Response) => {
         this.isLoading = false
-        if (response.status == 200) {
+        if (response.status == "OK") {
           let token = this.tokenService.getTokenFromCookie()!;
           let userId = this.tokenService.getUserId()!;
           this.userService.updateEmail(token, userId, this.email_new).subscribe({
-            next: (response: HttpResponse<any>) => {
-              if (response.status == 200) {
+            next: (response: Response) => {
+              if (response.status == "OK") {
                 this.isSuccessSendEmailCode = false;
                 this.userResponse.email = this.email_new;
                 this.toastr.success("Thay đổi email thành công", "Xác thực thành công", {
@@ -389,10 +390,10 @@ export class UserProfileComponent implements OnInit {
   verifyCode() {
     this.isLoading = true
     const otp = this.otp.join('');
-    this.userService.verify(otp).subscribe({
-      next: (response: HttpResponse<any>) => {
+    this.userService.verify(otp,this.userResponse.email).subscribe({
+      next: (response: Response) => {
         this.isLoading = false
-        if (response.status == 200) {
+        if (response.status == "OK") {
           this.isSuccessSendCode = false;
           this.isOpenResetPassword = true
 

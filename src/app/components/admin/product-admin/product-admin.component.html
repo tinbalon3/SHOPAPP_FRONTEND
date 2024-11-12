@@ -1,6 +1,7 @@
 <div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between">
-        <h2>Danh sách sản phẩm</h2>
+    <h1 style="margin:0">Danh sách sản phẩm</h1>
+    <div class="d-flex justify-content-end">
+       
         <div class="form-group w-25">
             <label for="categorySelect">Chọn danh mục:</label>
             <select id="categorySelect" class="form-control" (change)="filterByCategory($event.target)">
@@ -58,7 +59,7 @@
                         <ngb-pagination [(page)]="currentPage"
                                         [pageSize]="itemsPerPage"
                                         [collectionSize]="totalElements"
-                                        (pageChange)="getProducts(keyword,selectedCategoryId,currentPage,itemsPerPage)"
+                                        (pageChange)="getProducts(keyword,selectedCategoryId,0,100000,0,currentPage,itemsPerPage)"
                                         [maxSize]="5"
                                         [boundaryLinks]="true">
 

@@ -1,0 +1,389 @@
+
+
+.wrapper{
+    padding: 30px;
+    max-width: 1200px;
+    margin: auto;
+}
+.h3{
+    font-weight: 900;
+}
+.views{
+    font-size: 0.85rem;
+}
+
+.green-label{
+    background-color: #defadb;
+    color: #48b83e;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    margin: 0 3px;
+}
+.radio,.checkbox{
+    padding: 6px 10px;
+}
+.border{
+    border-radius: 12px;
+}
+.options{
+    position: relative;
+    padding-left: 25px;
+}
+.radio label,
+.checkbox label{
+    display: block;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0;
+}
+.options input{
+    opacity: 0;
+}
+.checkmark {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+}
+.options input:checked ~ .checkmark:after {
+    display: block;
+}
+.options .checkmark:after{
+    content: "";
+	width: 9px;
+    height: 9px;
+    display: block;
+	background: white;
+    position: absolute;
+    top: 52%;
+	left: 51%;
+    border-radius: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    transition: 300ms ease-in-out 0s;
+}
+.options input[type="radio"]:checked ~ .checkmark{
+    background: #61b15a;
+    transition: 300ms ease-in-out 0s;
+}
+.options input[type="radio"]:checked ~ .checkmark:after{
+    transform: translate(-50%,-50%) scale(1);
+}
+.count{
+    font-size: 0.8rem;
+}
+label{
+    cursor: pointer;
+}
+.tick{
+    display: block;
+    position: relative;
+    padding-left: 23px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin: 0;
+}
+.tick input{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.check{
+    position: absolute;
+    top: 1px;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+.tick:hover input ~ .check {
+    background-color: #f3f3f3;
+}
+.tick input:checked ~ .check {
+    background-color: #61b15a;
+}
+.check:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.tick input:checked ~ .check:after {
+    display: block;
+    transform: rotate(45deg) scale(1);
+} 
+.tick .check:after {
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg) scale(2);
+}
+#country{
+    font-size: 0.8rem;
+    border: none;
+    border-left: 1px solid #ccc;
+    padding: 0px 10px;
+    outline: none;
+    font-weight: 900;
+}
+.close{
+    font-size: 1.2rem;
+}
+div.text-muted{
+    font-size: 0.85rem;
+}
+#sidebar{
+    width: 25%;
+    float: left;
+}
+.category{
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.list-group-item{
+    border: none;
+    padding: 0.3rem 0.4rem 0.3rem 0rem;
+}
+.badge-primary{
+    background-color: #defadb;
+    color: #48b83e
+}
+.brand .check{
+    background-color: #fff;
+    top: 3px;
+    border: 1px solid #666;
+}
+.brand .tick{
+    font-size: 1rem;
+    padding-left: 25px;
+}
+.rating .check{
+    background-color: #fff;
+    border: 1px solid #666;
+    top: 0;
+}
+.rating .tick{
+    font-size: 0.9rem;
+    padding-left: 25px;
+}
+.rating .fas.fa-star{
+    color: #ffbb00;
+    padding: 0px 3px;
+}
+.brand .tick:hover input ~ .check,
+.rating .tick:hover input ~ .check{
+    background-color: #f9f9f9;
+}
+.brand .tick input:checked ~ .check,
+.rating .tick input:checked ~ .check{
+    background-color: #61b15a;
+}
+#products{
+    width: 75%;
+    padding-left: 30px;
+    margin: 0;
+    float: right;
+}
+.card:hover{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    
+    transition: all 0.5s ease-in-out;
+    cursor: pointer;
+}
+.card-body{
+    padding: 0.5rem;
+}
+.card-body .description{
+    font-size: 0.78rem;
+    padding-bottom: 8px;
+}
+h6 {
+    color: black;
+}
+.product .fa-star{
+    font-size: 0.9rem;
+}
+.rebate{
+    font-size: 0.9rem   ;
+}
+
+
+.clear{
+    clear: both;
+}
+
+@media(min-width:992px){
+    .filter,#mobile-filter{
+        display: none;
+    }
+}
+@media(min-width:768px) and (max-width:991px){
+    .radio, .checkbox {
+        padding: 6px 10px;
+        width: 49%;
+        float: left;
+        margin: 5px 5px 5px 0px;
+    }
+    .filter,#mobile-filter{
+        display: none;
+    }
+}
+@media(min-width:576px) and (max-width:767px){
+    #sidebar{
+        width: 35%;
+    }
+    #products{
+        width: 65%;
+    }
+    .filter,#mobile-filter{
+        display: none;
+    }
+    .h3 + .ml-auto{
+        margin: 0;
+    }
+}
+@media(max-width:575px){
+    .wrapper{
+        padding: 10px;
+    }
+    .h3{
+        font-size: 1.3rem;
+    }
+    #sidebar{
+        display: none;
+    }
+    #products{
+        width: 100%;
+        float: none;
+    }
+    #products{
+        padding: 0;
+    }
+    .clear{
+        float: left;
+        width: 80%;
+    }
+   
+    .green-label{
+        width: 50%;
+    }
+   
+    .content,#mobile-filter{
+        clear: both;
+    }
+}
+
+.filter_categories {
+    
+}
+.filter-list-group {
+    background-color: transparent !important;
+    padding-left: 0;
+    margin-left: 0;
+}
+.filter_selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-products {
+    text-align: center; /* Căn giữa nội dung */
+    padding: 34px; /* Khoảng cách xung quanh */
+    background-color: #f8d7da; /* Màu nền nhẹ nhàng, thích hợp với thông báo lỗi */
+    color: #721c24; /* Màu chữ đỏ đậm */
+    border: 1px solid #f5c6cb; /* Viền nhẹ để làm nổi bật thông báo */
+    border-radius: 5px; /* Bo góc nhẹ nhàng */
+    max-width: 400px; /* Giới hạn chiều rộng của thông báo */
+    margin: 50px auto; /* Canh giữa phần tử với khoảng cách phía trên và dưới */
+    font-family: 'Arial', sans-serif; /* Chọn font đơn giản, dễ đọc */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Thêm bóng đổ nhẹ cho thông báo */
+  }
+  
+  .no-products h1 {
+    margin: 0;
+    font-size: 24px; /* Kích thước chữ lớn để làm nổi bật */
+  }
+  #priceSlider {
+    width: 100%;  /* Chiều rộng của slider là 100% */
+    height: 10px; /* Chiều cao của slider */
+    margin: 10px 0; /* Thêm margin để không bị dính vào các phần tử khác */
+  }
+  
+
+//   -=----------------
+.price-slider-container {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .price-slider {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .price-values {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .price-values input {
+    width: 80px;
+    padding: 5px;
+    margin: 0 10px;
+    text-align: center;
+  }
+  
+  .price-values span {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .selected {
+    font-weight: 700;
+    font-size: 18px;
+    color: #ee0808;
+  }
+#mobile-filter {
+    padding-top: 3px;
+}
+
+.push-right {
+    margin-left: auto;
+    display: block;
+  }
+
+.ml-67 {
+    margin-left: 67px;
+  }
+
+.find_price_titlte {
+    font-size: 19px;
+}
+.filter_button {
+    display: flex;
+    justify-content: end;
+}
+.count {
+    color: black !important;
+    font-size: 12px !important;
+}
+
+.border-left-color {
+    border-left: 1px solid black;
+}
+.product-count {
+    margin-left: 8px;
+}

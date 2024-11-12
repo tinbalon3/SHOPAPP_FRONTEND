@@ -1,135 +1,368 @@
 <app-header></app-header>
 
-<div class="container-fluid" >
-   <div class="intro-section">
-        <h1>Đây là trang Home</h1>
-        <p>Trang này hiển thị các danh sách sản phẩm và mua hàng tại đây</p>
-        <p>Các bạn có thể chọn xem sản phẩm và mua hàng tại đây</p>
-    </div>
-    <!-- Đoạn này có 1 ô searchbox bên trái, 1 combo box bên phải -->
-     <div class="search-box">
-        <input type="text" class="form-control search-input" placeholder="Tìm sản phẩm" [(ngModel)]="keyword">
-        <select [(ngModel)]="selectedCategoryId" class=" custom-option form-control product-category">
-            <option [value]="0" >Tất cả</option>
-            <option *ngFor="let category of categories" [value]="category.id">
-               {{category.name}}
-            </option>
-        </select>
-        <button class="btn btn-primary ml-2" (click)="searchProducts()">Tìm kiếm</button>
-     </div>
-     <section class="ezy__epgrid8 dark-gray">
-        <div class="container">
-            <div class="row  ezy__epgrid8-row text-center justify-content-start">
-                <div class="col-12 col-md-6 col-xl-4" *ngFor="let product of products">
-                    <div class="card ezy__epgrid8-card">
-                      <div class="position-relative">
-                        <h6 class="ezy__epgrid8-new-text">New</h6>
-                        <!-- img starts -->
-                        <a routerLink="/products/{{product.id}}">
-                          <img
-                            src="{{product.url}}"
-                            alt="..."
-                            class="w-100 ezy__epgrid8-img"
-                          />
-                        </a>
-                      </div>
-                      <!-- card-body -->
-                      <div class="card-body text-start">
-                        <!-- title -->
-                        <a >
-                          <h5 class="ezy__epgrid8-title mb-1" routerLink="/products/{{product.id}}">{{product.name}}</h5>
-                        </a>
-                        <!-- sub title -->
-                        <a >
-                          <h5 class="ezy__epgrid8-sub-title">{{product.description}}</h5>
-                        </a>
-                        <!-- price -->
-                        <div class="py-2 d-flex align-items-center">
-                          <h5 class="ezy__epgrid8-discount-price">Giá: VNĐ{{product.price}}</h5>
-                          <!-- <h5 class="ezy__epgrid8-real-price ms-2">$2100</h5> -->
-                        </div>
-                        <!-- details -->
-                        <div class="ezy__epgrid8-details">
-                          <h6 class="ezy__epgrid8-shipping mb-1">Shipping Cost: VNĐ0</h6>
-                          <h6 class="ezy__epgrid8-stock">Stock: <span class="ezy__epgrid8-available">Available</span></h6>
-                        </div>
-                        <!-- icons -->
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                          <!-- rating -->
-                          <div class="d-flex align-items-center ezy__epgrid8-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star me-1"></i>
-                            <span class="count">(7)</span>
-                          </div>
-                          <div class="d-flex">
-                            <a href="#" class="btn btn-outline-danger ezy__epgrid8-fav me-2"><i class="fas fa-heart"></i> </a>
-                            <a href="#" class="btn btn-primary ezy__epgrid8-cart" (click)="buyNow(product.id)"><i class="fas fa-shopping-cart"></i> </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                <!-- <div class="col-lg-4 col-md-6" *ngFor="let product of products">
-                    <div class="product-item">
-                        <img src="{{product.url}}" 
-                        alt="" class="product-image"  routerLink="/products/{{product.id}}">
-                        <h3 class="product-name" routerLink="/products/{{product.id}}">{{product.name}}</h3>
-                        <p class="product-description">{{product.description}}</p>
-                        <p class="product-warranty">Bảo hành: 12 tháng</p>
-                        <p class="product-price">Giá: ${{product.price}}</p>
-                        <div class="product-rating">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star-half-alt"></i>
-                        </div>
-                        
-                    </div>
-                </div> -->
-             </div>
-        
+<div *ngIf="!isClosed" class="container">
+  <div class="intro-section">
+    <h1>Chào Mừng Đến VNA Fruit - Hương Vị Trái Cây Việt Nam Tươi Ngon Đến Mọi Nơi</h1>
+    <p>Tại VNA Fruit, chúng tôi tự hào mang đến cho bạn những trái cây ngon nhất từ khắp các vùng miền của Việt Nam,
+      được lựa chọn kỹ càng và giao tận tay bạn, dù bạn ở đâu trên thế giới.</p>
+    <p>Khám phá ngay bộ sưu tập trái cây tươi ngon của chúng tôi và trải nghiệm hương vị tự nhiên, ngọt ngào, thuần
+      khiết từ đất mẹ Việt Nam!</p>
+  </div>
+
+
+
+
+  <div class="row">
+    <div id="mobile-filter " class="col-md-3">
+      <div class="row">
+        <div class="col-md-6">
+            <h5 class="font-weight-bold" style="padding-top: 3px;">Tìm kiếm</h5>
         </div>
-    </section>
-            
+        <div class="col-md-6 d-flex justify-content-end">
+            <button class="btn btn-primary ml-auto" (click)="this.getProducts('', 0,10000,100000,0, this.currentPage, this.itemsPerPage);">Reset</button>
+        </div>
+    </div>
     
-     <!-- footer -->
-     <div class="footer-pagination">
-        <div class="row">
-            <div class="col-md-6">
+    
+      
+      <div class="py-3">
+        <div class="search-box">
+          <input type="text" class="form-control search-input" placeholder="Tìm sản phẩm" [(ngModel)]="keyword"
+            (input)="searchProducts()">
+        </div>
+      </div>
+      <div class="pt-3">
+        <h5 class="font-weight-bold filter_categories">Danh mục sản phẩm</h5>
+        <ul class="filter-list-group">
+          <!-- Default "Tất cả" category -->
+          <li [class.selected]="isSelected(0)" 
+              (click)="getProducts(keyword, 0, this.minPrice, this.maxPrice, this.rateStar, currentPage, itemsPerPage)"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+            Tất cả
+          </li>
+          
+          <!-- Categories from the categories array -->
+          <li [class.selected]="isSelected(category.id)"
+              (click)="getProducts(keyword, category.id, this.minPrice, this.maxPrice, this.rateStar, currentPage, itemsPerPage)"
+              *ngFor="let category of categories"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+            {{category.name}}
+          </li>
+        </ul>
+      </div>
+      
+      <div class="py-3">
+        <div class="row justify-content-between align-items-center">
+          <div class="col-md-6">
+            <h5 class="font-weight-bold find_price_titlte">Giá sản phẩm</h5>
+          </div>
+          <!-- <div class="col-md-6 text-right filter_button">
+            <button class="btn btn-primary ml-67"
+              (click)="getProducts(keyword,selectedCategoryId,minPrice,maxPrice,this.rateStar,itemsPerPage,currentPage)">Lọc</button>
+          </div> -->
+        </div>
 
-            </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-9" >
-                        <ngb-pagination [(page)]="currentPage"
-                                        [pageSize]="itemsPerPage"
-                                        [collectionSize]="totalElements"
-                                        (pageChange)="getProducts(keyword,selectedCategoryId,currentPage,itemsPerPage)"
-                                        [maxSize]="5"
-                                        [boundaryLinks]="true">
 
-                        </ngb-pagination>
-                    </div>
-                    <div class="col-md-3 mt-2" style="text-align: center;">
-                    <span class="mr-2">
-                        Page size
-                    </span>
-                        <select #myPageSelect (change)="updatePageSize(myPageSelect.value)" >
-                            <option>3</option>
-                            <option>6</option>
-                            <option selected="true">9</option>
-                            <option>21</option>
-                            <option>52</option>
-                        </select>
-                </div>
+        <div class="price-slider-container">
+          <input type="range" id="price-slider" #priceSlider class="price-slider" min="10000" max="100000"
+            [value]="maxPrice" step="1000" (input)="updateSliderValues($event)">
+          <div class="price-values">
+            <input type="number" disabled required [value]="minPrice" class="price-input" />
+            <span> - </span>
+            <input type="number" disabled required [value]="maxPrice" class="price-input" id="price-currently" />
+          </div>
+        </div>
+
+      </div>
+      <div class="py-3">
+        <h5 class="font-weight-bold">Đánh giá</h5>
+        <form class="rating">
+          <div *ngFor="let rating of ratings" class="form-inline d-flex align-items-center py-2">
+            <label class="tick">
+              <!-- Hiển thị sao đầy đủ (fas) -->
+              <ng-container *ngFor="let star of [].constructor(rating)">
+                <span class="fas fa-star"></span>
+              </ng-container>
+              <!-- Hiển thị sao chưa đánh giá (far) -->
+              <ng-container *ngFor="let emptyStar of [].constructor(5 - rating)">
+                <span class="far fa-star px-1 text-muted"></span>
+              </ng-container>
+              <input [checked]="selectedRating === rating" (change)="onRatingChange(rating)" type="checkbox">
+              <span class="check"></span>
+            </label>
+          </div>
+
+        </form>
+      </div>
+    </div>
+    <section class="ezy__epgrid8 border-left-color dark-gray col-md-9">
+      <div class="container">
+        <div class="row  ezy__epgrid8-row text-center justify-content-start">
+          <ng-container *ngIf="products.length > 0">
+            <div class="col-12 col-md-6 col-xl-4" *ngFor="let product of products">
+              <div class="card ezy__epgrid8-card">
+                <div class="position-relative">
+                  <h6 class="ezy__epgrid8-new-text" *ngIf="product.stock > 0">New</h6>
+                  <h6 class="ezy__epgrid8-outofStock-text" *ngIf="product.stock === 0">Hết hàng</h6>
+                  
+                  <!-- img starts -->
+                  <a routerLink="/products/{{product.id}}">
+                    <img src="{{product.url}}" alt="..." class="w-100 ezy__epgrid8-img" />
+                  </a>
                 </div>
                 
+                <!-- card-body -->
+                <div class="card-body text-start">
+                  <!-- title -->
+                  <a>
+                    <h5 class="ezy__epgrid8-title mb-1" routerLink="/products/{{product.id}}">{{product.name}}</h5>
+                  </a>
+                  <!-- sub title -->
+                  <a>
+                    <h5 class="ezy__epgrid8-sub-title">{{product.description}}</h5>
+                  </a>
+                  <!-- price -->
+                  <div class="py-2 d-flex align-items-center">
+                    <h5 class="ezy__epgrid8-discount-price">Giá: {{product.price}}đ</h5>
+                    <!-- <h5 class="ezy__epgrid8-real-price ms-2">$2100</h5> -->
+                  </div>
+                  <!-- details -->
+                  <div class="ezy__epgrid8-details">
+                    <h6 class="ezy__epgrid8-shipping mb-1">Phí giao hàng: 0đ</h6>
+                    <h6 class="ezy__epgrid8-stock">
+                      Kho:
+                      <span *ngIf="product.stock > 0" class="ezy__epgrid8-available">{{product.stock}}</span>
+                      <span *ngIf="product.stock === 0" class="ezy__epgrid8-outofstock text-danger">Hết hàng</span>
+
+                    </h6>
+                  </div>
+
+
+                  <!-- icons -->
+                  <div class="d-flex justify-content-between align-items-center mt-4">
+                    <!-- rating -->
+                    <div class="d-flex align-items-center ezy__epgrid8-rating">
+                      <ng-container *ngIf="product.sum_of_rating > 0; else noRating">
+                        <ng-container
+                          *ngFor="let star of [].constructor(totalStars); let i = index,trackBy: trackByIndex">
+                          <!-- <i class="fas fa-star"></i> -->
+                          <i [ngClass]="getStarClasses(product, i)"></i>
+
+                        </ng-container>
+                        <div class="product-count">
+                          <span class="count">({{ product.number_of_rating| number: '1.1-1' }})</span>
+                        </div>
+
+                      </ng-container>
+
+                      <!-- Trường hợp chưa có đánh giá -->
+                      <ng-template #noRating>
+                        <ng-container *ngFor="let star of [].constructor(totalStars); let i = index">
+                          <i class="far fa-star"></i> <!-- Hiển thị 5 sao rỗng nếu chưa có đánh giá -->
+                        </ng-container>
+                        <span class="count">(Chưa có đánh giá)</span>
+                      </ng-template>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
             </div>
+          </ng-container>
+          <div *ngIf="products.length == 0" class="no-products">
+            <h1>Không tìm thấy sản phẩm</h1>
+          </div>
+
+
+
         </div>
+
+      </div>
+    </section>
+  </div>
+
+
+
+  <!-- footer -->
+  <div class="footer-pagination">
+    <div class="row">
+      <div class="col-md-6">
+
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-9">
+            <ngb-pagination [(page)]="currentPage" [pageSize]="itemsPerPage" [collectionSize]="totalElements"
+              (pageChange)="getProducts(keyword,selectedCategoryId,this.minPrice,this.maxPrice,this.rateStar,currentPage,itemsPerPage)"
+              [maxSize]="5" [boundaryLinks]="true">
+
+            </ngb-pagination>
+          </div>
+          <div class="col-md-3 mt-2" style="text-align: center;">
+            <span class="mr-2">
+              Page size
+            </span>
+            <select #myPageSelect (change)="updatePageSize(myPageSelect.value)">
+              <option>3</option>
+              <option>6</option>
+              <option selected="true">9</option>
+              <option>21</option>
+              <option>52</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
     </div>
+  </div>
+</div>
+<div *ngIf="isClosed" class="wrapper">
+
+  <div class="filters"> <button class="btn btn-success" type="button" data-toggle="collapse"
+      data-target="#mobile-filter" aria-expanded="true" aria-controls="mobile-filter">Filter<span
+        class="px-1 fas fa-filter"></span></button> </div>
+  <div id="mobile-filter">
+    <div class="py-3">
+      <h5 class="font-weight-bold">Categories</h5>
+      <ul class="list-group">
+        <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+          vegetables <span class="badge badge-primary badge-pill">328</span> </li>
+        <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+          Fruits <span class="badge badge-primary badge-pill">112</span> </li>
+        <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+          Kitchen Accessories <span class="badge badge-primary badge-pill">32</span> </li>
+        <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+          Chefs Tips <span class="badge badge-primary badge-pill">48</span> </li>
+      </ul>
+    </div>
+    <div class="py-3">
+      <h5 class="font-weight-bold">Brands</h5>
+      <form class="brand">
+        <div class="form-inline d-flex align-items-center py-1"> <label class="tick">Royal Fields <input
+              type="checkbox"> <span class="check"></span> </label> </div>
+        <div class="form-inline d-flex align-items-center py-1"> <label class="tick">Crasmas Fields <input
+              type="checkbox" checked> <span class="check"></span> </label> </div>
+        <div class="form-inline d-flex align-items-center py-1"> <label class="tick">Vegetarisma Farm <input
+              type="checkbox" checked> <span class="check"></span> </label> </div>
+        <div class="form-inline d-flex align-items-center py-1"> <label class="tick">Farmar Field Eve <input
+              type="checkbox"> <span class="check"></span> </label> </div>
+        <div class="form-inline d-flex align-items-center py-1"> <label class="tick">True Farmar Steve <input
+              type="checkbox"> <span class="check"></span> </label> </div>
+      </form>
+    </div>
+    <div class="py-3">
+      <h5 class="font-weight-bold">Rating</h5>
+      <form class="rating">
+        <div class="form-inline d-flex align-items-center py-2"> <label class="tick"><span class="fas fa-star"></span>
+            <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span
+              class="fas fa-star"></span> <input type="checkbox"> <span class="check"></span> </label> </div>
+        <div class="form-inline d-flex align-items-center py-2"> <label class="tick"> <span class="fas fa-star"></span>
+            <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span
+              class="far fa-star px-1 text-muted"></span> <input type="checkbox"> <span class="check"></span> </label>
+        </div>
+        <div class="form-inline d-flex align-items-center py-2"> <label class="tick"><span class="fas fa-star"></span>
+            <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span
+              class="far fa-star px-1 text-muted"></span> <span class="far fa-star px-1 text-muted"></span> <input
+              type="checkbox"> <span class="check"></span> </label> </div>
+        <div class="form-inline d-flex align-items-center py-2"> <label class="tick"><span class="fas fa-star"></span>
+            <span class="fas fa-star"></span> <span class="far fa-star px-1 text-muted"></span> <span
+              class="far fa-star px-1 text-muted"></span> <span class="far fa-star px-1 text-muted"></span> <input
+              type="checkbox"> <span class="check"></span> </label> </div>
+        <div class="form-inline d-flex align-items-center py-2"> <label class="tick"> <span class="fas fa-star"></span>
+            <span class="far fa-star px-1 text-muted"></span> <span class="far fa-star px-1 text-muted"></span> <span
+              class="far fa-star px-1 text-muted"></span> <span class="far fa-star px-1 text-muted"></span> <input
+              type="checkbox"> <span class="check"></span> </label> </div>
+      </form>
+    </div>
+  </div>
+  <div class="content py-md-0 py-3">
+    <section id="sidebar">
+      <div class="py-3">
+        <h5 class="font-weight-bold">Categories</h5>
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+            vegetables <span class="badge badge-primary badge-pill">328</span> </li>
+          <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+            Fruits <span class="badge badge-primary badge-pill">112</span> </li>
+          <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+            Kitchen Accessories <span class="badge badge-primary badge-pill">32</span> </li>
+          <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center category">
+            Chefs Tips <span class="badge badge-primary badge-pill">48</span> </li>
+        </ul>
+      </div>
+      <div class="py-3">
+        <h5 class="font-weight-bold">Brands</h5>
+        <form class="brand">
+          <div class="form-inline d-flex align-items-center py-1"> <label class="tick">Royal Fields <input
+                type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="form-inline d-flex align-items-center py-1"> <label class="tick">Crasmas Fields <input
+                type="checkbox" checked> <span class="check"></span> </label> </div>
+          <div class="form-inline d-flex align-items-center py-1"> <label class="tick">Vegetarisma Farm <input
+                type="checkbox" checked> <span class="check"></span> </label> </div>
+          <div class="form-inline d-flex align-items-center py-1"> <label class="tick">Farmar Field Eve <input
+                type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="form-inline d-flex align-items-center py-1"> <label class="tick">True Farmar Steve <input
+                type="checkbox"> <span class="check"></span> </label> </div>
+        </form>
+      </div>
+      <div class="py-3">
+        <h5 class="font-weight-bold">Rating</h5>
+        <form class="rating">
+          <div class="form-inline d-flex align-items-center py-2"> <label class="tick"><span class="fas fa-star"></span>
+              <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span>
+              <span class="fas fa-star"></span> <input type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="form-inline d-flex align-items-center py-2"> <label class="tick"> <span
+                class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span
+                class="fas fa-star"></span> <span class="far fa-star px-1 text-muted"></span> <input type="checkbox">
+              <span class="check"></span> </label> </div>
+          <div class="form-inline d-flex align-items-center py-2"> <label class="tick"><span class="fas fa-star"></span>
+              <span class="fas fa-star"></span> <span class="fas fa-star"></span> <span
+                class="far fa-star px-1 text-muted"></span> <span class="far fa-star px-1 text-muted"></span> <input
+                type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="form-inline d-flex align-items-center py-2"> <label class="tick"><span class="fas fa-star"></span>
+              <span class="fas fa-star"></span> <span class="far fa-star px-1 text-muted"></span> <span
+                class="far fa-star px-1 text-muted"></span> <span class="far fa-star px-1 text-muted"></span> <input
+                type="checkbox"> <span class="check"></span> </label> </div>
+          <div class="form-inline d-flex align-items-center py-2"> <label class="tick"> <span
+                class="fas fa-star"></span> <span class="far fa-star px-1 text-muted"></span> <span
+                class="far fa-star px-1 text-muted"></span> <span class="far fa-star px-1 text-muted"></span> <span
+                class="far fa-star px-1 text-muted"></span> <input type="checkbox"> <span class="check"></span> </label>
+          </div>
+        </form>
+      </div>
+    </section> <!-- Products Section -->
+    <section id="products">
+      <div class="container py-3">
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-10 offset-md-0 offset-sm-1">
+            <div class="card"> <img class="card-img-top"
+                src="https://www.freepnglogos.com/uploads/cucumber-png/cucumber-png-image-purepng-transparent-png-26.png">
+              <div class="card-body">
+                <h6 class="font-weight-bold pt-1">Product title</h6>
+                <div class="text-muted description">Space for small product description</div>
+                <div class="d-flex align-items-center product"> <span class="fas fa-star"></span> <span
+                    class="fas fa-star"></span> <span class="fas fa-star"></span> <span class="fas fa-star"></span>
+                  <span class="far fa-star"></span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between pt-3">
+                  <div class="d-flex flex-column">
+                    <div class="h6 font-weight-bold">36.99 USD</div>
+                    <div class="text-muted rebate">48.56</div>
+                  </div>
+                  <div class="btn btn-primary">Buy now</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
 <app-footer></app-footer>

@@ -81,13 +81,21 @@ h1 {
 }
 
 .table {
-    margin-bottom: 0;
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .table th, .table td {
     white-space: nowrap;
-    overflow: hidden;
+    
     text-overflow: ellipsis;
+    
+
 }
 
 .action-buttons {

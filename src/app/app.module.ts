@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HomeComponent } from './components/home/home.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { DetailProductComponent } from './components/detail-product/detail-product.component';
+import { DetailProductComponent } from './components/product-detail/detail-product.component';
 import { OrderComponent } from './components/order/order.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component'
@@ -33,10 +33,12 @@ import { VerifyEmailSuccessfullyComponent } from './components/verify-email-succ
 import { ReviewProductComponent } from './components/review-product/review-product.component';
 import { ReviewProductRatingComponent } from './components/review-product-rating/review-product-rating.component';
 import { SkeletonLoaderComponent } from './components/skeleton-loader/skeleton-loader.component';
+import { ThongbaoComponent } from './components/thongbao/thongbao.component';
 
 const routes : Routes = [
   {path: 'loader', component: SkeletonLoaderComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'thongbao', component: ThongbaoComponent},
   {path: 'register',component: RegisterComponent},
   {path: 'products/:id',component:DetailProductComponent},
   {path: 'user-profile',component: UserProfileComponent, canActivate: [AuthGuard]},
@@ -73,6 +75,7 @@ const routes : Routes = [
     VerifyEmailSuccessfullyComponent,
     ReviewProductComponent,
     ReviewProductRatingComponent,
+    ThongbaoComponent,
    
 
     

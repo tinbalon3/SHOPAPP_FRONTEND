@@ -13,7 +13,7 @@
     --ezy-not-available-color: #e63757;
     --ezy-button-color: #fff;
     --ezy-rating-color: #eec200;
-  
+   
     // background-color: var(--bs-body-bg);
     
   }
@@ -60,7 +60,7 @@
   }
   
   .ezy__epgrid8-card {
-    border: 1px solid var(--ezy-card-border) !important;
+    border: none !important;
     background-color: transparent;
     border-radius: 5px;
     height: 100%;
@@ -78,11 +78,19 @@
     padding: 5px 10px;
     border-radius: 15px;
   }
-  
+  .ezy__epgrid8-outofStock-text {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--ezy-warning-color);
+    color: var(--ezy-new-text-color);
+    padding: 5px 10px;
+    border-radius: 15px;
+  }
   .ezy__epgrid8-title {
     font-size: 17px;
     line-height: 1.4;
-    color: var(--bs-body-color);
+    color: black
   }
   
   .ezy__epgrid8-title:hover {
@@ -92,16 +100,17 @@
   .ezy__epgrid8-sub-title {
     font-size: 14px;
     line-height: 1;
-    color: var(--bs-body-color);
+    color: black;
     opacity: 0.6;
   }
+  
   
   .ezy__epgrid8-sub-title:hover {
     text-decoration: underline;
   }
   
   .ezy__epgrid8-discount-price {
-    color: var(--ezy-theme-color);
+    color: #a1001a;
     font-size: 24px;
   }
   
@@ -147,8 +156,8 @@
     justify-content: center;
     align-items: center;
     font-size: 15px;
-    color: var(--ezy-theme-color);
-    border-color: var(--ezy-theme-color);
+    color: red;
+    border-color: black;
   }
   
   .ezy__epgrid8-fav:hover {

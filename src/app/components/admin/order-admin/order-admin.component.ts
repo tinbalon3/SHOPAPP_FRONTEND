@@ -7,6 +7,7 @@ import { OrderService } from '../../../services/order.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from '../../confirm-dialog/confirm-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { Response } from '../../../response/response';
 
 @Component({
   selector: 'app-order-admin',
@@ -40,9 +41,9 @@ export class OrderAdminComponent implements OnInit{
   }
   getAllOrders(currentPage: number, itemsPerPage: number) {
     this.orderService.getAllOrders(currentPage-1,itemsPerPage).subscribe({
-      next: (response:any) => {
+      next: (response:Response) => {
       
-        this.orders = JSON.parse(JSON.stringify(response.orders));
+        this.orders = JSON.parse(JSON.stringify(response.data.orders));
       
         this.orders =  this.orders.map((order:any) => {
         
@@ -50,8 +51,8 @@ export class OrderAdminComponent implements OnInit{
               return order;
         })
         
-        this.totalPages = response.totalPages;
-        this.totalElements = response.totalElements;
+        this.totalPages = response.data.totalPages;
+        this.totalElements = response.data.totalElements;
       } ,
       complete:() => {
       },
@@ -79,8 +80,8 @@ export class OrderAdminComponent implements OnInit{
 
   deleteOrder(orderId: number) {
     this.orderService.deleteOrder(orderId).subscribe({
-      next: (response) => {
-        this.toastr.success(response,"Delete", {
+      next: (response:Response) => {
+        this.toastr.success(response.message,"Delete", {
           timeOut: 1000,
         }).onHidden.subscribe(()=>{
         

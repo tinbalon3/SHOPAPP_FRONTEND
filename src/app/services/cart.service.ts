@@ -4,64 +4,80 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { TokenService } from './token.service';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 import { environment } from '../../enviroments/environment';
 
-import {  Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { Response } from '../response/response';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CartService implements OnInit{
+export class CartService implements OnInit {
 
   cartItems: CartItem[] = [];
   isRemove = false;
   totalPrice = new BehaviorSubject<number>(0);
-  totalPriceAfterApplyCoupon =0;
+  totalPriceAfterApplyCoupon = 0;
   totalQuantity = new BehaviorSubject<number>(0);
-
-  userId:number = 0;
+  cartUpdatedSubject = new BehaviorSubject<any>(null); 
+  userId: number = 0;
   cartLocal: any;
-  
+
   storage: Storage = localStorage;
-  sessionStorage : Storage = sessionStorage
-  
+  sessionStorage: Storage = sessionStorage
+
   private apiCart = environment.apiBaseUrl + '/cart';
 
-  constructor(private http: HttpClient, private tokenService: TokenService,private router: Router) {
-   
+  constructor(private http: HttpClient, private tokenService: TokenService, private router: Router) {
+    this.cartItems = [];
+    this.cartUpdatedSubject.pipe(
+      debounceTime(10000),  // Trì hoãn 1 giây
+      switchMap(() => this.persistCartItems())  // Gọi API lưu giỏ hàng
+    ).subscribe(response => {
+      console.log('Cart saved to API');
+    });
   }
   ngOnInit(): void {
-    
+
   }
- 
+
   loadCart() {
-    this.userId = this.tokenService.getUserId()
-    if(this.userId != 0) {
+    this.userId = this.tokenService.getUserId();
+     // Khởi tạo `cartItems` là một mảng rỗng
+  
+    if (this.userId != 0) {
       this.cartLocal = this.storage.getItem(`${environment.cartItems}:${this.userId}`);
-      if (this.cartLocal != null ) {
-        if(this.cartLocal.length != 0) {
-          this.cartItems = JSON.parse(this.cartLocal);
-          this.computeCartTotals()
-         
-        }
-        
-      }
-      else {
-        this.getCartItems().subscribe(data => {
-          // Kiểm tra nếu data là Map và chuyển đổi thành Array nếu cần thiết
-          this.cartItems = data;
+      
+      if (this.cartLocal != null) {
+        // Parse `cartLocal` nếu có dữ liệu và kiểm tra xem nó là mảng hợp lệ
+        const parsedCart = JSON.parse(this.cartLocal);
+        if (Array.isArray(parsedCart) && parsedCart.length != 0) {
+          this.cartItems = parsedCart;
           this.computeCartTotals();
+          console.log("Lấy giỏ hàng trong Local Storage");
+        }
+      } else {
+        this.getCartItems().subscribe(data => {
+          // Kiểm tra `data` để đảm bảo rằng nó là mảng và không rỗng
+          if (data && Array.isArray(data)) {
+            this.cartItems = data;
+            console.log("Lấy giỏ hàng từ CSDL");
+          } else {
+            console.error('Dữ liệu không hợp lệ:', data);
+            this.cartItems = []; // Thiết lập giá trị mặc định nếu dữ liệu không hợp lệ
+          }
+          
+  
+          this.computeCartTotals(); // Tính tổng cart items sau khi đảm bảo `cartItems` đã được khởi tạo
           this.saveToLocalStorage();
-         
         });
       }
     }
-    
-
   }
+  
 
- 
+
 
   resetCart() {
     this.cartItems = [];
@@ -71,27 +87,30 @@ export class CartService implements OnInit{
     this.removeToLocalStorage()
   }
   addToCart(theCartItem: CartItem, quantity: number = 1) {
-    let existingCartItem = this.cartItems.find(item => item.id === theCartItem.id);
-    if (existingCartItem) {
-      existingCartItem.quantity += quantity;
-    } else {
-      theCartItem.quantity = quantity;
-      this.cartItems.push(theCartItem);
+    
+    
+    if(this.cartItems != null ) {
+      let existingCartItem = this.cartItems.find(item => item.id === theCartItem.id);
+      if (existingCartItem) {
+        existingCartItem.quantity += quantity;
+      } else {
+        theCartItem.quantity = quantity;
+        this.cartItems.push(theCartItem);
+      }
     }
+   
     this.computeCartTotals();
     this.saveToLocalStorage(); // Lưu vào LocalStorage thay vì gọi API ngay lập tức
-   
+    this.cartUpdatedSubject.next(this.cartItems);
 
   }
   syncCartWithServer() {
-    const userId = this.tokenService.getUserId();
-    if (userId != 0) {
-     this.persistCartItems().subscribe()
+    this.userId = this.tokenService.getUserId();
+    if (this.userId != 0) {
+      this.persistCartItems().subscribe()
     }
   }
-  // syncCartWithServer = this.debounce(() => {
-  //   this.persistCartItems().subscribe();
-  // }, 3000); // Thời gian debounce là 3 giây
+ 
 
   // Hàm debounce
   debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
@@ -105,27 +124,28 @@ export class CartService implements OnInit{
   }
   updateTotalPrice(newPrice: number): void {
     this.totalPriceAfterApplyCoupon = newPrice;
-    this.sessionStorage.setItem("totalAmountAfterApplyCoupon",this.totalPriceAfterApplyCoupon.toString())
+    this.sessionStorage.setItem("totalAmountAfterApplyCoupon", this.totalPriceAfterApplyCoupon.toString())
   }
-  getTotalPriceAfterDiscount(){
+  getTotalPriceAfterDiscount() {
     return Number(this.sessionStorage.getItem("totalAmountAfterApplyCoupon"))
   }
   computeCartTotals() {
     let totalPriceValue: number = 0;
     let totalQuantityValue: number = 0;
-    
+    if(this.cartItems.length > 0) {
     for (let currentCartItem of this.cartItems) {
       totalPriceValue += currentCartItem.quantity * currentCartItem.price;
       totalQuantityValue += currentCartItem.quantity;
     }
-    
+  }
+
     this.totalPrice.next(totalPriceValue);
-    console.log("chay vao day")
+
     this.totalQuantity.next(this.cartItems.length);
   }
 
   decrementQuantity(theCartItem: CartItem) {
-   
+
     let existingCartItem = this.cartItems.find(item => item.id === theCartItem.id);
     if (existingCartItem) {
       existingCartItem.quantity--;
@@ -142,42 +162,55 @@ export class CartService implements OnInit{
     const itemIndex = this.cartItems.findIndex(item => item.id === theCartItem.id);
     if (itemIndex > -1) {
       this.cartItems.splice(itemIndex, 1);
-      const userId = this.tokenService.getUserId();
+      this.userId = this.tokenService.getUserId();
       this.computeCartTotals()
       this.saveToLocalStorage()
-      console.log(theCartItem.id)
-      this.removeFromCart(userId, theCartItem.id, theCartItem.quantity).subscribe();
+      
+      this.removeFromCart(this.userId, theCartItem.id, theCartItem.quantity).subscribe();
     }
   }
 
   persistCartItems(): Observable<any> {
-    const userId = this.tokenService.getUserId();
-    return this.http.post(`${this.apiCart}/add/${userId}`, this.cartItems);
+    if (this.cartItems.length > 0) {
+      this.userId = this.tokenService.getUserId();
+      if (this.userId) {
+        return this.http.post(`${this.apiCart}/add/${this.userId}`, this.cartItems);
+      } else {
+        console.error("User ID is not available.");
+        return of(null);
+      }
+    }
+    // Trả về một Observable rỗng nếu cartItems trống
+    return of(null);
   }
+  
 
   getCartItems(): Observable<any> {
-    const userId = this.tokenService.getUserId();
-   
+    this.userId = this.tokenService.getUserId();
+  
     // Kiểm tra nếu userId hợp lệ, nếu không trả về mảng rỗng ngay lập tức
-    if (!userId || userId === 0) {
+    if (!this.userId || this.userId === 0) {
       return of([]); // Trả về mảng rỗng nếu người dùng chưa đăng nhập hoặc userId không hợp lệ
     }
-    
-    return this.http.get(`${this.apiCart}/get/${userId}`).pipe(
-      map(data => {
-        // Kiểm tra và xử lý dữ liệu trước khi trả về
-        if (data && typeof data === 'object') {
-          return Array.isArray(data) ? data : Object.values(data);
+  
+    return this.http.get<Response>(`${this.apiCart}/get/${this.userId}`).pipe(
+      map((response: Response) => {
+        if (response.status === 'OK') {
+          console.log(response);
+          
+          return response.data; // Trả về dữ liệu giỏ hàng nếu trạng thái OK
         } else {
-          return data;
+          console.error('Lỗi khi lấy giỏ hàng:', response.message);
+          return []; // Trả về mảng rỗng nếu có lỗi
         }
       }),
-      catchError(error => {
-        console.error('Error fetching cart items:', error);
+      catchError((error) => {
+        console.error('Lỗi kết nối API:', error);
         return of([]); // Trả về mảng rỗng trong trường hợp có lỗi
       })
     );
   }
+  
 
 
   removeFromCart(userId: number, productId: number, quantity: number): Observable<any> {
@@ -185,8 +218,8 @@ export class CartService implements OnInit{
   }
 
   clearCartItems() {
-    const userId = this.tokenService.getUserId();
-    this.http.delete(`${this.apiCart}/clear/${userId}`).subscribe(() => {
+    this.userId = this.tokenService.getUserId();
+    this.http.delete(`${this.apiCart}/clear/${this.userId}`).subscribe(() => {
       this.cartItems = [];
       this.computeCartTotals();
       this.saveToLocalStorage(); // Lưu vào LocalStorage
@@ -197,7 +230,7 @@ export class CartService implements OnInit{
     this.storage.setItem(`${environment.cartItems}:${this.userId}`, JSON.stringify(this.cartItems));
   }
   removeToLocalStorage() {
-    
+
     this.storage.removeItem(`${environment.cartItems}:${this.userId}`);
   }
 }

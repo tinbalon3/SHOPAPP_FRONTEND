@@ -1,5 +1,5 @@
 <div class="container-fluid mt-4">
-  <h1>Danh sách Categories</h1>
+  <h1 style="margin:0">Danh sách danh mục</h1>
   <div class="form-group w-100 btn-add mb-3">
       <button class="btn btn-primary" (click)="openConfirmDialog()">Thêm</button>
   </div>
@@ -17,10 +17,20 @@
                   <td>{{ category.id }}</td>
                   <td>{{ category.name }}</td>
                   <td>
-                      <div class="action-buttons delete">
-                          <button class="btn btn-danger btn-sm" (click)="deleteCategoryConfirm(category.id)">Delete</button>
-                      </div>
-                  </td>
+                    <div class="dropdown">
+                        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" (click)="deleteCategoryConfirm(category.id)">
+                               Xóa danh mục</a></li>
+                               <li><a class="dropdown-item" >
+                               Sửa danh mục</a></li>
+                           
+                        </ul>
+                    </div>
+                </td>
+                  
               </tr>
           </tbody>
       </table>
