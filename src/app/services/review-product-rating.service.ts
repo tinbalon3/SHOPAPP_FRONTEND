@@ -15,8 +15,8 @@ export class ReviewProductRatingService {
   private apiUrl = environment.apiBaseUrl + "/rating";
   constructor(private http: HttpClient) { }
 
-  ratingProduct(rateDTO: RatingDTO):Observable<HttpResponse<any>>{
-    return this.http.post<HttpResponse<any>>(this.apiUrl, rateDTO);
+  ratingProduct(rateDTO: RatingDTO):Observable<Response>{
+    return this.http.post<Response>(this.apiUrl, rateDTO);
   }
 
   getAllRating(product_id:number):Observable<Response> {

@@ -11,14 +11,13 @@ import { CartItem } from '../../class/cart-item';
 import { ShopValidators } from '../../validators/shop-validators';
 import { Purchase } from '../../class/purchase';
 import { Country } from '../../models/country.interface';
-import { CitiesService } from '../../services/cities.service';
-import { StatesService } from '../../services/states.service';
+
 import { environment } from '../../../enviroments/environment';
 import { CheckoutService } from '../../services/checkout.service';
-import { CheckoutDTO } from '../../dtos/checkout.dto';
-import { HttpResponse } from '@angular/common/http';
+
 import { ToastrService } from 'ngx-toastr';
 import { Response } from '../../response/response';
+import { LocationService } from '../../services/location.service';
 
 
 @Component({
@@ -38,101 +37,90 @@ export class CheckOutComponent implements OnInit {
   cities: any[] = [];
 
   isApplyCoupon = false;
-  sessionStorage: Storage = sessionStorage
-
+  couponCode = ''
+  localstorage: Storage = localStorage
+  provinces: any[] = [];
+  districts: any[] = [];
   billingAddressStates: any = [];
   shippingAddressStates: any = [];
-  constructor(private orderService: OrderService,
+  constructor(
+    private orderService: OrderService,
     private formbuilder: FormBuilder,
     private userService: UserService,
-    private citiesService: CitiesService,
     private cartService: CartService,
     private tokenService: TokenService,
-    private statesService: StatesService,
-    
+    private locationService:LocationService,
     private cdr: ChangeDetectorRef,
-    private router: Router,
     private checkoutService : CheckoutService,
     private toastr: ToastrService
   ) {
 
   }
   ngOnInit(): void {
-    
+    this.locationService.getLocations().subscribe((data) => {
+      this.provinces = data; // Gán dữ liệu tỉnh/thành
+    });
     
     // Lấy giá trị từ sessionStorage
-    const couponValue = this.sessionStorage.getItem("isApplyCoupon");
-
+    const isUseCoupon = this.localstorage.getItem("isApplyCoupon");
+    const couponCode = this.localstorage.getItem("couponName")
     // Kiểm tra và chuyển đổi giá trị
     let isApplyCoupon: boolean = false; // Giá trị mặc định
-    if (couponValue) {
-      isApplyCoupon = JSON.parse(couponValue);
+    if (isUseCoupon && couponCode) {
+      isApplyCoupon = JSON.parse(isUseCoupon);
+      this.couponCode = couponCode;
       this.isApplyCoupon = isApplyCoupon
     }
-
-
+    let userDetail = this.userService.getUserDetailFromLocalStorage();
     this.orderForm = this.formbuilder.group({
       customer: this.formbuilder.group({
-        fullname: new FormControl(this.userService.getUserDetailFromSessionStorage().fullname, [Validators.required]),
-        email: new FormControl('tinbalon3@gmail.com', [Validators.email]),
-        phone_number: new FormControl(this.userService.getUserDetailFromSessionStorage().phone_number, [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
+        fullname: new FormControl(userDetail.fullname, [Validators.required]),
+        email: new FormControl(userDetail.email, [Validators.email]),
+        phone_number: new FormControl(userDetail.phone_number, [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
       }),
       shipping_address: this.formbuilder.group({
-        street: new FormControl('108D/30 Trương Định', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
-        city: new FormControl('Châu Đốc', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
-        state: new FormControl('An Giang', [Validators.required]),
-
-      }),
-      billing_address: this.formbuilder.group({
-        street: new FormControl('', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
+        street: new FormControl(userDetail.address, [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
         city: new FormControl('', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
         state: new FormControl('', [Validators.required]),
 
       }),
+      // billing_address: this.formbuilder.group({
+      //   street: new FormControl('', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
+      //   city: new FormControl('', [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
+      //   state: new FormControl('', [Validators.required]),
+
+      // }),
       note: [''],
       shipping_method: ['express'],
       payment_method: ['cod'],
       
     })
 
-    
-
     //Lấy đơn hàng đã thêm vào giỏ hàng
     this.cdr.detectChanges();
     this.listCartDetails()
+  }
+  getCities(): void {
+    // Lấy giá trị tỉnh/thành phố được chọn
+    const stateName = this.orderForm.get('shipping_address')?.value.state;
 
-    this.statesService.getStates().subscribe(
-      data => {
-        this.states = data.data;
-        this.getCities('shipping_address');
-      })
+    // Tìm tỉnh/thành phố trong danh sách
+    const selectedProvince = this.provinces.find((province) => province.name === stateName);
+    console.log(selectedProvince);
     
-
+    // Lấy danh sách quận/huyện
+    if (selectedProvince) {
+      this.districts = selectedProvince.districts;
+      const firstCity = this.districts[0]?.name || '';
+      this.orderForm.get('shipping_address.city')?.setValue(firstCity); // Gán giá trị mặc định cho thành phố
+    }
   }
-
-  getCities(formGroupName: string) {
-    let stateName = this.orderForm.get(formGroupName)?.value.state;
-    let state = this.states.find(state => state.name === stateName)
-
-    this.citiesService.getCities(state.id).subscribe(
-      data => {
-        if (formGroupName === 'shipping_address') {
-          this.shippingAddressStates = data.data
-          let city = this.shippingAddressStates[0].name;
-          this.orderForm.get("shipping_address.city")?.setValue(city)
-        }
-        else {
-          this.billingAddressStates = data.data
-          let city = this.billingAddressStates[0].name;
-          this.orderForm.get("billing_address.city")?.setValue(city)
-        }
-      })
-  }
+ 
   placeOrder() {
     const termsCheckbox = document.getElementById('termsCheckbox') as HTMLInputElement;
     if (this.orderForm.valid && termsCheckbox.checked) {
       this.prepareOrder();
-      this.handlePaymentAndOrder();
+      this.handlePaymentAndOrder(); 
     } else {
       this.toastr.error("Xin vui lòng điền đẩy đủ thông tin","Thiếu thông tin",{
         timeOut:2000
@@ -158,8 +146,6 @@ export class CheckOutComponent implements OnInit {
   
   
   handlePaymentAndOrder() {
-    console.log(this.purchase);
-    
     this.checkoutService.submitOrder(this.purchase).subscribe({
       next: (paymentUrl:string) => {
         paymentUrl = paymentUrl.replace(" ","");
@@ -177,15 +163,7 @@ export class CheckOutComponent implements OnInit {
   
  
   
-  // finalizeOrder() {
-  //   this.orderService.placeOrder(this.purchase).subscribe({
-  //     next: (response:Response) => {
-       
-  //       this.router.navigate(['/checkout-successfull/', response.data.orderTrackingNumber]);
-  //     },
-  //     error: e => console.error("Đặt hàng thất bại: ", e)
-  //   });
-  // }
+
   
   get fullname() { return this.orderForm.get('customer.fullname'); }
   get email() { return this.orderForm.get('customer.email'); }
@@ -197,24 +175,24 @@ export class CheckOutComponent implements OnInit {
   get shippingAddressState() { return this.orderForm.get('shipping_address.state'); }
 
 
-  get billingAddressStreet() { return this.orderForm.get('billing_address.street'); }
-  get billingAddressCity() { return this.orderForm.get('billing_address.city'); }
-  get billingAddressState() { return this.orderForm.get('billing_address.state'); }
+  // get billingAddressStreet() { return this.orderForm.get('billing_address.street'); }
+  // get billingAddressCity() { return this.orderForm.get('billing_address.city'); }
+  // get billingAddressState() { return this.orderForm.get('billing_address.state'); }
 
-  copyShippingAddressToBillingAddress(event: any) {
-    if (event.target.checked) {
-      this.orderForm.controls['billing_address']
-        .setValue(this.orderForm.controls['shipping_address'].value)
-      //bug fix for states
-      this.billingAddressStates = this.shippingAddressStates
-    }
-    else {
-      this.orderForm.controls['billing_address'].reset();
+  // copyShippingAddressToBillingAddress(event: any) {
+  //   if (event.target.checked) {
+  //     this.orderForm.controls['billing_address']
+  //       .setValue(this.orderForm.controls['shipping_address'].value)
+  //     //bug fix for states
+  //     this.billingAddressStates = this.shippingAddressStates
+  //   }
+  //   else {
+  //     this.orderForm.controls['billing_address'].reset();
 
-      //bug fix for states
-      this.billingAddressStates = [];
-    }
-  }
+  //     //bug fix for states
+  //     this.billingAddressStates = [];
+  //   }
+  // }
   listCartDetails() {
     // get a handle to the cart items
     if (sessionStorage.getItem(`${environment.cartItems}:${this.tokenService.getUserId()}`) != null) {

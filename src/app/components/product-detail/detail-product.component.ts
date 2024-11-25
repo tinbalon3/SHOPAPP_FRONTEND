@@ -104,6 +104,12 @@ export class DetailProductComponent implements OnInit {
   }
   increaseQuantity() {
     this.quantity++;
+    if(this.quantity > this.product!.stock){
+      this.quantity = this.product!.stock
+      this.toastr.error("Quá số lượng tồn kho","THÔNG BÁO",{
+        timeOut: 2000
+      })
+    }
     this.theCartItem.quantity = this.quantity;
 
   }

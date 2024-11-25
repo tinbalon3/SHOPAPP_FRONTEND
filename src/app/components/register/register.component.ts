@@ -87,7 +87,7 @@ export class RegisterComponent implements OnInit {
       "password": this.registerForm.controls['user'].value.password,
       "retype_password": this.registerForm.controls['user'].value.retypePassword,
       "date_of_birth": this.registerForm.controls['user'].value.dateOfBirth,
-      "facebook_account_id": 0,
+      // "facebook_account_id": 0,
       "google_account_id": 0,
       "auth_provider": 'LOCAL',
       "role_id": 1

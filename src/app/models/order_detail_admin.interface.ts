@@ -1,3 +1,4 @@
+import { ProductDetailDTO } from "../dtos/product_detail.dto"
 import { Address } from "./address.interface"
 import { OrderDetail } from "./order_detail.interface"
 

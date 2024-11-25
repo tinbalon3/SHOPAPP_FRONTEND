@@ -2,7 +2,7 @@
 
     <section class="ezy__signin1_VjHlH1lB d-flex align-items-center">
         <div class="container">
-          <div class="row pt-4 justify-content-center">
+          <div class="row  justify-content-center formlogin">
             <div class="col-lg-5">
               <div class="card ezy__signin1_VjHlH1lB-form-card">
                 <div class="card-body pt-5 pe-5 ps-5 pb-0">
@@ -32,43 +32,40 @@
                           </div>
                       </div>
                     </div>
-                    <div class="form-group mb-3">
+                    <!-- <div class="form-group mb-3">
                       <div class="form-check">
                         <input class="form-check-input" type="checkbox" formControlName="rememberMe" value="" id="remember-me" checked />
                         <label class="form-check-label" for="remember-me" > Ghi nhớ đăng nhập </label>
                       </div>
-                    </div>
-                    <div class="form-group mb-3">
+                    </div> -->
+                    <!-- <div class="form-group mb-3">
                         <select class="form-control access-right" formControlName="role">
                             <option selected disabled>Quyền đăng nhập</option>
                             <option *ngFor="let role of roles" [ngValue]="role.id">
                                 {{ role.name.toUpperCase() }}
                             </option>
                         </select>
-                    </div>
+                    </div> -->
                     <button type="submit" class="btn ezy__signin1_VjHlH1lB-btn-submit w-100">Đăng nhập</button>
                     <button class="btn w-100">Quên mật khẩu?</button>
       
                     
                 </div>
                   </form>
-                  <div class="position-relative ezy__signin1_VjHlH1lB-or-separator">
+                  <!-- <div class="position-relative ezy__signin1_VjHlH1lB-or-separator">
                     <hr class="my-4 my-md-5" />
-                    <span class="px-2">Or</span>
-                  </div>
-    
-                  <button class="btn btn-primary ezy__signin1_VjHlH1lB-btn w-100 d-flex align-items-center mb-3">
-                    <span class="fab fa-facebook text-white fs-4"></span>
-                    <span class="w-100 text-center text-white">Continue with Facebook</span>
-                  </button>
+                    
+                  </div> -->
+                  <span class="px-2">Or</span>
+                  
                   <button (click)="loginWithGoogle()" class="btn btn-danger ezy__signin1_VjHlH1lB-btn w-100 d-flex align-items-center">
                     <span class="fab fa-google text-white fs-4"></span>
-                    <span class="w-100 text-center text-white" >Continue with Google</span>
+                    <span class="w-100 text-center text-white" >Đăng nhập với Google</span>
                   </button>
     
-                  <div class="text-center mt-4 mt-md-5">
+                  <div class="text-center mt-4 ">
                     <p class="mb-0 opacity-50 lh-1">Don't have an account?</p>
-                    <a routerLink="/register" class="btn btn-link py-0 text-dark text-decoration-none">Create account</a>
+                    <a routerLink="/register" class="btn btn-link py-0 text-dark text-decoration-none">Tạo tài khoản</a>
                   </div>
                 </div>
               </div>

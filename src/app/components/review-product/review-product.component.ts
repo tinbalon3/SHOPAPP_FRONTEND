@@ -27,26 +27,26 @@ export class ReviewProductComponent {
     private tokenService:TokenService,
     private router:Router){}
 
-  openReviewModal(): void {
-    if(this.tokenService.getTokenFromCookie() == null || this.tokenService.getTokenFromCookie() == '') {
-      this.router.navigate(['/login'])
-      return
-    }
-    const initialState = {
-      theCartItem: this.theCartItem // Truyền productId vào modal
-    };
+  // openReviewModal(): void {
+  //   if(this.tokenService.getTokenFromCookie() == null || this.tokenService.getTokenFromCookie() == '') {
+  //     this.router.navigate(['/login'])
+  //     return
+  //   }
+  //   const initialState = {
+  //     theCartItem: this.theCartItem // Truyền productId vào modal
+  //   };
    
-    this.bsModalRef = this.modalService.show(ReviewProductRatingComponent, {
-      initialState,
-      class: 'modal-lg' // Tùy chỉnh kích thước modal
+  //   this.bsModalRef = this.modalService.show(ReviewProductRatingComponent, {
+  //     initialState,
+  //     class: 'modal-lg' // Tùy chỉnh kích thước modal
      
-    });
+  //   });
 
-    this.bsModalRef.onHide?.subscribe(() => {
-      this.loadRatings(this.theCartItem.id!);
-    });
+  //   this.bsModalRef.onHide?.subscribe(() => {
+  //     this.loadRatings(this.theCartItem.id!);
+  //   });
     
-  }
+  // }
   getStarClasses(product: any, index: number): string {
     const fullStars = this.getFullStars(product);
     const halfStar = this.hasHalfStar(product);

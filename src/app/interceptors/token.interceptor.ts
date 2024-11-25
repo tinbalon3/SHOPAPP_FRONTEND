@@ -1,58 +1,92 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, switchMap, throwError } from 'rxjs';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
+
 import { TokenService } from '../services/token.service';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
-
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { catchError, switchMap, filter, take } from 'rxjs/operators';
+import { Response } from '../response/response';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+  private isRefreshingToken = false;
+  private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   constructor(
     private tokenService: TokenService,
     private userService: UserService,
-  ) { }
- 
+    private router: Router
+  ) {}
+
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.tokenService.getTokenFromCookie();
-  
+    let authReq = req;
+
     if (token) {
-      // Nếu có token, thêm vào header và tiếp tục
-      req = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
+      authReq = this.addTokenHeader(req, token);  // Add token if available
+    }
+
+    return next.handle(authReq).pipe(
+      catchError((error) => {
+        if (error instanceof HttpErrorResponse && error.status === 0) {
+          return this.handle401Error(req, next);  // Handle 401 error
         }
-      });
-      return next.handle(req);
-    } else {
-      // Nếu không có token, kiểm tra refreshToken
-      const refreshToken = this.tokenService.getRefreshTokenFromCookie();
-      if (refreshToken) {
-        // Gọi API refreshToken và đợi kết quả
-        return this.userService.refreshToken(refreshToken).pipe(
-          switchMap(() => {
-           const newToken = this.tokenService.getTokenFromCookie();
+        this.userService.handleLogout();
+        return throwError(() =>  error);  // Return the error if not 401
+      })
+    );
+  }
+
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   
-            // Cập nhật req với token mới
-            req = req.clone({
-              setHeaders: {
-                Authorization: `Bearer ${newToken}`,
-              }
-            });
-            // Tiếp tục xử lý req sau khi có token mới
-            return next.handle(req);
+    if (!this.isRefreshingToken) {
+      this.isRefreshingToken = true;
+
+      const refresh_token = this.tokenService.getRefreshTokenFromCookie();
+      const expiredRefreshToken = this.tokenService.getRefreshTokenExpiration();  // Get expiration time of the refresh token
+     
+      if (refresh_token && expiredRefreshToken && expiredRefreshToken.getTime() > Date.now()) {
+        // If refresh token is valid, proceed to refresh the access token
+        return this.userService.refreshToken(refresh_token).pipe(
+          switchMap((newToken:Response) => {
+            this.isRefreshingToken = false;
+            const token = newToken.data.token;
+            const refresh_token = newToken.data.refresh_token;
+            const expiredDate = new Date(newToken.data.refresh_token_expired);
+            this.tokenService.setTokenInCookie(token);
+            this.tokenService.setRefreshTokenInCookie(refresh_token);
+            this.tokenService.setExpiredRefreshTokenInCookie(expiredDate)
+            return next.handle(this.addTokenHeader(request, newToken.data.token));  // Retry the original request
+          }),
+          catchError((error) => {
+            this.isRefreshingToken = false;
+            this.userService.handleLogout();  // Logout if refresh token fails
+            return throwError(() => error);
           })
         );
       } else {
-        // Nếu không có refreshToken, xử lý req như bình thường
-        return next.handle(req);
+        // If refresh token is expired or invalid, logout the user
+        this.userService.handleLogout();
+        return throwError(() => new Error('Refresh token expired'));
       }
+    } else {
+      // If refresh token request is already in progress, wait for it to complete
+      return this.refreshTokenSubject.pipe(
+        filter((token) => token !== null),
+        take(1),
+        switchMap((token) => next.handle(this.addTokenHeader(request, token as string)))
+      );
     }
   }
-  
- 
 
- 
+  private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`  // Add the token to the request headers
+      }
+    });
+  }
 }
+
+

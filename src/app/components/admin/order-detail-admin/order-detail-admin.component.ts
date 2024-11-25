@@ -31,13 +31,14 @@ export class OrderDetailAdminComponent implements OnInit{
 
 ngOnInit(): void {
   this.getOrderDetail();
+  
 }
 getOrderDetail(){
  
   const orderID = this.router.snapshot.paramMap.get('id')!;
   this.orderService.getOrderById(orderID).subscribe({
     next:(response:Response)=>{
-      console.log(response);
+     
       
       this.orderDetailRequest = response.data;
       this.orderDetailRequest!.order_details = response.data.order_details.map((orderDetail:OrderDetail)=>{
@@ -47,7 +48,8 @@ getOrderDetail(){
     )
     this.shipping_address = `${this.orderDetailRequest.shipping_address.city} ${this.orderDetailRequest.shipping_address.state} ${this.orderDetailRequest.shipping_address.city}`
     this.orderDetailRequest =JSON.parse(JSON.stringify(this.orderDetailRequest));
-  
+    console.log(this.orderDetailRequest.id);
+    
 
     },
     complete:()=>{

@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { OrderDetail } from '../../models/order_detail.interface';
 import { OrderService } from '../../services/order.service';
 import { ActivatedRoute } from '@angular/router';
-import { OrderDetailsHistoryDTo } from '../../dtos/order_details.dto';
 import { TokenService } from '../../services/token.service';
 import { environment } from '../../../enviroments/environment';
 import { Response } from '../../response/response';
+import { OrderHistoryDTO } from '../../dtos/order_details.dto';
 
 @Component({
   selector: 'app-order-history',
@@ -14,28 +14,17 @@ import { Response } from '../../response/response';
   styleUrl: './order-history.component.scss'
 })
 export class OrderHistoryComponent implements OnInit {
+reviewProduct(arg0: number) {
+throw new Error('Method not implemented.');
+}
 
   currentPage = 1;
   itemsPerPage: number = 10;
   totalElements:number = 0 ;
   order_details: any
   totalAmount: number = 0;
-  orderHistory:OrderDetailsHistoryDTo [] = [];
-  orderResponse = {
-    id: 0,
-    email: '',
-    address: '',
-    note: '',
-    user_id: '',
-    phone_number: '',
-    shipping_method: '',
-    shipping_address: '',
-    status: '',
-    fullname: '',
-    shipping_date: new Date(),
-    payment_method: '',
-    order_details: [],
-  }
+  orderHistory:OrderHistoryDTO [] = [];
+  
   isActive: number = 0;
   statusOrder = ""
   tabs = [
@@ -52,6 +41,10 @@ export class OrderHistoryComponent implements OnInit {
       content: "Đang xử lý"
     },
     {
+      key: "reserved",
+      content: "Đặt trước"
+    },
+    {
       key: "shipped",
       content: "Đã vận chuyển"
     },
@@ -60,7 +53,7 @@ export class OrderHistoryComponent implements OnInit {
       content: "Đã giao hàng"
     },
     {
-      key: "cancelled",
+      key: "canceled",
       content: "Đã hủy"
     }
   ];
@@ -72,35 +65,25 @@ export class OrderHistoryComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getOrderDetailHistory(this.statusOrder,this.currentPage,this.itemsPerPage);
+    this.getOrderHistory(this.statusOrder,this.currentPage,this.itemsPerPage);
   }
   setActive(index:number){
     this.isActive = index;
     this.statusOrder = this.tabs[index].key
-    this.getOrderDetailHistory(this.statusOrder,this.currentPage,this.itemsPerPage);
+    this.getOrderHistory(this.statusOrder,this.currentPage,this.itemsPerPage);
   }
-  getOrderDetailHistory(status:string,currentPage:number,itemsPerPage:number) {
+  getOrderHistory(status:string,currentPage:number,itemsPerPage:number) {
     
     const userId = this.tokenService.getUserId();
-    this.orderService.getOrderDetailHistory(userId!,status,currentPage-1,itemsPerPage).subscribe({
+    this.orderService.getOrderHistory(userId!,status,currentPage-1,itemsPerPage).subscribe({
       next: (response: Response) => {
-        if(response.data.orderDetails == null){
-          
+        
+        if(response.data == null){
           this.orderHistory = [];
           return;
         }
-       
         this.orderHistory = response.data.orderDetails;
         this.totalElements = response.data.totalElements;
-        
-        
-        this.orderHistory = response.data.orderDetails.map((orderDetail:OrderDetailsHistoryDTo) => {
-          orderDetail.thumbnail = `${environment.apiBaseUrl}/products/images/${orderDetail.thumbnail}`;
-          return orderDetail;
-        }
-        )
-       
-        
       },
       complete: () => {
 
@@ -143,11 +126,7 @@ export class OrderHistoryComponent implements OnInit {
   updatePageSize(pageSize: string) {
     this.itemsPerPage = +pageSize;
     this.currentPage = 1;
-    this.getOrderDetailHistory(this.statusOrder,this.currentPage,this.itemsPerPage);
+    this.getOrderHistory(this.statusOrder,this.currentPage,this.itemsPerPage);
   }
   
-}
-export interface OrderDetailHistoryResponse {
-  orderDetails: OrderDetailsHistoryDTo[];
-  totalElements: number;
 }

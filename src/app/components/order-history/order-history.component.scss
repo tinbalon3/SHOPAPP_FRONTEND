@@ -142,7 +142,8 @@ img {
 // test
 
 .ezy__epprofile3_9NBt4sPF {
-  height: 100vh;
+
+  overflow-y: auto;  /* Hiển thị thanh cuộn dọc khi nội dung vượt quá chiều cao */
     /* Bootstrap variables */
     --bs-body-color: #212529;
     --bs-body-bg: rgb(255, 255, 255);

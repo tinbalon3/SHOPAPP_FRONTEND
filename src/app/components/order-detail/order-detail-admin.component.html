@@ -1,8 +1,16 @@
 
-<div class="container mt-4">
-    <h2 class="mb-4">Chi tiết đơn hàng</h2>
-  
+<app-header></app-header>
+<div class="container mt-4 mb-4">
+  <div style="display: flex; justify-content: space-between;">
+    <div>
+      <h2 class="mb-4">Chi tiết đơn hàng</h2>
+    </div>
+   <div>
+    <button class="btn btn-primary" routerLink="/orders-history">Trở lại</button>
+   </div>
+  </div>
     
+  
       <div class="row">
         <!-- Thông tin đơn hàng bên trái -->
         <div class="col-md-6"  *ngIf="orderDetailRequest">
@@ -32,14 +40,8 @@
             <textarea id="note" class="form-control" [value]="orderDetailRequest.note" readonly></textarea>
           </div>
           <div class="mb-3">
-            <label for="status">Trạng thái: <span style="font-size: 12px;color: red;">(được quyền thay đổi)</span></label>
-            <select id="status" class="form-control" [(ngModel)]="orderDetailRequest.status">
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="shipped">Shipped</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
+            <label for="status">Trạng thái: </label>
+            <input type="text" id="status" class="form-control" [value]="orderDetailRequest.status" readonly>
           </div>
         </div>
   
@@ -84,6 +86,9 @@
               <td>{{ item.numberOfProduct }}</td>
               <td>{{ item.price | currency }}</td>
               <td>{{ item.totalMoney | currency }}</td>
+              <td> <button class="btn btn-secondary" (click)="reviewProduct(item.product.id)">
+                Đánh giá
+              </button></td>
             </tr>
           </tbody>
           <tfoot>
@@ -99,7 +104,7 @@
       <div class="mt-4">
         <button type="submit" (click)="updateOrder(orderDetailRequest.id)" class="btn btn-primary">Lưu Thay Đổi</button>
       </div>
-      
-    
   </div>
-  
+
+   <!-- <app-review-product *ngIf="theCartItem" [theCartItem]="theCartItem"></app-review-product> -->
+  <app-footer></app-footer>

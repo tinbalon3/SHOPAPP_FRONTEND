@@ -12,7 +12,7 @@ import { Response } from '../response/response';
 })
 export class ProductService {
   private  apiProducts = environment.apiBaseUrl + '/products';
-  
+  private  apiProductsPrice = environment.apiBaseUrl + '/products/getPrice';
   constructor(private http: HttpClient) { }
 
   getProducts(keyword:string,category_id:number,minPrice:number,maxPrice:number,rateStar:number,page:number,limit:number): Observable<Response>{
@@ -28,6 +28,9 @@ export class ProductService {
   }
   getProductDetail(productId:number): Observable<Response> {
     return this.http.get<Response>(`${this.apiProducts}/${productId}`);
+  }
+  getPriceMaxAndMin() :Observable<Response> {
+    return this.http.get<Response>(this.apiProductsPrice)
   }
   updateImages(formData:FormData,productId:number): Observable <any>{
     

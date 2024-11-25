@@ -10,13 +10,10 @@ import { RegisterComponent } from './components/register/register.component'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor';
-import { OrderDetailComponent } from './components/order-detail/order-detail.component';
 import { AppComponent } from './components/app/app.component';
 import {  RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './guard/auth.guard';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
-import { AdminComponent } from './components/admin/admin.component';
 
 import { AdminModule } from './components/admin/admin.module';
 import { ToastrModule } from "ngx-toastr";
@@ -32,21 +29,23 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
 import { VerifyEmailSuccessfullyComponent } from './components/verify-email-successfully/verify-email-successfully.component';
 import { ReviewProductComponent } from './components/review-product/review-product.component';
 import { ReviewProductRatingComponent } from './components/review-product-rating/review-product-rating.component';
-import { SkeletonLoaderComponent } from './components/skeleton-loader/skeleton-loader.component';
 import { ThongbaoComponent } from './components/thongbao/thongbao.component';
+import { AuthcallbackComponent } from './components/authcallback/authcallback.component';
+import { AuthGuard } from './guard/auth.guard';
+import {  OrderDetailComponent } from './components/order-detail/order-detail-admin.component';
 
 const routes : Routes = [
-  {path: 'loader', component: SkeletonLoaderComponent},
+
   {path: 'login', component: LoginComponent},
+  {path: 'auth/callback/google', component: AuthcallbackComponent},
   {path: 'thongbao', component: ThongbaoComponent},
   {path: 'register',component: RegisterComponent},
   {path: 'products/:id',component:DetailProductComponent},
-  {path: 'user-profile',component: UserProfileComponent, canActivate: [AuthGuard]},
-  {path: 'admin',component: AdminComponent, canActivate: [AuthGuard]},
-  {path: 'orders',component: OrderComponent, canActivate: [AuthGuard]},
-  {path: 'checkout-successfull/:order-trackingNumber',component: CheckoutSuccessfullComponent},
-  {path: 'orders/:id',component: OrderDetailComponent, canActivate: [AuthGuard]},
-  {path: 'checkout',component: CheckOutComponent, canActivate: [AuthGuard]},
+  {path: 'user-profile',component: UserProfileComponent},
+  {path: 'orders',component: OrderComponent},
+  {path: 'checkout-successfull',component: CheckoutSuccessfullComponent},
+  {path: 'orders/:id',component: OrderDetailComponent},
+  {path: 'checkout',component: CheckOutComponent},
   {path: '', component: HomeComponent, pathMatch: 'full' },
   {path: 'orders-history', component: OrderHistoryComponent},
   {path: 'verify-email', component: VerifyEmailComponent},
@@ -76,6 +75,7 @@ const routes : Routes = [
     ReviewProductComponent,
     ReviewProductRatingComponent,
     ThongbaoComponent,
+    AuthcallbackComponent,
    
 
     
@@ -88,7 +88,7 @@ const routes : Routes = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
     NgbModule,
-    AdminModule,
+    // AdminModule,
     ToastrModule.forRoot() ,
     BrowserAnimationsModule,
     ModalModule.forRoot()

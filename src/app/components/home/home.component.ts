@@ -55,6 +55,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     
     this.getProducts(this.keyword, this.selectedCategoryId,this.minPrice,this.maxPrice,this.rateStar, this.currentPage, this.itemsPerPage);
+    this.getPriceMaxAndMin();
     this.getCategories();
   }
   ngAfterViewInit(): void {
@@ -62,6 +63,17 @@ export class HomeComponent implements OnInit {
       this.updateSliderValues({ target: { value: this.maxPrice.toString() } });
     }
     
+  }
+
+  getPriceMaxAndMin(){
+    this.productService.getPriceMaxAndMin().subscribe({
+      next: (response:Response) => {
+        if(response.status == "OK"){
+          this.maxPrice = response.data.maxPrice
+          this.minPrice = response.data.minPrice
+        }
+    } 
+  })
   }
   onRatingChange(rating: number): void {
     // Nếu chọn một sao mới, cập nhật giá trị của selectedRating

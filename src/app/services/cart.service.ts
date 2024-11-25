@@ -32,11 +32,9 @@ export class CartService implements OnInit {
   constructor(private http: HttpClient, private tokenService: TokenService, private router: Router) {
     this.cartItems = [];
     this.cartUpdatedSubject.pipe(
-      debounceTime(10000),  // Trì hoãn 1 giây
+      debounceTime(1000),  
       switchMap(() => this.persistCartItems())  // Gọi API lưu giỏ hàng
-    ).subscribe(response => {
-      console.log('Cart saved to API');
-    });
+    ).subscribe();
   }
   ngOnInit(): void {
 
@@ -55,20 +53,17 @@ export class CartService implements OnInit {
         if (Array.isArray(parsedCart) && parsedCart.length != 0) {
           this.cartItems = parsedCart;
           this.computeCartTotals();
-          console.log("Lấy giỏ hàng trong Local Storage");
+          
         }
       } else {
         this.getCartItems().subscribe(data => {
           // Kiểm tra `data` để đảm bảo rằng nó là mảng và không rỗng
           if (data && Array.isArray(data)) {
             this.cartItems = data;
-            console.log("Lấy giỏ hàng từ CSDL");
+           
           } else {
-            console.error('Dữ liệu không hợp lệ:', data);
             this.cartItems = []; // Thiết lập giá trị mặc định nếu dữ liệu không hợp lệ
           }
-          
-  
           this.computeCartTotals(); // Tính tổng cart items sau khi đảm bảo `cartItems` đã được khởi tạo
           this.saveToLocalStorage();
         });
@@ -86,9 +81,8 @@ export class CartService implements OnInit {
     // Xóa giỏ hàng trong localStorage hoặc sessionStorage nếu cần
     this.removeToLocalStorage()
   }
+
   addToCart(theCartItem: CartItem, quantity: number = 1) {
-    
-    
     if(this.cartItems != null ) {
       let existingCartItem = this.cartItems.find(item => item.id === theCartItem.id);
       if (existingCartItem) {
@@ -138,9 +132,7 @@ export class CartService implements OnInit {
       totalQuantityValue += currentCartItem.quantity;
     }
   }
-
     this.totalPrice.next(totalPriceValue);
-
     this.totalQuantity.next(this.cartItems.length);
   }
 
@@ -149,23 +141,23 @@ export class CartService implements OnInit {
     let existingCartItem = this.cartItems.find(item => item.id === theCartItem.id);
     if (existingCartItem) {
       existingCartItem.quantity--;
-    } else {
-      this.remove(theCartItem);
-    }
+    } 
+    // else {
+    //   this.remove(theCartItem);
+    // }
+   
     this.computeCartTotals();
     this.saveToLocalStorage(); // Lưu vào LocalStorage thay vì gọi API ngay lập tức
-    // this.syncCartWithServer();
+    this.cartUpdatedSubject.next(this.cartItems);
   }
 
   remove(theCartItem: CartItem) {
-
     const itemIndex = this.cartItems.findIndex(item => item.id === theCartItem.id);
     if (itemIndex > -1) {
       this.cartItems.splice(itemIndex, 1);
       this.userId = this.tokenService.getUserId();
       this.computeCartTotals()
       this.saveToLocalStorage()
-      
       this.removeFromCart(this.userId, theCartItem.id, theCartItem.quantity).subscribe();
     }
   }
@@ -186,13 +178,14 @@ export class CartService implements OnInit {
   
 
   getCartItems(): Observable<any> {
+    debugger
     this.userId = this.tokenService.getUserId();
   
     // Kiểm tra nếu userId hợp lệ, nếu không trả về mảng rỗng ngay lập tức
     if (!this.userId || this.userId === 0) {
       return of([]); // Trả về mảng rỗng nếu người dùng chưa đăng nhập hoặc userId không hợp lệ
     }
-  
+  debugger
     return this.http.get<Response>(`${this.apiCart}/get/${this.userId}`).pipe(
       map((response: Response) => {
         if (response.status === 'OK') {
@@ -214,7 +207,7 @@ export class CartService implements OnInit {
 
 
   removeFromCart(userId: number, productId: number, quantity: number): Observable<any> {
-    return this.http.delete(`${this.apiCart}/update/${userId}/${productId}/${quantity}`);
+    return this.http.delete(`${this.apiCart}/remove/${userId}/${quantity}`);
   }
 
   clearCartItems() {
@@ -227,7 +220,10 @@ export class CartService implements OnInit {
   }
 
   saveToLocalStorage() {
-    this.storage.setItem(`${environment.cartItems}:${this.userId}`, JSON.stringify(this.cartItems));
+    if(this.userId) {
+      this.storage.setItem(`${environment.cartItems}:${this.userId}`, JSON.stringify(this.cartItems));
+    }
+    
   }
   removeToLocalStorage() {
 

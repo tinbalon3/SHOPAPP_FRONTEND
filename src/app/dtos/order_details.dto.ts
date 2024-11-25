@@ -1,10 +1,7 @@
-export interface OrderDetailsHistoryDTo {
+export interface OrderHistoryDTO {
     id:number;
-    price:number;
-    numberOfProduct:number;
-    totalMoney:number;
+    totalProducts:number;
+    total_money:number;
     status:string;
-    thumbnail:string;
-    name:string;
     orderDate:string;
 }

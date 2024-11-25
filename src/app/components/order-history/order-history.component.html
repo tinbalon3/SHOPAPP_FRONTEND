@@ -17,31 +17,43 @@
         
         <input type="text" placeholder="Tìm kiếm đơn hàng">
           <!-- order item -->
-           <ng-container *ngIf="orderHistory.length > 0">
-            <div  *ngFor="let order of orderHistory" class="ezy__epprofile3_9NBt4sPF-card p-4 mt-4">
+          <ng-container *ngIf="orderHistory.length > 0">
+            <div *ngFor="let order of orderHistory" class="ezy__epprofile3_9NBt4sPF-card p-4 mt-4">
               <div class="row align-items-center">
                 <div class="col-12 col-md-1 text-center mb-4 mb-md-0">
                   <h6 class="mb-0 fw-bold fs-4">#{{order.id}}</h6>
                 </div>
-                <div class="col-12 col-md-2 text-center mb-4 mb-md-0">
-                  <img src="{{order.thumbnail}}" alt="{{order.name}}" class="img-fluid" />
+               
+
+                <div class="col-2 col-md-2 text-center">
+                  <p class="mb-0 fs-5">{{order.totalProducts}} sản phẩm</p>
                 </div>
-                <div class="col-6 col-md-2 text-center">
-                  <h6 class="mb-0 fw-bold fs-4">{{order.name}}</h6>
+                <div class="col-2 col-md-2 text-center">
+                  <h6 class="fw-bold fs-3">{{order.total_money | currency:'VND'}}</h6>
+                
                 </div>
-                <div class="col-6 col-md-2 text-center">
-                  <p class="mb-0 fs-5">{{order.numberOfProduct}} <br />Sản phẩm</p>
+                <div class="col-2 col-md-2 text-center">
+                 
+                  <p class="mb-0">{{timeAgo(order.orderDate)}}</p>
                 </div>
-                <div class="col-6 col-md-3 text-center">
-                  <h6 class="fw-bold fs-3">{{order.totalMoney | currency:'VND'}}</h6>
-                  <p class="mb-0">{{timeAgo(order.orderDate)}}</p> 
-                </div>
-                <div class="col-12 col-md-2 text-center">
+                <div class="col-2 col-md-2 text-center">
                   <h6 class="mb-0 fw-bold fs-4">{{order.status.toUpperCase()}}</h6>
+                 
                 </div>
+                <div class="col-3 col-md-3 text-center">
+                 
+                    <button class="btn btn-primary me-2" routerLink="/orders/{{order.id}}">
+                      Xem chi tiết
+                    </button>
+                   
+                 
+                 
+                </div>
+               
               </div>
             </div>
-           </ng-container>
+          </ng-container>
+          
          
           <ng-container *ngIf="orderHistory.length === 0">
             <p class="text-center order-text-not-found mt-4">Không tìm thấy đơn đặt hàng nào.</p>
@@ -61,7 +73,7 @@
                       <ngb-pagination [(page)]="currentPage"
                                       [pageSize]="itemsPerPage"
                                       [collectionSize]="totalElements"
-                                      (pageChange)="getOrderDetailHistory(statusOrder,currentPage,itemsPerPage)"
+                                      (pageChange)="getOrderHistory(statusOrder,currentPage,itemsPerPage)"
                                       [maxSize]="5"
                                       [boundaryLinks]="true">
 

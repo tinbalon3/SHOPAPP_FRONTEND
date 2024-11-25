@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { OrderDetailsHistoryDTo } from '../dtos/order_details.dto';
+import {  } from '../dtos/order_details.dto';
 import { Purchase } from '../class/purchase';
 import { environment } from '../../enviroments/environment';
 import { Response } from '../response/response';
@@ -36,15 +36,11 @@ export class OrderService {
   deleteOrder(id:number):Observable<Response> {
     return this.http.delete<Response>(`${this.apiOrder}/${id}`);
   }
-  getOrderDetailHistory(id:number,status:string,page:number,limit:number):Observable <Response> {
+  getOrderHistory(id:number,status:string,page:number,limit:number):Observable <Response> {
     let params = new HttpParams()
     .set('status',status.toString())
     .set('page', page.toString())
     .set('limit', limit.toString());
     return this.http.get<Response>(`${this.apiOrder}/order-history/${id}`,{params});
   }
-}
-export interface OrderDetailHistoryResponse {
-  orderDetails: OrderDetailsHistoryDTo[];
-  totalElements: number;
 }

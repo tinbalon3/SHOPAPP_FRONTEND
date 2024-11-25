@@ -3,6 +3,7 @@ import { CartService } from '../../services/cart.service';
 import { TokenService } from '../../services/token.service';
 import { environment } from '../../../enviroments/environment';
 import { NavigationStart, Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-cart-status',
@@ -16,10 +17,13 @@ export class CartStatusComponent implements OnInit{
   storage : Storage  = sessionStorage;
 
 
-  constructor(private cartService: CartService,private router: Router){}
+  constructor(private cartService: CartService,private router: Router,private userService:UserService){}
   ngOnInit(): void {
-    this.cartService.loadCart()
-    this.updateCartStatus();
+    if(this.userService.checkLogin()) {
+      this.cartService.loadCart()
+      this.updateCartStatus();
+    }
+   
    
   }
   updateCartStatus(){

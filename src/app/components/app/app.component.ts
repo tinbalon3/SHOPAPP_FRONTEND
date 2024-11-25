@@ -23,7 +23,7 @@ ngOnInit(): void {
  const token = this.tokenService.getTokenFromCookie();
 
  if(refreshToken && token == null) {
-    alert("Bị lỗi refreshTOken")
+    
  }
   
 }

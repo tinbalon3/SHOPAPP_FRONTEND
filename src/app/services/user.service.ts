@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { RegisterDTO } from '../dtos/register.dto';
 import { LoginDTO } from '../dtos/login.dto';
 
@@ -10,7 +10,6 @@ import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { environment } from '../../enviroments/environment';
 ;
 import { Response } from '../response/response';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 import { CartService } from './cart.service';
 import { Router } from '@angular/router';
@@ -22,9 +21,10 @@ export class UserService implements OnInit {
   private apiRegister = environment.apiBaseUrl + '/users/register';
   private apiGetAllUser = environment.apiBaseUrl + '/users';
   private apiLogin = environment.apiBaseUrl + '/users/login';
+  private apiLoginGoogle = environment.apiBaseUrl + '/users/googleLogin';
   private apiUserDetails = environment.apiBaseUrl + '/users/details'
-  private refreshTokenUrl = environment.apiBaseUrl + '/users/refreshToken';
-  private apiRevokeToken = environment.apiBaseUrl + "/users/revoke-token"
+  private refreshTokenUrl = environment.apiBaseUrl + '/token/refreshToken';
+  private apiRevokeToken = environment.apiBaseUrl + "/token/revoke-token"
   private apiSendCode = environment.apiBaseUrl + "/users/send-verification-code"
   private apiSendEmailCode = environment.apiBaseUrl + "/users/send-verification-email-code"
   private apiVerifyCode = environment.apiBaseUrl + "/users/verify";
@@ -33,7 +33,6 @@ export class UserService implements OnInit {
   private apiBlockUser = environment.apiBaseUrl + "/users/blockOrEnable"
   private apiResetPassword = environment.apiBaseUrl + "/users/reset-password"
   private apiCallbackAuth = environment.apiBaseUrl + "/users/auth/callback"
-  private isRefreshing = false;
   private apiConfig = {
     headers: this.createHeaders()
   }
@@ -51,20 +50,20 @@ export class UserService implements OnInit {
     private cookieService: CookieService,
     private cartService: CartService,
     private router: Router
-
+   
   ) { }
   ngOnInit(): void {
-    // const storedTimeout = localStorage.getItem('refreshTokenTimeout');
-    // if (storedTimeout) {
-    //   this.refreshTokenTimeout = window.setTimeout(() => {
-    //     const refreshToken = this.tokenService.getRefreshTokenFromCookie();
-    //     if (refreshToken) {
-    //       this.refreshToken(refreshToken).subscribe();
-    //     }
-    //   }, +storedTimeout);
-    // }
+    
   }
-
+  loginWithGoogle():Observable<Response> {
+    return this.http.get<Response>(this.apiLoginGoogle)
+  }
+  isLogin(){
+    return localStorage.setItem("isLogin",true+'');
+  }
+  checkLogin(){
+    return localStorage.getItem("isLogin");
+  }
   getAllUser(): Observable<Response> {
     return this.http.get<Response>(this.apiGetAllUser)
   }
@@ -73,51 +72,24 @@ export class UserService implements OnInit {
   }
 
   logout(): Observable<Response> {
-    const refreshToken = this.tokenService.getRefreshTokenFromCookie(); // Lấy token từ localStorage hoặc sessionStorage
+    const refreshToken = this.tokenService.getRefreshTokenFromCookie(); // Lấy refreshToken từ cookie
     return this.http.post<Response>(`${this.apiRevokeToken}`, { "refreshToken": refreshToken })
   }
+  
   login(loginDTO: LoginDTO): Observable<Response> {
     return this.http.post<Response>(this.apiLogin, loginDTO, this.apiConfig);
   }
 
-  private refreshTokenTimeout?: number;
-
-  private startRefreshTokenTimer(user: any) {
-    const jwtToken = user.data.token;
-    const refreshToken = user.data.refresh_token;
-    const expires = this.tokenService.getTokenExpiration(jwtToken);
-
-    if (!expires) {
-      console.error('Token expiration time is undefined.');
-      return;
-    }
-
-    // Calculate and store timeout in localStorage
-    const timeout = expires.getTime() - Date.now() - (60 * 1000);
-    localStorage.setItem('refreshTokenTimeout', timeout.toString());
-
-    this.refreshTokenTimeout = window.setTimeout(() => {
-      if (!this.isRefreshing) { // To prevent multiple refresh calls
-        this.isRefreshing = true;
-        this.refreshToken(refreshToken).subscribe({
-          next: () => {
-            console.error("Token refreshed successfully");
-            this.isRefreshing = false;
-          },
-          error: error => {
-            console.error('Token refresh failed', error);
-            this.cookieService.delete('token', '/', 'localhost', true, 'Strict');
-            this.cookieService.delete('refresh_token', '/', 'localhost', true, 'Strict');
-            this.removeUserDetail();
-            this.stopRefreshTokenTimer();
-            this.cartService.resetCart();
-            this.router.navigate(['/login'])
-          }
-        });
-      }
-    }, timeout);
+  handleLogout() {
+    debugger
+    this.cartService.resetCart();
+    this.cookieService.delete('token');
+    this.cookieService.delete('refresh_token');
+    this.cookieService.delete('refresh_token_expire');
+    this.removeUserDetailInLocal()
+    localStorage.removeItem('isLogin')
+    this.router.navigate(['/login']);
   }
-
   refreshToken(refreshToken: string): Observable<Response> {
     return this.http.post<Response>(`${this.refreshTokenUrl}`, { 'refreshToken': refreshToken })
       .pipe(
@@ -125,20 +97,19 @@ export class UserService implements OnInit {
 
           this.tokenService.setTokenInCookie(authResponse.data.token);
           this.tokenService.setRefreshTokenInCookie(authResponse.data.refresh_token);
-          this.startRefreshTokenTimer(authResponse);
-          return authResponse.data.token;
+          this.tokenService.setExpiredRefreshTokenInCookie(authResponse.data.refresh_token_expired);
+          return authResponse;
         })
       );
   }
 
-  stopRefreshTokenTimer() {
-    if (this.refreshTokenTimeout) {
-      clearTimeout(this.refreshTokenTimeout);
-    }
-  }
+ 
 
-  removeUserDetail() {
+  removeUserDetailInSession() {
     sessionStorage.removeItem(this.USER_KEY);
+  }
+  removeUserDetailInLocal() {
+    localStorage.removeItem('user');
   }
   getUserDetails(token: string): Observable<Response> {
 
@@ -153,7 +124,8 @@ export class UserService implements OnInit {
   }
 
 
-  sendVerificationCode(userId: number, token: string): Observable<Response> {
+  sendVerificationCode(userId: number): Observable<Response> {
+    
     return this.http.get<Response>(`${this.apiSendCode}/${userId}`)
   }
 
@@ -167,29 +139,14 @@ export class UserService implements OnInit {
     });
   }
   updatePassword(token: string, id: number, password: string, retype_password: string): Observable<Response> {
-    return this.http.put<Response>(`${this.apiUpdatePassword}/${id}`, { 'password': password, "retype_password": retype_password }, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      })
-    });
+    return this.http.put<Response>(`${this.apiUpdatePassword}/${id}`, { 'password': password, "retype_password": retype_password });
   }
-  sendVerificationEmailCode(userId: number, token: string, email: string): Observable<Response> {
+  sendVerificationEmailCode(userId: number, email: string): Observable<Response> {
 
-    return this.http.post<Response>(`${this.apiSendEmailCode}/${userId}`, { 'email': email }, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      })
-    });
+    return this.http.post<Response>(`${this.apiSendEmailCode}/${userId}`,{'email':email});
   }
-  updateEmail(token: string, id: number, email: string): Observable<Response> {
-    return this.http.put<Response>(`${this.apiUpdateEmail}/${id}`, { 'email': email }, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      })
-    });
+  updateEmail(id: number, email: string): Observable<Response> {
+    return this.http.put<Response>(`${this.apiUpdateEmail}/${id}`, { 'email': email });
 
   }
 
@@ -199,7 +156,7 @@ export class UserService implements OnInit {
         return;
       }
       const userResponseJSON = JSON.stringify(userResponse);
-      sessionStorage.setItem(this.USER_KEY, userResponseJSON);
+      localStorage.setItem(this.USER_KEY, userResponseJSON);
 
     }
     catch (e) {

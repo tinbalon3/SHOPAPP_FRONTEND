@@ -59,7 +59,9 @@ export class UserProfileComponent implements OnInit {
         
       },
       error: (e) => {
-        console.log(e.message)
+       
+        
+        this.userService.handleLogout()
       }
     })
 
@@ -274,17 +276,17 @@ export class UserProfileComponent implements OnInit {
     this.isLoading = true
 
     const userId = this.tokenService.getUserId();
-    const token = this.tokenService.getTokenFromCookie()
-    const message = 'Mã xác thực đã được gửi qua email của bạn!';
-    this.toastr.success(message, "Đang tiến hành gửi", {
-      timeOut: 2000
-    });
-    if (token) {
+    console.log(userId);
+    
+  
       if (type == 'password') {
-        this.userService.sendVerificationCode(userId, token).subscribe({
+        console.log(123);
+        
+        this.userService.sendVerificationCode(userId).subscribe({
           next: (response: Response) => {
             this.isLoading = false
-
+            console.log(response);
+            
             if (response.status == "OK") { // Kiểm tra response không null
               this.isSuccessVerifyCode = true
               this.isSuccessSendCode = true;
@@ -323,9 +325,11 @@ export class UserProfileComponent implements OnInit {
       }
       if (type == 'email') {
         
-        this.userService.sendVerificationEmailCode(userId, token, this.email_new).subscribe({
+        this.userService.sendVerificationEmailCode(userId, this.email_new).subscribe({
           next: (response: Response) => {
             this.isLoading = false
+            console.log(response);
+            
             if (response.status == "OK") { // Kiểm tra response không null
               this.isChangeEmail = false;
               this.isSuccessSendEmailCode = true;
@@ -361,7 +365,7 @@ export class UserProfileComponent implements OnInit {
         });
       }
 
-    }
+    
   }
   verifyEmailCode() {
     this.isLoading = true
@@ -370,9 +374,8 @@ export class UserProfileComponent implements OnInit {
       next: (response: Response) => {
         this.isLoading = false
         if (response.status == "OK") {
-          let token = this.tokenService.getTokenFromCookie()!;
           let userId = this.tokenService.getUserId()!;
-          this.userService.updateEmail(token, userId, this.email_new).subscribe({
+          this.userService.updateEmail(userId, this.email_new).subscribe({
             next: (response: Response) => {
               if (response.status == "OK") {
                 this.isSuccessSendEmailCode = false;

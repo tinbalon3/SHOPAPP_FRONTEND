@@ -9,9 +9,9 @@ import { RoleService } from '../../services/role.service';
 import { Role } from '../../models/role.interface';
 import { UserDetailResponse } from '../../response/user/user.response';
 import { environment } from '../../../enviroments/environment';
-import { AppConstants } from '../common/app.constant';
 import { Response } from '../../response/response';
 import { ToastrService } from 'ngx-toastr';
+import { AppConstants } from '../../common/app.constant';
 
 @Component({
   selector: 'app-login',
@@ -47,6 +47,9 @@ export class LoginComponent {
     });
     // Gọi API lấy danh sách roles và lưu vào biến roles
   
+   
+  }
+  getRoles(){
     this.roleService.getRoles().subscribe({
       next: (roles: Response) => { // Sử dụng kiểu Role[]
       
@@ -54,8 +57,9 @@ export class LoginComponent {
         this.loginForm.controls['user'].value.role = roles.data.length > 0 ? roles.data[0] : undefined;
       },
       error: (error: any) => {
-     
-        const message = error.error.message;
+        console.log(error);
+        
+        const message = error.data.message;
         this.toastr.error(message, "LỖI", {
           timeOut: 2000
         });
@@ -67,8 +71,18 @@ export class LoginComponent {
   
   loginWithGoogle(): void {
     // Điều hướng đến URL OAuth của server
+    this.userService.loginWithGoogle().subscribe({
+      next:(response:Response) => {
+        window.location.href = response.data;
+      }
+      ,
+      
+      error:(error) => {
+        console.error("Failed to initiate Google login", error);
+      }
+    }
     
-    window.location.href = this.googleURL;
+    )
   }
 
   login() {
@@ -76,36 +90,38 @@ export class LoginComponent {
     const loginDTO: LoginDTO = {
       user_name: this.loginForm.controls['user'].value.user_name,
       password: this.loginForm.controls['user'].value.password,
-      role_id: this.loginForm.controls['user'].value.role ?? 1,
-      remember_me: !!this.loginForm.controls['user'].value.rememberMe
+      // role_id: this.loginForm.controls['user'].value.role.id ?? 1,
+      // remember_me: !!this.loginForm.controls['user'].value.rememberMe
     };
   
-   
     
     this.userService.login(loginDTO).subscribe({
       next: (response:Response) => {
-    
+      console.log(response);
+      
+        this.userService.isLogin()
         const token = response.data.token;
         const refresh_token = response.data.refresh_token;
-  
+        const expiredDate = new Date(response.data.refresh_token_expired);
         // Đặt token và refresh token vào cookie
         this.tokenService.setTokenInCookie(token);
         this.tokenService.setRefreshTokenInCookie(refresh_token);
-  
+        this.tokenService.setExpiredRefreshTokenInCookie(expiredDate)
+        
         // Gọi API lấy chi tiết người dùng
-        this.getUserDetailsAndNavigate(token,  loginDTO.remember_me);
+        this.getUserDetailsAndNavigate(token);
       },
       error: (error) => {
         
-        const message = error.error.message;
-        this.toastr.error(message, "LỖI", {
+       
+        this.toastr.error("Tên đăng nhập hoặc mật khẩu không đúng.", "LỖI", {
           timeOut: 2000
         });
       }
     });
   }
   
-  getUserDetailsAndNavigate(token: string, rememberMe: boolean) {
+  getUserDetailsAndNavigate(token: string) {
     this.userService.getUserDetails(token).subscribe({
       next: (userResponse:Response) => {
         this.userResponse = {
@@ -114,15 +130,16 @@ export class LoginComponent {
         };
   
         // Lưu trữ chi tiết người dùng dựa trên tùy chọn "remember me"
-        if (rememberMe) {
-          // Lưu trữ lâu dài
-          this.userService.saveUserDetailToLocalStorage(this.userResponse);
-        }
-        else {
+        // if (rememberMe) {
+        //   // Lưu trữ lâu dài
+        //   this.userService.saveUserDetailToLocalStorage(this.userResponse);
+        // }
+        // else {
           this.userService.saveUserDetailToSessionStorage(this.userResponse);
-        }
+        // }
         // Điều hướng dựa trên vai trò người dùng
-        this.navigateBasedOnUserRole(userResponse.data.role_id.name);
+        // this.navigateBasedOnUserRole(userResponse.data.role_id.name);
+        this.router.navigate(['/']);
       },
       error: (error) => {
         const message = error.error.message;

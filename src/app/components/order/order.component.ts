@@ -26,7 +26,7 @@ export class OrderComponent implements OnInit {
   couponCode: string = '';
   totalProduct: number = 0;
   isApplyCoupon = false;
-  sessionStorage : Storage = sessionStorage
+  localstorage : Storage = localStorage
   orderData: Order = {
     id: 0,
     user_id: 0,
@@ -68,6 +68,7 @@ export class OrderComponent implements OnInit {
     })
     
     
+    
     this.cdr.detectChanges();
   }
 
@@ -81,25 +82,28 @@ export class OrderComponent implements OnInit {
 
   }
   handleCartItems() {
-  
+  debugger
     if (this.storage.getItem(`${environment.cartItems}:${ this.orderData.user_id}`) != null) {
+      console.log(123);
+      
       this.cartItems = JSON.parse(this.storage.getItem(environment.cartItems)!);
       this.cartItems = this.cartService.cartItems.map(item => ({
         ...item,
         thumbnail: `${environment.apiBaseUrl}/products/images/${item.thumbnail}`
       }));
-
     }
-    else
-    {
+    else {
+      
       this.cartService.getCartItems().subscribe(
         data => {
-         
           this.cartItems = data;
           this.cartItems = this.cartService.cartItems.map(item => ({
             ...item,
             thumbnail: `${environment.apiBaseUrl}/products/images/${item.thumbnail}`
           }));
+          if(this.cartItems.length == 0){
+            this.isApplyCoupon = true;
+          }
         }
       )
     }
@@ -138,7 +142,7 @@ export class OrderComponent implements OnInit {
       this.cartItems.splice(itemIndex, 1);
     }
   }
-  remove(cartItem: CartItem) {
+  removeItem(cartItem: CartItem) {
     this.cartService.remove(cartItem)
     this.spliceItem(cartItem);
     this.storage.setItem(environment.cartItems, JSON.stringify(this.cartItems));
@@ -161,28 +165,46 @@ export class OrderComponent implements OnInit {
    if(!this.isApplyCoupon) {
     this.cartService.updateTotalPrice(0);
    }
-   this.sessionStorage.setItem("isApplyCoupon",this.isApplyCoupon+'')
+   this.localstorage.setItem("isApplyCoupon",this.isApplyCoupon+'')
+   this.localstorage.setItem("couponName",this.couponCode)
     this.router.navigate(['/checkout']);
   }
 
   applyCoupon() {
     this.isApplyCoupon = true;
-    let couponCode = this.couponCode;
-    let totalAmount = this.totalAmount;
-    this.couponService.applyCoupon(couponCode, totalAmount).subscribe({
-      next: (response: Response) => {
-        this.totalAmount = response.data;
-        this.cartService.updateTotalPrice(this.totalAmount);
-      },
-      error: (err: any) => {
-        const message = err.error.message;
+    if(this.cartItems.length != 0) {
+      const couponCode = this.couponCode;
+      const totalAmount = this.totalAmount;
+    
+      this.couponService.applyCoupon(couponCode, totalAmount).subscribe({
+        next: (response: any) => {
+          this.totalAmount = this.totalAmount - response.data ; // Cập nhật tổng số tiền sau giảm giá
+          this.cartService.updateTotalPrice(this.totalAmount);
+    
+          // Thông báo thành công
+          this.toastr1.success(`Mã giảm giá được áp dụng! Bạn được giảm ${response.data}`, 'Thành công', {
+            timeOut: 2000,
+          });
+        },
+        error: (err: any) => {
+          const message = err.error.message;
+    
+          // Thông báo lỗi
+          this.toastr1.error(message, 'Thất bại', {
+            timeOut: 2000,
+          });
+    
+          // Cho phép nhập lại nếu áp dụng thất bại
+          this.isApplyCoupon = false;
+        },
+      });
+    }
+    
+   
+  }
   
-        // Hiển thị thông báo thành công hoặc lỗi
-        this.toastr1.error(message, 'Xác thực thành công', {
-          timeOut: 2000
-        });
-  
-      },
-    });
-}
+  // Reset trạng thái khi nhập lại mã giảm giá
+  onCouponInput() {
+    this.isApplyCoupon = false;
+  }
 }
