@@ -192,7 +192,7 @@ export class UserProfileComponent implements OnInit {
       this.isLoading = true
       let token = this.tokenService.getTokenFromCookie()!;
       let userId = this.tokenService.getUserId()!;
-      this.userService.updatePassword(token, userId, this.password_new, this.password_new_check).subscribe({
+      this.userService.updatePassword(userId, this.password_new, this.password_new_check).subscribe({
         next: (response: Response) => {
           if (response.status == "OK") {
             this.isLoading = false

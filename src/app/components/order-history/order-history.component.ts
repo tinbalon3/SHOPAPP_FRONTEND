@@ -80,16 +80,15 @@ throw new Error('Method not implemented.');
         
         if(response.data == null){
           this.orderHistory = [];
+        
           return;
         }
         this.orderHistory = response.data.orderDetails;
         this.totalElements = response.data.totalElements;
       },
-      complete: () => {
-
-      },
+     
       error: (e) => {
-        console.log(e.message)
+        console.log(e.error.message)
       }
     })
   }

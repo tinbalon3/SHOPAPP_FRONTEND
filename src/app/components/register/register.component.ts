@@ -34,15 +34,16 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       user: this.formBuilder.group({
-        phoneNumber: new FormControl('0999999298', [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
-        email: new FormControl('tinbalon3@gmail.com', [Validators.required, Validators.email, ShopValidators.notOnlyWhitespace]),
-        password: new FormControl('123456', [Validators.required, Validators.minLength(3), ShopValidators.notOnlyWhitespace]),
-        retypePassword: new FormControl('123456', [Validators.required, Validators.minLength(3), ShopValidators.notOnlyWhitespace]),
-        fullname: new FormControl('testcase1', [Validators.required, ShopValidators.notOnlyWhitespace]),
-        address: new FormControl('testcase1', Validators.required),
+        phoneNumber: new FormControl('', [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
+        email: new FormControl('', [Validators.required, ShopValidators.strictEmailValidator, ShopValidators.notOnlyWhitespace]),
+        password: new FormControl('', [Validators.required, Validators.minLength(6), ShopValidators.notOnlyWhitespace]),
+        retypePassword: new FormControl('', [Validators.required, Validators.minLength(6), ShopValidators.notOnlyWhitespace]),
+        fullname: new FormControl('', [Validators.required,Validators.minLength(3), ShopValidators.notOnlyWhitespace,ShopValidators.containsAlphabet,ShopValidators.usernameValidator]),
+        address: new FormControl(''),
         dateOfBirth: new FormControl('2003-05-13', ShopValidators.minAge(18)),
-        isAccepted: new FormControl(true, Validators.required)
-      }, { validator: ShopValidators.checkvaluesmatch('password', 'retypePassword') }) // Move the validator here
+        isAccepted: new FormControl(false, [Validators.requiredTrue])
+      }, 
+      { validator: ShopValidators.checkvaluesmatch('password', 'retypePassword') }) // Move the validator here
     });
   }
 
@@ -61,6 +62,7 @@ export class RegisterComponent implements OnInit {
   get address() { return this.registerForm.get('user.address'); }
   get dateOfBirth() { return this.registerForm.get('user.dateOfBirth'); }
   get email() { return this.registerForm.get('user.email'); }
+  get isAccepted() { return this.registerForm.get('user.isAccepted'); }
 
   startCountdown() {
     const countdownInterval = setInterval(() => {
@@ -73,6 +75,7 @@ export class RegisterComponent implements OnInit {
       }
     }, 1000); // Đếm ngược mỗi giây
   }
+
   register() {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
@@ -106,7 +109,8 @@ export class RegisterComponent implements OnInit {
     this.isResendDisabled = true;        // Vô hiệu hóa nút gửi lại
     this.startCountdown();      
     this.userService.register(register).subscribe({
-      next: (response: any) => {
+      next: (response: Response) => {
+        
         this.isSuccessSendEmailCode = true
         this.isLoading = false
         const message = 'Mã xác thực đã được gửi qua email của bạn!';
@@ -116,7 +120,8 @@ export class RegisterComponent implements OnInit {
       },
 
       error: (error: any) => {
-        const message = error.message;
+       
+        const message = error.error.message;
         this.toastr.error(message, "LỖI", {
           timeOut: 2000
         });
@@ -138,9 +143,6 @@ export class RegisterComponent implements OnInit {
   isVerifyEnabled(): boolean {
     return this.otp.every(num => num != '');
   }
-
-
-
 
   verifyEmailCode() {
     this.isLoading = true

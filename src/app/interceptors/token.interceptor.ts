@@ -16,7 +16,7 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(
     private tokenService: TokenService,
     private userService: UserService,
-    private router: Router
+    
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -26,20 +26,26 @@ export class TokenInterceptor implements HttpInterceptor {
     if (token) {
       authReq = this.addTokenHeader(req, token);  // Add token if available
     }
-
+    else{
+      authReq = req;
+    }
+   
     return next.handle(authReq).pipe(
       catchError((error) => {
+       alert(error.status)
         if (error instanceof HttpErrorResponse && error.status === 0) {
+          console.log(error);
+          
           return this.handle401Error(req, next);  // Handle 401 error
         }
-        this.userService.handleLogout();
+        // this.userService.handleLogout();
         return throwError(() =>  error);  // Return the error if not 401
       })
     );
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-  
+   
     if (!this.isRefreshingToken) {
       this.isRefreshingToken = true;
 

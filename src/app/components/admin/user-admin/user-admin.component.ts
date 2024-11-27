@@ -32,30 +32,30 @@ export class UserAdminComponent implements OnInit {
       }
     })
   }
-  resetPasswordUser(id: number) {
-    this.isLoading = true;
-    this.userService.resetPasswordUser(id).subscribe({
-      next: (response: Response) => {
-        this.isLoading=false;
-        let message = response.message
-        this.toastr.success(message, "THÀNH CÔNG", {
-          timeOut: 2000
-        })
-      },
-      error: (err: any) => {
-        this.isLoading = false;
-        if (err.status === 400) {
-          // Truy cập thông điệp lỗi từ backend
-          const errorMessage = err.error.message || 'Có lỗi xảy ra';
+  // resetPasswordUser(id: number) {
+  //   this.isLoading = true;
+  //   this.userService.resetPasswordUser(id).subscribe({
+  //     next: (response: Response) => {
+  //       this.isLoading=false;
+  //       let message = response.message
+  //       this.toastr.success(message, "THÀNH CÔNG", {
+  //         timeOut: 2000
+  //       })
+  //     },
+  //     error: (err: any) => {
+  //       this.isLoading = false;
+  //       if (err.status === 400) {
+  //         // Truy cập thông điệp lỗi từ backend
+  //         const errorMessage = err.error.message || 'Có lỗi xảy ra';
          
 
-          this.toastr.error(errorMessage, "THẤT BẠI", {
-            timeOut: 2000
-          });
-        }
-      }
-    })
-  }
+  //         this.toastr.error(errorMessage, "THẤT BẠI", {
+  //           timeOut: 2000
+  //         });
+  //       }
+  //     }
+  //   })
+  // }
   blockOrEnableUSer(id: number,active:number) {
     this.userService.blockOrEnableUser(id,active).subscribe({
       next: (response: Response) => {

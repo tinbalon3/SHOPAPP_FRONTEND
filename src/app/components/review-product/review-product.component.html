@@ -4,16 +4,16 @@
       <div class="col-12 col-lg-10 col-xl-8">
         <div class="card ezy__epreview4-card mb-3">
           <div class="card-body p-md-4">
-           
+
 
             <div class="d-flex flex-wrap align-items-center">
               <span class="fs-1">{{ getFullStars(theCartItem) }}</span>
               <span class="ezy__epreview4-rating ms-2">
                 <ng-container *ngFor="let star of [].constructor(5); let i = index">
-                 
+
                   <i [ngClass]="getStarClasses(theCartItem, i)"></i>
-                    
-                 </ng-container>
+
+                </ng-container>
               </span>
 
             </div>
@@ -32,10 +32,8 @@
                   </div>
                   <div class="col-6">
                     <div class="progress">
-                      <div class="progress-bar" role="progressbar"
-                           [style.width.%]="getRatingPercentage(star)"
-                           aria-valuenow="{{ getRatingPercentage(star) }}"
-                           aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar" role="progressbar" [style.width.%]="getRatingPercentage(star)"
+                        aria-valuenow="{{ getRatingPercentage(star) }}" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                   <div class="col">
@@ -45,9 +43,9 @@
                   </div>
                 </div>
               </ng-container>
-              
-              
-              
+
+
+
             </div>
           </div>
           <hr class="ezy__epreview4-hr my-0" />
@@ -80,9 +78,9 @@
                             <ng-container *ngFor="let star of [].constructor(5); let i = index">
                               <i [ngClass]="getStarUserClasses(rating.rating.rating, i)"></i>
                             </ng-container>
-                            
+
                           </span>
-                        
+
                           <span class="mx-1">{{rating.rating.rating}}</span>
                         </p>
                       </div>
@@ -115,7 +113,9 @@
 
           </div>
           <div class="card-body py-4 py-lg-5 text-center">
-            <button class="btn ezy__epreview4-btn px-4 px-md-5" (click)="loadMore()">Load More</button>
+            <button class="btn ezy__epreview4-btn px-4 px-md-5" (click)="loadMore()" *ngIf="isLoadMoreVisible()">
+              Tải thêm
+            </button>
           </div>
         </div>
       </div>

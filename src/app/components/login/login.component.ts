@@ -20,7 +20,7 @@ import { AppConstants } from '../../common/app.constant';
 })
 export class LoginComponent {
   loginForm!: FormGroup;
-
+  
   googleURL = AppConstants.GOOGLE_AUTH_URL;
   roles: Role[] = []; // Mảng roles
 
@@ -97,7 +97,7 @@ export class LoginComponent {
     
     this.userService.login(loginDTO).subscribe({
       next: (response:Response) => {
-      console.log(response);
+      
       
         this.userService.isLogin()
         const token = response.data.token;
@@ -120,7 +120,7 @@ export class LoginComponent {
       }
     });
   }
-  
+ 
   getUserDetailsAndNavigate(token: string) {
     this.userService.getUserDetails(token).subscribe({
       next: (userResponse:Response) => {
@@ -132,10 +132,10 @@ export class LoginComponent {
         // Lưu trữ chi tiết người dùng dựa trên tùy chọn "remember me"
         // if (rememberMe) {
         //   // Lưu trữ lâu dài
-        //   this.userService.saveUserDetailToLocalStorage(this.userResponse);
+          this.userService.saveUserDetailToLocalStorage(this.userResponse);
         // }
         // else {
-          this.userService.saveUserDetailToSessionStorage(this.userResponse);
+          // this.userService.saveUserDetailToSessionStorage(this.userResponse);
         // }
         // Điều hướng dựa trên vai trò người dùng
         // this.navigateBasedOnUserRole(userResponse.data.role_id.name);

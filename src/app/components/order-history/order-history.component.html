@@ -15,7 +15,7 @@
           </nav>
           
         
-        <input type="text" placeholder="Tìm kiếm đơn hàng">
+       
           <!-- order item -->
           <ng-container *ngIf="orderHistory.length > 0">
             <div *ngFor="let order of orderHistory" class="ezy__epprofile3_9NBt4sPF-card p-4 mt-4">
@@ -55,10 +55,12 @@
           </ng-container>
           
          
-          <ng-container *ngIf="orderHistory.length === 0">
-            <p class="text-center order-text-not-found mt-4">Không tìm thấy đơn đặt hàng nào.</p>
+          <ng-container *ngIf="this.orderHistory.length === 0 && isActive === 0">
+            <p class="text-center order-text-not-found mt-4">Bạn chưa có đơn hàng nào.</p>
           </ng-container>
-         
+          <ng-container *ngIf="this.orderHistory.length === 0 && isActive !== 0">
+            <p class="text-center order-text-not-found mt-4">Không tìm thấy đơn hàng phù hợp với bộ lọc.</p>
+          </ng-container>
         </div>
       </div>
     </div>

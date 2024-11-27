@@ -49,7 +49,7 @@
         <div class="col-md-6"  *ngIf="orderDetailRequest">
           <div class="mb-3">
             <label for="total_money">Tổng tiền:</label>
-            <input type="text" id="total_money" class="form-control" [value]="totalAmount | currency" readonly>
+            <input type="text" id="total_money" class="form-control" [value]="orderDetailRequest.total_money| currency" readonly>
           </div>
           <div class="mb-3">
             <label for="payment_method">Phương thức thanh toán:</label>
@@ -100,10 +100,7 @@
         </table>
       </div>
       
-      <!-- Nút lưu thay đổi -->
-      <div class="mt-4">
-        <button type="submit" (click)="updateOrder(orderDetailRequest.id)" class="btn btn-primary">Lưu Thay Đổi</button>
-      </div>
+    
   </div>
 
    <!-- <app-review-product *ngIf="theCartItem" [theCartItem]="theCartItem"></app-review-product> -->

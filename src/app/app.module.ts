@@ -33,10 +33,12 @@ import { ThongbaoComponent } from './components/thongbao/thongbao.component';
 import { AuthcallbackComponent } from './components/authcallback/authcallback.component';
 import { AuthGuard } from './guard/auth.guard';
 import {  OrderDetailComponent } from './components/order-detail/order-detail-admin.component';
+import { ForgotpasswordComponent } from './components/forgotpassword/forgotpassword.component';
 
 const routes : Routes = [
 
   {path: 'login', component: LoginComponent},
+  {path: 'forgot-password', component: ForgotpasswordComponent},
   {path: 'auth/callback/google', component: AuthcallbackComponent},
   {path: 'thongbao', component: ThongbaoComponent},
   {path: 'register',component: RegisterComponent},
@@ -76,6 +78,7 @@ const routes : Routes = [
     ReviewProductRatingComponent,
     ThongbaoComponent,
     AuthcallbackComponent,
+    ForgotpasswordComponent,
    
 
     

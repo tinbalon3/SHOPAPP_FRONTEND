@@ -106,20 +106,39 @@ export class DetailProductComponent implements OnInit {
     this.quantity++;
     if(this.quantity > this.product!.stock){
       this.quantity = this.product!.stock
-      this.toastr.error("Quá số lượng tồn kho","THÔNG BÁO",{
-        timeOut: 2000
-      })
+      // this.toastr.error("Quá số lượng tồn kho","THÔNG BÁO",{
+      //   timeOut: 2000
+      // })
     }
     this.theCartItem.quantity = this.quantity;
 
   }
-  
+ 
   addToCart() {
+    let isLogin = localStorage.getItem("isLogin")
+    if (isLogin == "true") {
+      
     this.cartService.addToCart(this.theCartItem,this.quantity);
+    }
+    else{
+      this.toastr.info("Bạn cần đăng nhập để mua hàng","THÔNG BÁO",{
+        timeOut: 2000
+      })
+      this.routerNavigate.navigate(['/login'])
+    }
   }
   buyNow(){
+    let isLogin = localStorage.getItem("isLogin")
+    if (isLogin == "true") {
     this.cartService.addToCart(this.theCartItem,this.quantity);
     this.routerNavigate.navigate(['/orders'])
+    }
+    else{
+      this.toastr.info("Bạn cần đăng nhập để mua hàng","THÔNG BÁO",{
+        timeOut: 2000
+      })
+      this.routerNavigate.navigate(['/login'])
+    }
   }
   getTotal(){
     return this.quantity * this.product?.price!;

@@ -13,6 +13,7 @@ import { Response } from '../response/response';
 import { CookieService } from 'ngx-cookie-service';
 import { CartService } from './cart.service';
 import { Router } from '@angular/router';
+import { Toast, ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class UserService implements OnInit {
   private apiSendCode = environment.apiBaseUrl + "/users/send-verification-code"
   private apiSendEmailCode = environment.apiBaseUrl + "/users/send-verification-email-code"
   private apiVerifyCode = environment.apiBaseUrl + "/users/verify";
-  private apiUpdatePassword = environment.apiBaseUrl + "/users/update_password"
+  private apiUpdatePassword = environment.apiBaseUrl + "/users/update-password"
   private apiUpdateEmail = environment.apiBaseUrl + "/users/update_email"
   private apiBlockUser = environment.apiBaseUrl + "/users/blockOrEnable"
   private apiResetPassword = environment.apiBaseUrl + "/users/reset-password"
@@ -49,7 +50,8 @@ export class UserService implements OnInit {
     private tokenService: TokenService,
     private cookieService: CookieService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
    
   ) { }
   ngOnInit(): void {
@@ -81,7 +83,9 @@ export class UserService implements OnInit {
   }
 
   handleLogout() {
-    debugger
+    this.toastr.info("Hết hạn đăng nhập. Vui lòng đăng nhập lại","THÔNG BÁO",{
+      timeOut: 2000,
+    });
     this.cartService.resetCart();
     this.cookieService.delete('token');
     this.cookieService.delete('refresh_token');
@@ -138,8 +142,8 @@ export class UserService implements OnInit {
       // Đảm bảo observe là một phần của cùng một đối tượng
     });
   }
-  updatePassword(token: string, id: number, password: string, retype_password: string): Observable<Response> {
-    return this.http.put<Response>(`${this.apiUpdatePassword}/${id}`, { 'password': password, "retype_password": retype_password });
+  updatePassword( userId: number, password: string, retype_password: string): Observable<Response> {
+    return this.http.put<Response>(`${this.apiUpdatePassword}`, {"userId": userId, 'password': password, "retype_password": retype_password });
   }
   sendVerificationEmailCode(userId: number, email: string): Observable<Response> {
 
@@ -210,6 +214,7 @@ export class UserService implements OnInit {
     }
     return null;
   }
+
   updateUser(token: string, updateUserDTO: UpdateUserDTO): Observable<any> {
     let userId = this.tokenService.getUserId();
     return this.http.put(`${this.apiUserDetails}/${userId}`, updateUserDTO, {
@@ -223,8 +228,9 @@ export class UserService implements OnInit {
   blockOrEnableUser(id: number, active: number): Observable<any> {
     return this.http.put(`${this.apiBlockUser}/${id}/${active}`, null)
   }
-  resetPasswordUser(id: number): Observable<any> {
-    return this.http.put(`${this.apiResetPassword}/${id}`, null)
+
+  resetPasswordUser(email: string): Observable<Response> {
+    return this.http.put<Response>(`${this.apiResetPassword}`, {'email': email})
   }
 
 }

@@ -121,15 +121,23 @@ export class ReviewProductComponent {
         // Chỉ lấy số lượng đánh giá theo giới hạn đã chỉ định
         this.displayedRatings = this.ratings.slice(0, this.limit);
         this.calculateRatingCounts();
+        
       }
+    
+      
     });
+
   }
   
   loadMore() {
     this.limit += 3; // Tăng số lượng đánh giá hiển thị
     this.displayedRatings = this.ratings.slice(0, this.limit); // Cập nhật các đánh giá đang hiển thị
   }
- 
+
+  isLoadMoreVisible(): boolean {
+    return this.displayedRatings.length < this.ratings.length; // Chỉ hiển thị nếu còn đánh giá chưa hiển thị
+  }
+
   calculateRatingCounts(): void {
     this.ratings.forEach((ratingResponse:RatingResponse) => {
       const ratingValue = ratingResponse.rating.rating;
