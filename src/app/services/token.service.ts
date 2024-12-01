@@ -5,6 +5,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 import { map, Observable, share } from 'rxjs';
 import { environment } from '../../enviroments/environment';
+import { Response } from '../response/response';
 
 
 @Injectable({
@@ -13,6 +14,8 @@ import { environment } from '../../enviroments/environment';
 export class TokenService {
   private readonly TOKEN_KEY = 'token';
   private expiredRTUrl = environment.apiBaseUrl + '/token/refreshExpirationDate';
+  private refreshTokenUrl = environment.apiBaseUrl + '/token/refreshToken';
+
   private jwtHelperService = new JwtHelperService();
   constructor(private cookieService: CookieService, private http: HttpClient) { }
   private apiConfig = {
@@ -63,7 +66,7 @@ export class TokenService {
   getRefreshTokenExpiration() {
 
     const expirationDate = this.cookieService.get('refresh_token_expired');
-    
+
     return expirationDate ? new Date(expirationDate) : null;
   }
   removeTokenInCookie() {
@@ -71,28 +74,28 @@ export class TokenService {
 
   }
   setTokenInCookie(token: string): void {
-    
+
     this.cookieService.set('token', token, {
-      path: '/', // Cookie sẽ có hiệu lực trên toàn bộ ứng dụng
-      sameSite: 'None', // Nếu bạn cần hỗ trợ cross-origin
-      secure: true // Chỉ sử dụng khi đang chạy trên HTTPS
+      path: '/',
+      sameSite: 'Lax', // Lựa chọn an toàn hơn trên localhost
+      secure: false, // Không dùng HTTPS trên localhost
     });
   }
 
   setRefreshTokenInCookie(refresh_token: string): void {
     // Sử dụng forkJoin để thực hiện đồng thời lệnh gọi getExpiredRefreshToken và set cookie sau khi hoàn thành
-   
+
     this.cookieService.set('refresh_token', refresh_token, {
-      path: '/', // Cookie sẽ có hiệu lực trên toàn bộ ứng dụng
-      sameSite: 'None', // Nếu bạn cần hỗ trợ cross-origin
-      secure: true // Chỉ sử dụng khi đang chạy trên HTTPS
+      path: '/',
+      sameSite: 'Lax', // Lựa chọn an toàn hơn trên localhost
+      secure: false, // Không dùng HTTPS trên localhost
     });
-   
+
     // this.getExpiredRefreshToken(refresh_token).subscribe({
     //   next: (data) => {
     //     const expireDate = new Date(data);
     //     this.setExpiredRefreshTokenInCookie(expireDate)
-        
+
     //   },
     //   error: (error) => {
     //     console.error('Error setting refresh token:', error);
@@ -103,26 +106,41 @@ export class TokenService {
   setExpiredRefreshTokenInCookie(expireDate: Date | string) {
     // Chuyển đổi chuỗi thành đối tượng Date nếu cần
     const date = typeof expireDate === 'string' ? new Date(expireDate) : expireDate;
-  
+
     // Kiểm tra xem có phải đối tượng Date hợp lệ hay không
     if (date instanceof Date && !isNaN(date.getTime())) {
       this.cookieService.set(
         'refresh_token_expired',
         date.toISOString(), // Lưu chuỗi ISO 8601
         {
-          path: '/',          // Cookie có hiệu lực trên toàn bộ ứng dụng
-          sameSite: 'None',   // Cần thiết cho cross-origin requests
-          secure: true        // Đảm bảo bảo mật qua HTTPS
+          path: '/',
+          sameSite: 'Lax', // Lựa chọn an toàn hơn trên localhost
+          secure: false, // Không dùng HTTPS trên localhost
         }
       );
     } else {
       console.error('Invalid expireDate provided:', expireDate);
     }
   }
-  
+
   getExpiredRefreshToken(refresh_token: string): Observable<any> {
     return this.http.get(`${this.expiredRTUrl}/${refresh_token}`, this.apiConfig)
   }
+
+  refreshToken(refreshToken: string): Observable<Response> {
+    return this.http.post<Response>(`${this.refreshTokenUrl}`, { 'refreshToken': refreshToken })
+      .pipe(
+        map((authResponse) => {
+
+          this.setTokenInCookie(authResponse.data.token);
+          this.setRefreshTokenInCookie(authResponse.data.refresh_token);
+          this.setExpiredRefreshTokenInCookie(authResponse.data.refresh_token_expired);
+          return authResponse;
+        })
+      );
+  }
+
+ 
   getUserId(): number {
 
     const token = this.getTokenFromCookie();

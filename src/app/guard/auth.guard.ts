@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): Observable<boolean> {
     const isTokenExpired = this.tokenService.isTokenExpired();
-    debugger
+    
     const isLogin = this.userService.checkLogin()
     
     if (!isTokenExpired && isLogin) {
@@ -34,7 +34,7 @@ export class AuthGuard implements CanActivate {
         return of(false);  // Nếu không có refresh token hoặc thời gian hết hạn
       }
       if (refresh_token && expiredRefreshToken.getTime() > Date.now()) {
-        return this.userService.refreshToken(refresh_token).pipe(
+        return this.tokenService.refreshToken(refresh_token).pipe(
           switchMap((newToken: Response) => {
              // Nếu refresh thành công, lưu token mới và cho phép truy cập
              this.tokenService.setTokenInCookie(newToken.data.token);

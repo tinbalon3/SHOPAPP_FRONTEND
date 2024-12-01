@@ -20,9 +20,10 @@ export class TokenInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    debugger
+    localStorage.removeItem("isVerifyOTP")
     const token = this.tokenService.getTokenFromCookie();
     let authReq = req;
-
     if (token) {
       authReq = this.addTokenHeader(req, token);  // Add token if available
     }
@@ -32,9 +33,9 @@ export class TokenInterceptor implements HttpInterceptor {
    
     return next.handle(authReq).pipe(
       catchError((error) => {
-       alert(error.status)
-        if (error instanceof HttpErrorResponse && error.status === 0) {
-          console.log(error);
+      
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          
           
           return this.handle401Error(req, next);  // Handle 401 error
         }
@@ -45,7 +46,7 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-   
+
     if (!this.isRefreshingToken) {
       this.isRefreshingToken = true;
 
@@ -54,7 +55,7 @@ export class TokenInterceptor implements HttpInterceptor {
      
       if (refresh_token && expiredRefreshToken && expiredRefreshToken.getTime() > Date.now()) {
         // If refresh token is valid, proceed to refresh the access token
-        return this.userService.refreshToken(refresh_token).pipe(
+        return this.tokenService.refreshToken(refresh_token).pipe(
           switchMap((newToken:Response) => {
             this.isRefreshingToken = false;
             const token = newToken.data.token;

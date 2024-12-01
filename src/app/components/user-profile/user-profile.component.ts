@@ -32,7 +32,7 @@ export class UserProfileComponent implements OnInit {
   isOpenResetPassword = false
   isOpenChangeEmail = false;
   isChangeEmail = false;
-  editedUserResponse! :UserDetailResponse
+  editedUserResponse!: UserDetailResponse
   isEditingField: string | null = null; // Dùng để xác định trường nào đang được chỉnh sửa
   errorMessage: string | null = null;
   otp: string[] = ['', '', '', '', '', ''];
@@ -47,27 +47,23 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.token = this.tokenService.getTokenFromCookie()!;
     this.userService.getUserDetails(this.token).subscribe({
-      next: (response:Response) => {
-      
-        
+      next: (response: Response) => {
         this.userResponse = {
           ...response.data,
           date_of_birth: new Date(response.data.date_of_birth)
         }
-        this.editedUserResponse = { ...this.userResponse ,date_of_birth: new Date(response.data.date_of_birth)};
-       
-        
+        this.editedUserResponse = { ...this.userResponse, date_of_birth: new Date(response.data.date_of_birth) };
+
       },
       error: (e) => {
-       
-        
+
         this.userService.handleLogout()
       }
     })
 
   }
 
- 
+
 
   // Danh sách các trường có thể chỉnh sửa
   fields = [
@@ -126,7 +122,7 @@ export class UserProfileComponent implements OnInit {
         return;
       }
     }
-    
+
     if (this.isEditingField === "fullname") {
       if (this.editedUserResponse.fullname.length < 5) {
         this.toastr.error("Tên người dùng phải dài hơn 5 ký tự", "KHÔNG PHÙ HỢP", {
@@ -139,13 +135,13 @@ export class UserProfileComponent implements OnInit {
     }
     if (this.isEditingField === "phone_number") {
       if (!this.validatePhoneNumber(this.editedUserResponse.phone_number)) {
-       
+
         // Khôi phục lại họ tên từ dữ liệu gốc
         this.editedUserResponse.phone_number = this.userResponse.phone_number;
         return;
       }
     }
-    
+
     this.userResponse = { ...this.editedUserResponse };
     this.isEditingField = null;
   }
@@ -167,12 +163,12 @@ export class UserProfileComponent implements OnInit {
     }
     return true;
   }
-  
+
 
   changeOption(option: number) {
     this.option_menu = option
   }
- 
+
 
   formatDate_2(dateObject: any): string {
     let date = new Date(dateObject)
@@ -189,10 +185,10 @@ export class UserProfileComponent implements OnInit {
       })
 
     } else {
+      const email = this.userResponse.email;
       this.isLoading = true
-      let token = this.tokenService.getTokenFromCookie()!;
-      let userId = this.tokenService.getUserId()!;
-      this.userService.updatePassword(userId, this.password_new, this.password_new_check).subscribe({
+
+      this.userService.updatePassword(email, this.password_new, this.password_new_check).subscribe({
         next: (response: Response) => {
           if (response.status == "OK") {
             this.isLoading = false
@@ -224,11 +220,11 @@ export class UserProfileComponent implements OnInit {
       date_of_birth: this.userResponse.date_of_birth,
       phone_number: this.userResponse.phone_number
     }
-    
+
     this.isLoading = true
 
     this.userService.updateUser(this.token, UpdateUserDTO).subscribe({
-      next: (response:UpdateUserDTO) => {
+      next: (response: UpdateUserDTO) => {
         this.isLoading = false
 
         this.toastr.success("Cập nhật thành công", "CẬP NHẬT HỒ SƠ", {
@@ -274,136 +270,141 @@ export class UserProfileComponent implements OnInit {
 
   sendVerifyCode(type: string) {
     this.isLoading = true
+    const email = this.userResponse.email;
+    if (type == 'password') {
+      this.userService.sendVerificationPasswordCode(email).subscribe({
+        next: (response: Response) => {
+          this.isLoading = false
+          console.log(response);
 
-    const userId = this.tokenService.getUserId();
-    console.log(userId);
-    
-  
-      if (type == 'password') {
-        console.log(123);
-        
-        this.userService.sendVerificationCode(userId).subscribe({
-          next: (response: Response) => {
-            this.isLoading = false
-            console.log(response);
-            
-            if (response.status == "OK") { // Kiểm tra response không null
-              this.isSuccessVerifyCode = true
-              this.isSuccessSendCode = true;
-              const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
-              this.toastr.success(message, "Gửi thành công", {
-                timeOut: 2000
-              });
-            } else {
+          if (response.status == "OK") { // Kiểm tra response không null
+            this.isSuccessVerifyCode = true
+            this.isSuccessSendCode = true;
+            const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
+            this.toastr.success(message, "Gửi thành công", {
+              timeOut: 2000
+            });
+          } else {
 
-              const message = 'Đã có lỗi xảy ra.';
-              this.toastr.error(message, "Lỗi", {
-                timeOut: 2000
-              });
-            }
-          },
-          error: (error: any) => {
-            this.isLoading = false
-
-            this.isSuccessSendCode = false;
-            if (error.status == 400) { // Kiểm tra error không null
-              const message = 'Xảy ra lỗi khi gửi mã xác thực.';
-              this.toastr.error(message, "Gửi không thành công", {
-                timeOut: 2000
-              });
-            } else {
-              // Xử lý lỗi khác
-              const message = 'Có lỗi không xác định xảy ra.';
-              this.toastr.error(message, "Lỗi", {
-                timeOut: 2000
-              });
-            }
+            const message = 'Đã có lỗi xảy ra.';
+            this.toastr.error(message, "Lỗi", {
+              timeOut: 2000
+            });
           }
-        });
+        },
+        error: (error: any) => {
+          this.isLoading = false
 
-
-      }
-      if (type == 'email') {
-        
-        this.userService.sendVerificationEmailCode(userId, this.email_new).subscribe({
-          next: (response: Response) => {
-            this.isLoading = false
-            console.log(response);
-            
-            if (response.status == "OK") { // Kiểm tra response không null
-              this.isChangeEmail = false;
-              this.isSuccessSendEmailCode = true;
-              const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
-              this.toastr.success(message, "Gửi thành công", {
-                timeOut: 2000
-              });
-            } else {
-
-              const message = 'Đã có lỗi xảy ra.';
-              this.toastr.error(message, "Lỗi", {
-                timeOut: 2000
-              });
-            }
-          },
-          error: (error: any) => {
-            this.isLoading = false
-            this.isSuccessSendEmailCode = false;
-            if (error.status == 400) { // Kiểm tra error không null
-              const message = 'Xảy ra lỗi khi gửi mã xác thực.';
-              console.log(error.message)
-              this.toastr.error(message, "Gửi không thành công", {
-                timeOut: 2000
-              });
-            } else {
-              // Xử lý lỗi khác
-              const message = 'Có lỗi không xác định xảy ra.';
-              this.toastr.error(message, "Lỗi", {
-                timeOut: 2000
-              });
-            }
+          this.isSuccessSendCode = false;
+          if (error.status == 400) { // Kiểm tra error không null
+            const message = 'Xảy ra lỗi khi gửi mã xác thực.';
+            this.toastr.error(message, "Gửi không thành công", {
+              timeOut: 2000
+            });
+          } else {
+            // Xử lý lỗi khác
+            const message = 'Có lỗi không xác định xảy ra.';
+            this.toastr.error(message, "Lỗi", {
+              timeOut: 2000
+            });
           }
-        });
-      }
+        }
+      });
+    }
+    if (type == 'email') {
+      this.userService.sendVerificationEmailCode(email, this.email_new).subscribe({
+        next: (response: Response) => {
+          this.isLoading = false
 
-    
+          if (response.status == "OK") { // Kiểm tra response không null
+            this.isChangeEmail = false;
+            this.isSuccessSendEmailCode = true;
+            const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
+            this.toastr.success(message, "Gửi thành công", {
+              timeOut: 2000
+            });
+          } else {
+
+            const message = 'Đã có lỗi xảy ra.';
+            this.toastr.error(message, "Lỗi", {
+              timeOut: 2000
+            });
+          }
+        },
+        error: (error: any) => {
+          this.isLoading = false
+          this.isSuccessSendEmailCode = false;
+          if (error.status == 400) { // Kiểm tra error không null
+            const message = 'Xảy ra lỗi khi gửi mã xác thực.';
+            console.log(error.message)
+            this.toastr.error(message, "Gửi không thành công", {
+              timeOut: 2000
+            });
+          } else {
+            // Xử lý lỗi khác
+            const message = 'Có lỗi không xác định xảy ra.';
+            this.toastr.error(message, "Lỗi", {
+              timeOut: 2000
+            });
+          }
+        }
+      });
+    }
+
+
   }
   verifyEmailCode() {
     this.isLoading = true
+    const email = this.userResponse.email;
     const otp = this.otp.join('');
-    this.userService.verify(otp,this.userResponse.email).subscribe({
+
+    this.userService.verifyEmailCodeToDo(otp, email).subscribe({
       next: (response: Response) => {
         this.isLoading = false
         if (response.status == "OK") {
-          let userId = this.tokenService.getUserId()!;
-          this.userService.updateEmail(userId, this.email_new).subscribe({
+
+
+          this.userService.updateEmail(email, this.email_new).subscribe({
             next: (response: Response) => {
+
+
               if (response.status == "OK") {
                 this.isSuccessSendEmailCode = false;
                 this.userResponse.email = this.email_new;
-                this.toastr.success("Thay đổi email thành công", "Xác thực thành công", {
+                this.toastr.success("Thay đổi email thành công.", "THÀNH CÔNG", {
                   timeOut: 2000
                 });
+                this.userService.handleLogout()
               }
             }
           })
         }
-      }
+        else {
+          this.toastr.error(response.message, "LỖI", {
+            timeOut: 2000
+          });
+
+        }
+      },
+
     })
   }
-  verifyCode() {
+
+  verifyPasswordCode() {
     this.isLoading = true
+    const email = this.userResponse.email;
     const otp = this.otp.join('');
-    this.userService.verify(otp,this.userResponse.email).subscribe({
+    this.userService.verifyEmailCodeToDo(otp, email).subscribe({
       next: (response: Response) => {
         this.isLoading = false
         if (response.status == "OK") {
           this.isSuccessSendCode = false;
           this.isOpenResetPassword = true
-
-          const message = 'Tiến hành thay đổi mật khẩu!';
-          this.toastr.success(message, "Xác thực thành công", {
+          const message = 'Thay đổi mật khẩu thành công.';
+          this.toastr.success(message, "THÀNH CÔNG", {
             timeOut: 2000
           });
+          this.userService.handleLogout()
         }
       }
     })

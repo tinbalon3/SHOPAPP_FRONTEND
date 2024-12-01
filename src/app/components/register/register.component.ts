@@ -29,22 +29,29 @@ export class RegisterComponent implements OnInit {
     private userService: UserService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService) {
-
+      this.countdown  = 60;
   }
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       user: this.formBuilder.group({
         phoneNumber: new FormControl('', [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
         email: new FormControl('', [Validators.required, ShopValidators.strictEmailValidator, ShopValidators.notOnlyWhitespace]),
-        password: new FormControl('', [Validators.required, Validators.minLength(6), ShopValidators.notOnlyWhitespace]),
-        retypePassword: new FormControl('', [Validators.required, Validators.minLength(6), ShopValidators.notOnlyWhitespace]),
-        fullname: new FormControl('', [Validators.required,Validators.minLength(3), ShopValidators.notOnlyWhitespace,ShopValidators.containsAlphabet,ShopValidators.usernameValidator]),
+        password: new FormControl('', [Validators.required, Validators.minLength(6),Validators.maxLength(50), ShopValidators.notOnlyWhitespace]),
+        retypePassword: new FormControl('', [Validators.required, Validators.minLength(6),Validators.maxLength(50), ShopValidators.notOnlyWhitespace]),
+        fullname: new FormControl('', [Validators.required,Validators.minLength(3), ShopValidators.notOnlyWhitespace,ShopValidators.containsAlphabet]),
         address: new FormControl(''),
         dateOfBirth: new FormControl('2003-05-13', ShopValidators.minAge(18)),
         isAccepted: new FormControl(false, [Validators.requiredTrue])
       }, 
       { validator: ShopValidators.checkvaluesmatch('password', 'retypePassword') }) // Move the validator here
     });
+    window.addEventListener("popstate", function(event) {
+      localStorage.removeItem("isVerifyOTP")
+  });
+    if(localStorage.getItem("isVerifyOTP") === "true"){
+      this.isSuccessSendEmailCode = true
+      this.startCountdown()
+    }
   }
 
   checkPasswordsMatch() {
@@ -90,14 +97,13 @@ export class RegisterComponent implements OnInit {
       "password": this.registerForm.controls['user'].value.password,
       "retype_password": this.registerForm.controls['user'].value.retypePassword,
       "date_of_birth": this.registerForm.controls['user'].value.dateOfBirth,
-      // "facebook_account_id": 0,
-      "google_account_id": 0,
       "auth_provider": 'LOCAL',
       "role_id": 1
     }
    
     this.isLoading=true
     this.registerRequest(this.registerDTO);
+  
    
 
   }
@@ -106,15 +112,16 @@ export class RegisterComponent implements OnInit {
       this.isLoading = false
       return; 
      } // Nếu đang đếm ngược thì không làm gì
+     this.isLoading=true
     this.isResendDisabled = true;        // Vô hiệu hóa nút gửi lại
     this.startCountdown();      
     this.userService.register(register).subscribe({
       next: (response: Response) => {
-        
+        localStorage.setItem("isVerifyOTP","true")
         this.isSuccessSendEmailCode = true
         this.isLoading = false
-        const message = 'Mã xác thực đã được gửi qua email của bạn!';
-        this.toastr.success(message, "ĐÃ GỬI", {
+        const message = 'Đang tiến hành gửi email!';
+        this.toastr.success(message, "ĐANG XỬ LÝ", {
           timeOut: 2000
         });
       },
@@ -147,39 +154,25 @@ export class RegisterComponent implements OnInit {
   verifyEmailCode() {
     this.isLoading = true
     const otp = this.otp.join('');
-    this.userService.verify(otp,this.registerForm.controls['user'].value.email).subscribe({
+    this.userService.verifyRegisterCode(otp,this.registerForm.controls['user'].value.email).subscribe({
       next: (response: Response) => {
-       
-        
+        localStorage.removeItem("isVerifyOTP")
         if (response.status == "OK") {
           this.isLoading = false
           this.toastr.success("Đăng kí thành công", "THÀNH CÔNG", {
-            timeOut: 2000,
-
-          });
-          this.router.navigate(['/login'])
-        }
+            timeOut: 2000,});this.router.navigate(['/login'])}
         else {
-
-          this.toastr.error("Xác thực không thành công", "THẤT BẠI", {
-            timeOut: 2000,
-
-          });
+          this.toastr.error("Nhập sai mã xác thực", "THẤT BẠI", {
+            timeOut: 2000,});
           this.isLoading = false
-          this.router.navigate(['/login'])
-        }
-      },
+          this.router.navigate(['/login'])}},
       error: (err: any) => {
+        localStorage.removeItem("isVerifyOTP")
         this.isLoading = false
-        this.toastr.error("Nhập sai mã xác thực", "THẤT BẠI", {
-          timeOut: 2000,
+        this.toastr.error("Có lỗi trong quá trình xác thực", "THẤT BẠI", {
+          timeOut: 2000,})}})}
 
-        })
-      }
-    })
-
-
-  }
+          
 }
 
 

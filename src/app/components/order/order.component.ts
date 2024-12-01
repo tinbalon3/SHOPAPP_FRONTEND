@@ -82,7 +82,7 @@ export class OrderComponent implements OnInit {
 
   }
   handleCartItems() {
-  debugger
+  
     if (this.storage.getItem(`${environment.cartItems}:${ this.orderData.user_id}`) != null) {
       console.log(123);
       

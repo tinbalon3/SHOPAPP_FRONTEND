@@ -178,14 +178,14 @@ export class CartService implements OnInit {
   
 
   getCartItems(): Observable<any> {
-    debugger
+    
     this.userId = this.tokenService.getUserId();
   
     // Kiểm tra nếu userId hợp lệ, nếu không trả về mảng rỗng ngay lập tức
     if (!this.userId || this.userId === 0) {
       return of([]); // Trả về mảng rỗng nếu người dùng chưa đăng nhập hoặc userId không hợp lệ
     }
-  debugger
+  
     return this.http.get<Response>(`${this.apiCart}/get/${this.userId}`).pipe(
       map((response: Response) => {
         if (response.status === 'OK') {

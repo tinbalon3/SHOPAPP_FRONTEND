@@ -3,7 +3,7 @@
 </div>
 
 <app-header></app-header>
-<div class="container" style="height: 100vh; position: relative;display: grid;">
+<div class="container" >
   <section class="ezy__signup16_LBMtewSK d-flex align-items-center justify-content-center">
     <!-- đăng kí -->
     <div *ngIf="!isSuccessSendEmailCode" class="container">
@@ -34,9 +34,9 @@
                         <div *ngIf="fullname?.errors?.['minlength']">
                           Họ và tên phải có ít nhất 3 ký tự
                         </div>
-                        <div *ngIf="fullname?.errors?.['invalidCharacters']">
+                        <!-- <div *ngIf="fullname?.errors?.['invalidCharacters']">
                           Họ và tên không được chứa ký tự không hợp lệ.
-                        </div>
+                        </div> -->
                         <div *ngIf="fullname?.errors?.['multipleDots']">
                           Họ và tên không được chứa nhiều dấu chấm liên tiếp.
                         </div>
@@ -101,7 +101,9 @@
                         <div *ngIf="password?.errors?.['minlength']">
                           Mật khẩu phải có ít nhất 6 ký tự.
                         </div>
-
+                        <div *ngIf="password?.errors?.['maxlength']">
+                          Mật khẩu không được quá 50 ký tự.
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -121,6 +123,9 @@
                         </div>
                         <div *ngIf="retypePassword?.errors?.['minlength']">
                           Mật khẩu phải có ít nhất 6 ký tự.
+                        </div>
+                        <div *ngIf="retypePassword?.errors?.['maxlength']">
+                          Mật khẩu không được quá 50 ký tự.
                         </div>
                         <div *ngIf="retypePassword?.errors?.['passwordMismatch']">
                           Mật khẩu nhập lại không khớp.
@@ -168,7 +173,7 @@
                         <label class="form-check-label" for="remember-me">Tôi đồng ý với các <a href="#">Điều khoản &
                             Điều kiện</a>
                         </label>
-                        <i class="fa-solid fa-calendar-days ezy__signup16_LBMtewSK-icon"></i>
+                        <!-- <i class="fa-solid fa-calendar-days ezy__signup16_LBMtewSK-icon"></i> -->
                         <div class="divider-nospace"></div>
                         <div class="text-danger" *ngIf="isAccepted?.invalid 
                         && (isAccepted?.dirty || isAccepted?.touched
@@ -194,7 +199,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="isSuccessSendEmailCode" class="container-fluid bg-body-tertiary d-block">
+    <div *ngIf="isSuccessSendEmailCode" class="container-fluid bg-body-tertiary d-block" style="padding-top: 48px;padding-bottom: 40px;">
       <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
           <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">

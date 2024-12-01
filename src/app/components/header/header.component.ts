@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class HeaderComponent implements OnInit {
 
+
   userResponse!: UserDetailResponse | null;
   userId!: number;
   isLoading = false;
@@ -29,7 +30,10 @@ export class HeaderComponent implements OnInit {
     this.userResponse = this.userService.getUserDetailFromLocalStorage();
 
   }
-
+  navigateLogin(arg0: string) {
+    localStorage.removeItem("isVerifyOTP")
+    this.router.navigate([arg0])
+    }
   logout() {
     this.cartService.persistCartItems()
     this.userService.logout().subscribe({

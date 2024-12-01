@@ -38,7 +38,7 @@
                         
                         <!-- If userReponse is not present, show login link -->
                         <ng-container *ngIf="!userResponse">
-                          <a class="nav-link" routerLink="/login">Đăng nhập</a>
+                          <a class="nav-link" (click)="navigateLogin('/login')">Đăng nhập</a>
                         </ng-container>
                       </li>
                       

@@ -21,16 +21,19 @@ import { Toast, ToastrService } from 'ngx-toastr';
 export class UserService implements OnInit {
   private apiRegister = environment.apiBaseUrl + '/users/register';
   private apiGetAllUser = environment.apiBaseUrl + '/users';
-  private apiLogin = environment.apiBaseUrl + '/users/login';
-  private apiLoginGoogle = environment.apiBaseUrl + '/users/googleLogin';
-  private apiUserDetails = environment.apiBaseUrl + '/users/details'
-  private refreshTokenUrl = environment.apiBaseUrl + '/token/refreshToken';
-  private apiRevokeToken = environment.apiBaseUrl + "/token/revoke-token"
-  private apiSendCode = environment.apiBaseUrl + "/users/send-verification-code"
-  private apiSendEmailCode = environment.apiBaseUrl + "/users/send-verification-email-code"
-  private apiVerifyCode = environment.apiBaseUrl + "/users/verify";
+  private apiLogin = environment.apiBaseUrl + '/users/auth/login';
+  private apiLoginGoogle = environment.apiBaseUrl + '/users/auth/googleLogin';
+  private apiUserDetails = environment.apiBaseUrl + '/users/details';
+  private apiRevokeToken = environment.apiBaseUrl + "/users/logout"
+ 
+  private apisendOTPResetPassword = environment.apiBaseUrl + "/users/reset-password/send-verification-code"
+  private apiSendEmailCode = environment.apiBaseUrl + "/users/change-email/send-verification-email-code"
+  private apiVerifyRegisterCode = environment.apiBaseUrl + "/users/register/verify";
+  private apiCheckEmailIsExist = environment.apiBaseUrl + "/users/reset-password/check-email-exist";
+  private apiVerifyCodeForgotPassword = environment.apiBaseUrl + "/users/email/verify";
+
   private apiUpdatePassword = environment.apiBaseUrl + "/users/update-password"
-  private apiUpdateEmail = environment.apiBaseUrl + "/users/update_email"
+  private apiUpdateEmail = environment.apiBaseUrl + "/users/update-email"
   private apiBlockUser = environment.apiBaseUrl + "/users/blockOrEnable"
   private apiResetPassword = environment.apiBaseUrl + "/users/reset-password"
   private apiCallbackAuth = environment.apiBaseUrl + "/users/auth/callback"
@@ -38,7 +41,7 @@ export class UserService implements OnInit {
     headers: this.createHeaders()
   }
   private readonly USER_KEY = 'user'
-  
+
   private createHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
@@ -52,18 +55,18 @@ export class UserService implements OnInit {
     private cartService: CartService,
     private router: Router,
     private toastr: ToastrService
-   
+
   ) { }
   ngOnInit(): void {
-    
+
   }
-  loginWithGoogle():Observable<Response> {
+  loginWithGoogle(): Observable<Response> {
     return this.http.get<Response>(this.apiLoginGoogle)
   }
-  isLogin(){
-    return localStorage.setItem("isLogin",true+'');
+  isLogin() {
+    return localStorage.setItem("isLogin", true + '');
   }
-  checkLogin(){
+  checkLogin() {
     return localStorage.getItem("isLogin");
   }
   getAllUser(): Observable<Response> {
@@ -73,40 +76,29 @@ export class UserService implements OnInit {
     return this.http.post<Response>(this.apiRegister, registerDTO, this.apiConfig);
   }
 
-  logout(): Observable<Response> {
-    const refreshToken = this.tokenService.getRefreshTokenFromCookie(); // Lấy refreshToken từ cookie
-    return this.http.post<Response>(`${this.apiRevokeToken}`, { "refreshToken": refreshToken })
-  }
-  
+ 
+
   login(loginDTO: LoginDTO): Observable<Response> {
     return this.http.post<Response>(this.apiLogin, loginDTO, this.apiConfig);
   }
 
   handleLogout() {
-    this.toastr.info("Hết hạn đăng nhập. Vui lòng đăng nhập lại","THÔNG BÁO",{
+    this.toastr.info("Hết hạn đăng nhập. Vui lòng đăng nhập lại", "THÔNG BÁO", {
       timeOut: 2000,
     });
     this.cartService.resetCart();
-    this.cookieService.delete('token');
-    this.cookieService.delete('refresh_token');
-    this.cookieService.delete('refresh_token_expire');
+    this.cookieService.delete('token', '/');
+    this.cookieService.delete('refresh_token', '/');
+    this.cookieService.delete('refresh_token_expired', '/');
     this.removeUserDetailInLocal()
     localStorage.removeItem('isLogin')
     this.router.navigate(['/login']);
   }
-  refreshToken(refreshToken: string): Observable<Response> {
-    return this.http.post<Response>(`${this.refreshTokenUrl}`, { 'refreshToken': refreshToken })
-      .pipe(
-        map((authResponse) => {
 
-          this.tokenService.setTokenInCookie(authResponse.data.token);
-          this.tokenService.setRefreshTokenInCookie(authResponse.data.refresh_token);
-          this.tokenService.setExpiredRefreshTokenInCookie(authResponse.data.refresh_token_expired);
-          return authResponse;
-        })
-      );
+  logout(): Observable<Response> {
+    const refreshToken = this.tokenService.getRefreshTokenFromCookie(); // Lấy refreshToken từ cookie
+    return this.http.post<Response>(`${this.apiRevokeToken}`, { "refreshToken": refreshToken })
   }
-
  
 
   removeUserDetailInSession() {
@@ -128,29 +120,43 @@ export class UserService implements OnInit {
   }
 
 
-  sendVerificationCode(userId: number): Observable<Response> {
-    
-    return this.http.get<Response>(`${this.apiSendCode}/${userId}`)
+  sendVerificationPasswordCode(email: String): Observable<Response> {
+    return this.http.post<Response>(`${this.apisendOTPResetPassword}`, { 'email': email }, { headers: { 'Content-Type': 'application/json' } })
   }
 
-  verify(code: string, email: string): Observable<Response> {
+  verifyRegisterCode(code: string, email: string): Observable<Response> {
+    return this.http.put<Response>(this.apiVerifyRegisterCode, {
+      'code': code,
+      'email': email
+    }, { headers: { 'Content-Type': 'application/json' } });
+  }
+  verifyEmailCodeToDo(code: string, email: string): Observable<Response> {
+    return this.http.put<Response>(this.apiVerifyCodeForgotPassword, {
+      'code': code,
+      'email': email
+    }, { headers: { 'Content-Type': 'application/json' } });
+  }
+
+  checkEmailIsExist(email: string): Observable<Response> {
     let params = new HttpParams()
-      .set('code', code.toString())
-      .set('email', email.toString())
-    return this.http.get<Response>(this.apiVerifyCode, {
-      params: params,
-      // Đảm bảo observe là một phần của cùng một đối tượng
-    });
+    .set('email', email.toString())
+    const headers = { 'Content-Type': 'application/json' }; // HTTP headers
+  
+    return this.http.get<Response>(`${this.apiCheckEmailIsExist}`, { params, headers });
   }
-  updatePassword( userId: number, password: string, retype_password: string): Observable<Response> {
-    return this.http.put<Response>(`${this.apiUpdatePassword}`, {"userId": userId, 'password': password, "retype_password": retype_password });
+  
+  updatePassword(email: string, password: string, retype_password: string): Observable<Response> {
+    return this.http.put<Response>(`${this.apiUpdatePassword}`, 
+      { "email": email, 'password': password, "retype_password": retype_password }, { headers: { 'Content-Type': 'application/json' } });
   }
-  sendVerificationEmailCode(userId: number, email: string): Observable<Response> {
+  sendVerificationEmailCode(email: string, email_new: string): Observable<Response> {
 
-    return this.http.post<Response>(`${this.apiSendEmailCode}/${userId}`,{'email':email});
+    return this.http.post<Response>(`${this.apiSendEmailCode}`, 
+      { 'email': email, 'email_new': email_new }, { headers: { 'Content-Type': 'application/json' } });
   }
-  updateEmail(id: number, email: string): Observable<Response> {
-    return this.http.put<Response>(`${this.apiUpdateEmail}/${id}`, { 'email': email });
+  updateEmail(email: string, email_new: string): Observable<Response> {
+    return this.http.put<Response>(`${this.apiUpdateEmail}`, 
+      { 'email': email, 'email_new': email_new }, { headers: { 'Content-Type': 'application/json' } });
 
   }
 
@@ -230,7 +236,7 @@ export class UserService implements OnInit {
   }
 
   resetPasswordUser(email: string): Observable<Response> {
-    return this.http.put<Response>(`${this.apiResetPassword}`, {'email': email})
+    return this.http.put<Response>(`${this.apiResetPassword}`, { 'email': email })
   }
 
 }

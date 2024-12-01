@@ -34,6 +34,7 @@ import { AuthcallbackComponent } from './components/authcallback/authcallback.co
 import { AuthGuard } from './guard/auth.guard';
 import {  OrderDetailComponent } from './components/order-detail/order-detail-admin.component';
 import { ForgotpasswordComponent } from './components/forgotpassword/forgotpassword.component';
+import { SkeletonLoaderComponent } from './components/skeleton-loader/skeleton-loader.component';
 
 const routes : Routes = [
 
@@ -79,7 +80,7 @@ const routes : Routes = [
     ThongbaoComponent,
     AuthcallbackComponent,
     ForgotpasswordComponent,
-   
+    // SkeletonLoaderComponent
 
     
   ],
