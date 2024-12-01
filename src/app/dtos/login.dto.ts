@@ -3,7 +3,7 @@
 export interface LoginDTO {
     user_name: string;
     password: string;
-    // role_id: number
+    roleId: number
     // remember_me: boolean;
     
 }

@@ -65,6 +65,11 @@ export class LoginComponent {
         // Tiến hành lấy chi tiết người dùng và chuyển hướng
         this.getUserDetailsAndNavigate(token);
       }
+      if (event.origin === window.location.origin && event.data.type === 'login-failed') {
+        this.toastr.error(event.data.response,"LỖI",{
+          timeOut:2000
+         })
+      }
     });
    
   }
@@ -119,9 +124,9 @@ export class LoginComponent {
     const loginDTO: LoginDTO = {
       user_name: this.loginForm.controls['user'].value.user_name,
       password: this.loginForm.controls['user'].value.password,
-      // role_id: this.loginForm.controls['user'].value.role.id ?? 1,
-      // remember_me: !!this.loginForm.controls['user'].value.rememberMe
+      roleId: 1
     };
+  console.log(loginDTO);
   
     
     this.userService.login(loginDTO).subscribe({
@@ -140,8 +145,8 @@ export class LoginComponent {
         this.getUserDetailsAndNavigate(token);
       },
       error: (error) => {
-
-        this.toastr.error("Tên đăng nhập hoặc mật khẩu không đúng.", "LỖI", {
+        const message = error.error.message
+        this.toastr.error(message, "LỖI", {
           timeOut: 2000
         });
       }

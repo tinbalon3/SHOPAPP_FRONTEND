@@ -32,7 +32,7 @@ export class AuthcallbackComponent implements OnInit {
 
         },
         error: (error: any) => {
-          window.opener.postMessage({ type: 'login-failed'}, window.location.origin);
+          window.opener.postMessage({ type: 'login-failed', response: error.error.message}, window.location.origin);
           // Đóng cửa sổ pop-up
           window.close();
           

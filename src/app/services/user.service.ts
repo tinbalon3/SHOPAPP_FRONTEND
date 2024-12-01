@@ -190,9 +190,13 @@ export class UserService implements OnInit {
   callbackAuth(code: string): Observable<any> {
     let params = new HttpParams()
       .set('code', code.toString())
-    return this.http.get(this.apiCallbackAuth, { params })
+    return this.http.get(this.apiCallbackAuth, {params,headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': 'vi',
+      }
+    })
   }
-
+ 
 
   getUserDetailFromSessionStorage() {
     const userDetailString = sessionStorage.getItem(this.USER_KEY);
