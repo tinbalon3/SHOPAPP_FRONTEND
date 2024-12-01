@@ -52,6 +52,8 @@ export class RegisterComponent implements OnInit {
       this.isSuccessSendEmailCode = true
       this.startCountdown()
     }
+  
+    
   }
 
   checkPasswordsMatch() {
