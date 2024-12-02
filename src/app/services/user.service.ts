@@ -83,9 +83,7 @@ export class UserService implements OnInit {
   }
 
   handleLogout() {
-    this.toastr.info("Hết hạn đăng nhập. Vui lòng đăng nhập lại", "THÔNG BÁO", {
-      timeOut: 2000,
-    });
+  
     this.cartService.resetCart();
     this.cookieService.delete('token', '/');
     this.cookieService.delete('refresh_token', '/');
@@ -97,7 +95,7 @@ export class UserService implements OnInit {
 
   logout(): Observable<Response> {
     const refreshToken = this.tokenService.getRefreshTokenFromCookie(); // Lấy refreshToken từ cookie
-    return this.http.post<Response>(`${this.apiRevokeToken}`, { "refreshToken": refreshToken })
+    return this.http.put<Response>(`${this.apiRevokeToken}`, { "refreshToken": refreshToken })
   }
  
 

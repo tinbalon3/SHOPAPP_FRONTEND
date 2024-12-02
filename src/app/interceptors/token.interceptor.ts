@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, switchMap, filter, take } from 'rxjs/operators';
 import { Response } from '../response/response';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -16,7 +17,7 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(
     private tokenService: TokenService,
     private userService: UserService,
-    
+    private toastr: ToastrService
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -68,12 +69,18 @@ export class TokenInterceptor implements HttpInterceptor {
           }),
           catchError((error) => {
             this.isRefreshingToken = false;
+            this.toastr.info("Bạn đã hết phiên làm việc. Xin mời đăng nhập lại.", "THÔNG BÁO", {
+              timeOut: 2000,
+            });
             this.userService.handleLogout();  // Logout if refresh token fails
             return throwError(() => error);
           })
         );
       } else {
         // If refresh token is expired or invalid, logout the user
+         this.toastr.info("Bạn đã hết phiên làm việc. Xin mời đăng nhập lại.", "THÔNG BÁO", {
+              timeOut: 2000,
+            });
         this.userService.handleLogout();
         return throwError(() => new Error('Refresh token expired'));
       }

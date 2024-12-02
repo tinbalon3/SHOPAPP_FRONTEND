@@ -39,6 +39,10 @@ export class HeaderComponent implements OnInit {
     this.userService.logout().subscribe({
       next: (response: Response) => {
         if (response.status == "OK") {
+          
+          this.toastr.success("Bạn đã đăng xuất thành công.", "THÔNG BÁO", {
+            timeOut: 2000,
+          });
           // Xóa token và refresh_token trong cookie
           this.userService.handleLogout()
         }
