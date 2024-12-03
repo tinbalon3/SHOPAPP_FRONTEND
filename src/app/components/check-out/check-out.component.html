@@ -199,11 +199,11 @@
                     <p class="mb-0">{{item.price * item.quantity}} VND</p>
                   </div>
                 </div>
-                <ng-container *ngIf="this.isApplyCoupon">
+                <ng-container *ngIf="this.couponList.length > 0">
                   <hr class="my-4" />
                   <div class="border border-secondary p-2 mb-2">
-                    <div class="small " style="color: rgb(153 181 209 / 75%) !important;">
-                      Mã giảm giá <span class="font-weight-bold text-white">{{this.couponCode}}</span> đã được sử dụng.
+                    <div class="small " *ngFor="let coupon of couponList" style="color: rgb(153 181 209 / 75%) !important;">
+                      Mã giảm giá <span class="font-weight-bold text-white">{{coupon}}</span> đã được sử dụng.
                     </div>
                   </div>
                 </ng-container>

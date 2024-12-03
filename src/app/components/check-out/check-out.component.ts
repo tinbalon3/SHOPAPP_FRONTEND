@@ -18,6 +18,7 @@ import { CheckoutService } from '../../services/checkout.service';
 import { ToastrService } from 'ngx-toastr';
 import { Response } from '../../response/response';
 import { LocationService } from '../../services/location.service';
+import { SharedDataService } from '../../services/shared-data.service';
 
 
 @Component({
@@ -37,7 +38,7 @@ export class CheckOutComponent implements OnInit {
   cities: any[] = [];
 
   isApplyCoupon = false;
-  couponCode = ''
+  couponList :string[] = []
   localstorage: Storage = localStorage
   provinces: any[] = [];
   districts: any[] = [];
@@ -52,7 +53,8 @@ export class CheckOutComponent implements OnInit {
     private locationService:LocationService,
     private cdr: ChangeDetectorRef,
     private checkoutService : CheckoutService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private sharedDataService: SharedDataService
   ) {
 
   }
@@ -62,15 +64,7 @@ export class CheckOutComponent implements OnInit {
     });
     
     // Lấy giá trị từ sessionStorage
-    const isUseCoupon = this.localstorage.getItem("isApplyCoupon");
-    const couponCode = this.localstorage.getItem("couponName")
-    // Kiểm tra và chuyển đổi giá trị
-    let isApplyCoupon: boolean = false; // Giá trị mặc định
-    if (isUseCoupon && couponCode) {
-      isApplyCoupon = JSON.parse(isUseCoupon);
-      this.couponCode = couponCode;
-      this.isApplyCoupon = isApplyCoupon
-    }
+    this.couponList = this.sharedDataService.getCouponList();
     let userDetail = this.userService.getUserDetailFromLocalStorage();
     this.orderForm = this.formbuilder.group({
       customer: this.formbuilder.group({

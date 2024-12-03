@@ -12,6 +12,7 @@ import { CouponService } from '../../services/coupon.service';
 
 import { Response } from '../../response/response';
 import { ToastrService } from 'ngx-toastr';
+import { SharedDataService } from '../../services/shared-data.service';
 
 @Component({
   selector: 'app-order',
@@ -23,7 +24,8 @@ export class OrderComponent implements OnInit {
   totalAmount: number = 0;
   cartItems: CartItem[] = [];
   storage: Storage = localStorage;
-  couponCode: string = '';
+  couponList: string[] = []; // Định nghĩa kiểu và khởi tạo mảng
+  couponCode: string  = '';
   totalProduct: number = 0;
   isApplyCoupon = false;
   localstorage : Storage = localStorage
@@ -49,7 +51,8 @@ export class OrderComponent implements OnInit {
     private couponService: CouponService,
     private cdr: ChangeDetectorRef,
     private router :Router,
-    private toastr1: ToastrService
+    private toastr1: ToastrService,
+    private sharedDataService: SharedDataService
   ) {
 
   }
@@ -165,22 +168,26 @@ export class OrderComponent implements OnInit {
    if(!this.isApplyCoupon) {
     this.cartService.updateTotalPrice(0);
    }
-   this.localstorage.setItem("isApplyCoupon",this.isApplyCoupon+'')
-   this.localstorage.setItem("couponName",this.couponCode)
-    this.router.navigate(['/checkout']);
-  }
+   this.saveCoupons()
 
+  this.router.navigate(['/checkout']);
+  }
+  saveCoupons(): void {
+    // Gửi dữ liệu vào service
+    this.sharedDataService.setCouponList(this.couponList);
+  }
   applyCoupon() {
     this.isApplyCoupon = true;
     if(this.cartItems.length != 0) {
-      const couponCode = this.couponCode;
+
+     
       const totalAmount = this.totalAmount;
     
-      this.couponService.applyCoupon(couponCode, totalAmount).subscribe({
+      this.couponService.applyCoupon( this.couponCode, totalAmount).subscribe({
         next: (response: any) => {
           this.totalAmount = this.totalAmount - response.data ; // Cập nhật tổng số tiền sau giảm giá
           this.cartService.updateTotalPrice(this.totalAmount);
-    
+          this.couponList.push(this.couponCode);
           // Thông báo thành công
           this.toastr1.success(`Mã giảm giá được áp dụng! Bạn được giảm ${response.data}`, 'Thành công', {
             timeOut: 2000,
