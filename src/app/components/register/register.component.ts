@@ -29,22 +29,24 @@ export class RegisterComponent implements OnInit {
     private userService: UserService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService) {
-      this.countdown  = 60;
+      
   }
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       user: this.formBuilder.group({
-        phoneNumber: new FormControl('', [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
-        email: new FormControl('', [Validators.required, ShopValidators.strictEmailValidator, ShopValidators.notOnlyWhitespace]),
+        phoneNumber: new FormControl('', [Validators.required, ShopValidators.notOnlyWhitespace]),
+        email: new FormControl('', [Validators.required, ShopValidators.notOnlyWhitespace]),
         password: new FormControl('', [Validators.required, Validators.minLength(6),Validators.maxLength(50), ShopValidators.notOnlyWhitespace]),
         retypePassword: new FormControl('', [Validators.required, Validators.minLength(6),Validators.maxLength(50), ShopValidators.notOnlyWhitespace]),
         fullname: new FormControl('', [Validators.required,Validators.minLength(3), ShopValidators.notOnlyWhitespace,ShopValidators.containsAlphabet]),
         address: new FormControl(''),
-        dateOfBirth: new FormControl('2003-05-13', ShopValidators.minAge(18)),
-        isAccepted: new FormControl(false, [Validators.requiredTrue])
+        dateOfBirth: new FormControl('',Validators.required),
+        isAccepted: new FormControl(false,Validators.required)
       }, 
-      { validator: ShopValidators.checkvaluesmatch('password', 'retypePassword') }) // Move the validator here
-    });
+      // { validator: ShopValidators.checkvaluesmatch('password', 'retypePassword') }
+    ) // Move the validator here
+    }
+  );
     window.addEventListener("popstate", function(event) {
       localStorage.removeItem("isVerifyOTP")
   });
@@ -56,14 +58,7 @@ export class RegisterComponent implements OnInit {
     
   }
 
-  checkPasswordsMatch() {
-    if (this.registerForm.controls['user'].value.password !== this.registerForm.controls['user'].value.retypePassword) {
-      this.registerForm.get('user.retypePassword')!
-        .setErrors({ 'passwordMismatch': true });
-    } else {
-      this.registerForm.get('user.retypePassword')!.setErrors(null);
-    }
-  }
+ 
   get phoneNumber() { return this.registerForm.get('user.phoneNumber'); }
   get password() { return this.registerForm.get('user.password'); }
   get retypePassword() { return this.registerForm.get('user.retypePassword'); }
@@ -86,10 +81,10 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
-      return;
-    }
+    // if (this.registerForm.invalid) {
+    //   this.registerForm.markAllAsTouched();
+    //   return;
+    // }
 
      this.registerDTO = {
       "fullname": this.registerForm.controls['user'].value.fullname,
@@ -100,6 +95,7 @@ export class RegisterComponent implements OnInit {
       "retype_password": this.registerForm.controls['user'].value.retypePassword,
       "date_of_birth": this.registerForm.controls['user'].value.dateOfBirth,
       "auth_provider": 'LOCAL',
+      "isAccepted":  this.registerForm.controls['user'].value.isAccepted,
       "role_id": 1
     }
    
@@ -132,7 +128,7 @@ export class RegisterComponent implements OnInit {
        
         const message = error.error.message;
         this.toastr.error(message, "LỖI", {
-          timeOut: 2000
+          timeOut: 4000
         });
         this.isResendDisabled = false
         this.isLoading = false

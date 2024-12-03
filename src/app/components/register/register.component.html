@@ -28,21 +28,14 @@
                         <div *ngIf="fullname?.errors?.['required']  || fullname?.errors?.['notOnlyWhitespace']">
                           Họ và tên là bắt buộc
                         </div>
-                        <div *ngIf="fullname?.errors?.['containsAlphabet']">
+                        <!-- <div *ngIf="fullname?.errors?.['containsAlphabet']">
                           Họ và tên phải chứa ít nhất một chữ cái.
-                        </div>
+                        </div> -->
                         <div *ngIf="fullname?.errors?.['minlength']">
                           Họ và tên phải có ít nhất 3 ký tự
                         </div>
-                        <!-- <div *ngIf="fullname?.errors?.['invalidCharacters']">
-                          Họ và tên không được chứa ký tự không hợp lệ.
-                        </div> -->
-                        <div *ngIf="fullname?.errors?.['multipleDots']">
-                          Họ và tên không được chứa nhiều dấu chấm liên tiếp.
-                        </div>
-                        <div *ngIf="fullname?.errors?.['invalidStartOrEnd']">
-                          Họ và tên không được bắt đầu hoặc kết thúc bằng ký tự không hợp lệ.
-                        </div>
+                      
+                      
                       </div>
 
                     </div>
@@ -81,9 +74,7 @@
                         <div *ngIf="email?.errors?.['required']  || email?.errors?.['notOnlyWhitespace']">
                           Email là bắt buộc.
                         </div>
-                        <div *ngIf="email?.errors?.['invalidEmail']">
-                          Email không hợp lệ. Vui lòng nhập đúng định dạng (vd: user&#64;gmail.com).
-                        </div>
+                       
                       </div>
                     </div>
                   </div>
@@ -110,7 +101,7 @@
                   <div class="col-12 col-md-6">
                     <div class="form-group position-relative mb-4">
                       <label class="mb-2" for="conPass">NHẬP LẠI MẬT KHẨU:</label>
-                      <input type="password" formControlName="retypePassword" (input)="checkPasswordsMatch()"
+                      <input type="password" formControlName="retypePassword" 
                         class="form-control" id="conPass" placeholder="******" />
                       <i class="fas fa-lock ezy__signup16_LBMtewSK-icon"></i>
                       <div class="divider-nospace"></div>
@@ -127,9 +118,9 @@
                         <div *ngIf="retypePassword?.errors?.['maxlength']">
                           Mật khẩu không được quá 50 ký tự.
                         </div>
-                        <div *ngIf="retypePassword?.errors?.['passwordMismatch']">
+                        <!-- <div *ngIf="retypePassword?.errors?.['passwordMismatch']">
                           Mật khẩu nhập lại không khớp.
-                        </div>
+                        </div> -->
                       </div>
                     </div>
                   </div>
@@ -143,8 +134,8 @@
                       <div class="text-danger" *ngIf="dateOfBirth?.invalid 
                       && (dateOfBirth?.dirty || dateOfBirth?.touched
                       )">
-                        <div *ngIf="dateOfBirth?.errors?.['minAge']">
-                          Bạn phải đủ 18 tuổi để đăng ký.
+                        <div *ngIf="dateOfBirth?.errors?.['required']">
+                          Ngày sinh là bắt buộc
                         </div>
                       </div>
                     </div>
@@ -178,7 +169,7 @@
                         <div class="text-danger" *ngIf="isAccepted?.invalid 
                         && (isAccepted?.dirty || isAccepted?.touched
                         )">
-                          <div >
+                          <div *ngIf="isAccepted?.errors?.['required']">
                             Bạn phải đồng ý với Điều khoản & Điều kiện để đăng ký.
                           </div>
                         </div>
