@@ -188,7 +188,9 @@ export class CartService implements OnInit {
   
     return this.http.get<Response>(`${this.apiCart}/get/${this.userId}`).pipe(
       map((response: Response) => {
-        if (response.status === 'OK') {
+        console.log(response);
+        
+        if (response.status == 200) {
           console.log(response);
           
           return response.data; // Trả về dữ liệu giỏ hàng nếu trạng thái OK

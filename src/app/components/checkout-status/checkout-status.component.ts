@@ -4,12 +4,12 @@ import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-checkout-successfull',
-  templateUrl: './checkout-successfull.component.html',
-  styleUrl: './checkout-successfull.component.scss'
+  templateUrl: './checkout-status.component.html',
+  styleUrl: './checkout-status.component.scss'
 })
-export class CheckoutSuccessfullComponent implements OnInit{
+export class CheckoutStatusComponent implements OnInit{
   transactionData: any = {};
-  status:boolean = false;
+  status: string = '';
   constructor(
     private cartService: CartService,
     private route: ActivatedRoute
@@ -18,8 +18,10 @@ export class CheckoutSuccessfullComponent implements OnInit{
 
   ngOnInit(): void {
     // Lấy các tham số từ URL
-    const statusOrder = Boolean(this.route.snapshot.queryParamMap.get("status"));
-    this.status = statusOrder;
-    this.cartService.clearCartItems();
+    const statusOrder = this.route.snapshot.queryParamMap.get("status")?.toString();
+    if(statusOrder != null)
+      this.status = statusOrder;
+      if(statusOrder == 'success')
+        this.cartService.clearCartItems();
   }
 }

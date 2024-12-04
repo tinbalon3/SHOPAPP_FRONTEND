@@ -19,6 +19,9 @@
 	z-index: 2;
 	cursor: pointer;
   }
+  .form-control:disabled {
+	background-color: transparent;
+  }
 .ezy__eporder3_hQXDdI1y-progress span.active {
 	color: #fff;
 	background-color: rgb(13, 110, 253);

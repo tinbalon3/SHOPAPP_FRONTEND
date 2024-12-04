@@ -31,7 +31,7 @@ export class LoginComponent {
     private router: Router,
     private userService: UserService,
     private tokenService: TokenService,
-    private roleService: RoleService,
+   
     private formBuilder: FormBuilder,
     private toastr: ToastrService
    
@@ -76,14 +76,18 @@ export class LoginComponent {
   getUserDetailsAndNavigate(token: string) {
     this.userService.getUserDetails(token).subscribe({
       next: (userResponse: Response) => {
+       
         this.userResponse = {
           ...userResponse.data,
           date_of_birth: new Date(userResponse.data.date_of_birth)
         };
+        // let id = this.tokenService.getUserId()
         this.userService.saveUserDetailToLocalStorage(this.userResponse!);
         this.router.navigate(['/']);
       },
       error: (error) => {
+        console.log(error);
+        
         const message = error.error.message;
         this.toastr.error(message, "LỖI", {
           timeOut: 2000

@@ -190,7 +190,7 @@ export class UserProfileComponent implements OnInit {
 
       this.userService.updatePassword(email, this.password_new, this.password_new_check).subscribe({
         next: (response: Response) => {
-          if (response.status == "OK") {
+          if (response.status == 200) {
             this.isLoading = false
 
             this.toastr.success("Thay đổi mật khẩu thành công", "THÀNH CÔNG", {
@@ -277,7 +277,7 @@ export class UserProfileComponent implements OnInit {
           this.isLoading = false
           console.log(response);
 
-          if (response.status == "OK") { // Kiểm tra response không null
+          if (response.status == 200) { // Kiểm tra response không null
             this.isSuccessVerifyCode = true
             this.isSuccessSendCode = true;
             const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
@@ -316,7 +316,7 @@ export class UserProfileComponent implements OnInit {
         next: (response: Response) => {
           this.isLoading = false
 
-          if (response.status == "OK") { // Kiểm tra response không null
+          if (response.status == 200) { // Kiểm tra response không null
             this.isChangeEmail = false;
             this.isSuccessSendEmailCode = true;
             const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
@@ -361,14 +361,14 @@ export class UserProfileComponent implements OnInit {
     this.userService.verifyEmailCodeToDo(otp, email).subscribe({
       next: (response: Response) => {
         this.isLoading = false
-        if (response.status == "OK") {
+        if (response.status == 200) {
 
 
           this.userService.updateEmail(email, this.email_new).subscribe({
             next: (response: Response) => {
 
 
-              if (response.status == "OK") {
+              if (response.status == 200) {
                 this.isSuccessSendEmailCode = false;
                 this.userResponse.email = this.email_new;
                 this.toastr.success("Thay đổi email thành công.", "THÀNH CÔNG", {
@@ -397,7 +397,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.verifyEmailCodeToDo(otp, email).subscribe({
       next: (response: Response) => {
         this.isLoading = false
-        if (response.status == "OK") {
+        if (response.status == 200) {
           this.isSuccessSendCode = false;
           this.isOpenResetPassword = true
           const message = 'Thay đổi mật khẩu thành công.';

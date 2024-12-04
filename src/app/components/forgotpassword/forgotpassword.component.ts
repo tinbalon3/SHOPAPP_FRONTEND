@@ -40,7 +40,7 @@ export class ForgotpasswordComponent implements OnInit {
     const otp = this.otp.join('');
     this.userService.verifyEmailCodeToDo(otp, this.email).subscribe({
       next: (response: Response) => {
-        if (response.status == "OK") {
+        if (response.status == 200) {
           this.isLoading = false
           this.toastr.success("Xác thực hành công", "THÀNH CÔNG", {
             timeOut: 2000,
@@ -89,7 +89,7 @@ export class ForgotpasswordComponent implements OnInit {
 checkIsMailIsExist(email:string) {
   this.userService.checkEmailIsExist(email).subscribe({
     next: (response: Response) => {
-      if (response.status == "OK") {
+      if (response.status == 200) {
         this.sendOTPCodeToEmail(email);
       }
       else{
@@ -110,7 +110,7 @@ checkIsMailIsExist(email:string) {
     this.userService.sendVerificationPasswordCode(email).subscribe({
       next: (response: Response) => {
         this.isLoading = false
-        if (response.status == "OK") { // Kiểm tra response không null
+        if (response.status == 200) { // Kiểm tra response không null
          this.isSuccessSendEmailCode = true
           const message = 'Hãy kiểm tra email để lấy mã xác nhận!';
           this.toastr.success(message, "Gửi thành công", {

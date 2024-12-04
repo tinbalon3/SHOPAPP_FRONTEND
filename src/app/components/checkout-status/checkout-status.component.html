@@ -15,13 +15,13 @@
             <div class="ezy__eporder4_R2OSM3iL-check">
               <i class="fas fa-check"></i>
             </div>
-            <ng-container *ngIf="this.status">
+            <ng-container *ngIf="this.status == 'success'">
               <h1 class="ezy__eporder4_R2OSM3iL-heading my-3">Đơn hàng của bạn đã được thanh toán thành công</h1>
               <p class="ezy__eporder4_R2OSM3iL-sub-heading">
                 Cảm ơn bạn vì đã ủng hộ chúng tôi, hi vọng bạn sẽ tiếp tục ủng hộ chúng tôi trong tương lai.
               </p>
             </ng-container>
-            <ng-container *ngIf="!this.status">
+            <ng-container *ngIf="this.status == 'failed'">
               <h1 class="ezy__eporder4_R2OSM3iL-heading my-3 text-danger">Thanh toán thất bại</h1>
               <p class="ezy__eporder4_R2OSM3iL-sub-heading">
                 Rất tiếc, đơn hàng của bạn không thể hoàn tất. Vui lòng thử lại hoặc liên hệ với chúng tôi để được hỗ trợ.

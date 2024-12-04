@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
     this.cartService.persistCartItems()
     this.userService.logout().subscribe({
       next: (response: Response) => {
-        if (response.status == "OK") {
+        if (response.status == 200) {
           
           this.toastr.success("Bạn đã đăng xuất thành công.", "THÔNG BÁO", {
             timeOut: 2000,

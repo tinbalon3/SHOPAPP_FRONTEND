@@ -14,7 +14,9 @@
   overflow: hidden;
   position: relative;
 }
-
+.form-control:disabled {
+  background-color: var(--bs-body-bg);;
+}
 /* Gray Block Style */
 .gray .ezy__eporder3_hQXDdI1y,
 .ezy__eporder3_hQXDdI1y.gray {

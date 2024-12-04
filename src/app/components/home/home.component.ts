@@ -68,7 +68,7 @@ export class HomeComponent implements OnInit {
   getPriceMaxAndMin(){
     this.productService.getPriceMaxAndMin().subscribe({
       next: (response:Response) => {
-        if(response.status == "OK"){
+        if(response.status == 200){
           this.maxPrice = response.data.maxPrice
           this.minPrice = response.data.minPrice
         }

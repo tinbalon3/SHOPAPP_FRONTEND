@@ -21,7 +21,7 @@ export class TokenInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    debugger
+
     localStorage.removeItem("isVerifyOTP")
     const token = this.tokenService.getTokenFromCookie();
     let authReq = req;

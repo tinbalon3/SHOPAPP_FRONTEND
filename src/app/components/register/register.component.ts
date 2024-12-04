@@ -155,7 +155,7 @@ export class RegisterComponent implements OnInit {
     this.userService.verifyRegisterCode(otp,this.registerForm.controls['user'].value.email).subscribe({
       next: (response: Response) => {
         localStorage.removeItem("isVerifyOTP")
-        if (response.status == "OK") {
+        if (response.status == 200) {
           this.isLoading = false
           this.toastr.success("Đăng kí thành công", "THÀNH CÔNG", {
             timeOut: 2000,});this.router.navigate(['/login'])}

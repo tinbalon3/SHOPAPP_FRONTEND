@@ -122,6 +122,18 @@ export class OrderComponent implements OnInit {
     )
   }
   increaseProduct(cartItem: CartItem) {
+    if(cartItem.quantity+1 > cartItem.stock) {
+      this.toastr1.error('Số lượng vượt quá số lượng tồn kho','LỖI',{
+      timeOut:2000
+      });
+      return
+    }
+    if(this.couponList.length > 0) {
+      this.couponList = [];
+      this.toastr1.info('Hãy áp dụng lại mã giảm giá trên giỏ hàng','THÔNG BÁO',{
+        timeOut:2000
+        });
+    }
     this.cartService.addToCart(cartItem);
     let existingCartItem = this.cartItems.find(item => item.id === cartItem.id);
     if (existingCartItem) {
@@ -129,6 +141,12 @@ export class OrderComponent implements OnInit {
     }
   }
   decreaseProduct(cartItem: CartItem) {
+    if(this.couponList.length > 0) {
+      this.couponList = [];
+      this.toastr1.info('Hãy áp dụng lại mã giảm giá trên giỏ hàng','THÔNG BÁO',{
+        timeOut:2000
+        });
+    }
     this.cartService.decrementQuantity(cartItem);
     let existingCartItem = this.cartItems.find(item => item.id === cartItem.id);
     if (existingCartItem) {
@@ -168,7 +186,6 @@ export class OrderComponent implements OnInit {
    if(!this.isApplyCoupon) {
     this.cartService.updateTotalPrice(0);
    }
-   this.saveCoupons()
 
   this.router.navigate(['/checkout']);
   }
@@ -179,15 +196,13 @@ export class OrderComponent implements OnInit {
   applyCoupon() {
     this.isApplyCoupon = true;
     if(this.cartItems.length != 0) {
-
-     
       const totalAmount = this.totalAmount;
-    
       this.couponService.applyCoupon( this.couponCode, totalAmount).subscribe({
         next: (response: any) => {
           this.totalAmount = this.totalAmount - response.data ; // Cập nhật tổng số tiền sau giảm giá
           this.cartService.updateTotalPrice(this.totalAmount);
           this.couponList.push(this.couponCode);
+          this.saveCoupons()
           // Thông báo thành công
           this.toastr1.success(`Mã giảm giá được áp dụng! Bạn được giảm ${response.data}`, 'Thành công', {
             timeOut: 2000,

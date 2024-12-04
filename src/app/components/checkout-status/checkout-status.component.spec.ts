@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CheckoutSuccessfullComponent } from './checkout-successfull.component';
+import { CheckoutSuccessfullComponent } from './checkout-status.component';
 
 describe('CheckoutSuccessfullComponent', () => {
   let component: CheckoutSuccessfullComponent;

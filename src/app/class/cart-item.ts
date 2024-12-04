@@ -9,6 +9,7 @@ export class CartItem {
     thumbnail:string;
     price:number;
     quantity:number;
+    stock: number
     number_of_rating :number
     sum_of_rating:number
     constructor(product:ProductDetailDTO){
@@ -19,5 +20,6 @@ export class CartItem {
         this.quantity = 1;
         this.number_of_rating = product.number_of_rating
         this.sum_of_rating = product.sum_of_rating
+        this.stock = product.stock
     }
 }

@@ -19,6 +19,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Response } from '../../response/response';
 import { LocationService } from '../../services/location.service';
 import { SharedDataService } from '../../services/shared-data.service';
+import { UserDetailResponse } from '../../response/user/user.response';
 
 
 @Component({
@@ -36,7 +37,7 @@ export class CheckOutComponent implements OnInit {
 
   states: any[] = [];
   cities: any[] = [];
-
+  userResponse!: UserDetailResponse | null;
   isApplyCoupon = false;
   couponList :string[] = []
   localstorage: Storage = localStorage
@@ -59,18 +60,16 @@ export class CheckOutComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.locationService.getLocations().subscribe((data) => {
-      this.provinces = data; // Gán dữ liệu tỉnh/thành
-    });
-    
-    // Lấy giá trị từ sessionStorage
+   
+    this.getProvince()
+
     this.couponList = this.sharedDataService.getCouponList();
     let userDetail = this.userService.getUserDetailFromLocalStorage();
     this.orderForm = this.formbuilder.group({
       customer: this.formbuilder.group({
-        fullname: new FormControl(userDetail.fullname, [Validators.required]),
-        email: new FormControl(userDetail.email, [Validators.email]),
-        phone_number: new FormControl(userDetail.phone_number, [Validators.required, Validators.pattern('[0-9]{10}'), ShopValidators.notOnlyWhitespace]),
+        fullname: new FormControl({value: userDetail.fullname, disabled: true}),
+        email: new FormControl({value: userDetail.email , disabled: true}),
+        phone_number: new FormControl(userDetail.phone_number, [Validators.required, ShopValidators.notOnlyWhitespace]),
       }),
       shipping_address: this.formbuilder.group({
         street: new FormControl(userDetail.address, [Validators.required, Validators.minLength(2), ShopValidators.notOnlyWhitespace]),
@@ -94,13 +93,23 @@ export class CheckOutComponent implements OnInit {
     this.cdr.detectChanges();
     this.listCartDetails()
   }
+  getProvince(){
+    this.locationService.getLocations().subscribe((data) => {
+      this.provinces = data; // Gán dữ liệu tỉnh/thành
+      if (this.provinces.length > 0) {
+        // Gán giá trị mặc định cho formControl
+        this.orderForm.get('shipping_address.state')?.setValue(this.provinces[0].name);
+        this.getCities()
+      }
+    });
+  }
   getCities(): void {
     // Lấy giá trị tỉnh/thành phố được chọn
     const stateName = this.orderForm.get('shipping_address')?.value.state;
 
     // Tìm tỉnh/thành phố trong danh sách
     const selectedProvince = this.provinces.find((province) => province.name === stateName);
-    console.log(selectedProvince);
+   
     
     // Lấy danh sách quận/huyện
     if (selectedProvince) {
@@ -145,11 +154,27 @@ export class CheckOutComponent implements OnInit {
         paymentUrl = paymentUrl.replace(" ","");
         window.location.href = paymentUrl
       }, 
-      error: e => {
+      error: (error:any) => {
+        const errorData = typeof error.error === 'string' ? JSON.parse(error.error) : error.error;
+  
+      
+        if(errorData.status == 500) {
+          this.toastr.error(errorData.message,"LỖI",{
+            timeOut: 2000
+          })
+        }
+        else if(errorData.status == 423 ) {
+      
+          let cartItem = this.cartItems.find((item) => {
+            return item.id == Number(errorData.data);
+          });
+           console.log(cartItem);
+          this.toastr.error(`Sản phẩm ${cartItem?.name} không đủ tồn kho, vui lòng kiểm tra lại đơn hàng.`,"LỖI",{
+            timeOut: 2000
+          })
+        }
+      
         
-        this.toastr.error("Sản phẩm không đủ tồn kho, vui lòng kiểm tra lại đơn hàng.","LỖI",{
-          timeOut: 2000
-        })
       }
         
     });

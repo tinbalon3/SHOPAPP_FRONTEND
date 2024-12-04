@@ -24,7 +24,7 @@ import { CategoryDialogComponent } from './components/category-dialog/category-d
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { CartStatusComponent } from './components/cart-status/cart-status.component';
 import { CheckOutComponent } from './components/check-out/check-out.component';
-import { CheckoutSuccessfullComponent } from './components/checkout-successfull/checkout-successfull.component';
+import { CheckoutStatusComponent } from './components/checkout-status/checkout-status.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { VerifyEmailSuccessfullyComponent } from './components/verify-email-successfully/verify-email-successfully.component';
 import { ReviewProductComponent } from './components/review-product/review-product.component';
@@ -46,7 +46,7 @@ const routes : Routes = [
   {path: 'products/:id',component:DetailProductComponent},
   {path: 'user-profile',component: UserProfileComponent},
   {path: 'orders',component: OrderComponent},
-  {path: 'checkout-successfull',component: CheckoutSuccessfullComponent},
+  {path: 'checkout-status',component: CheckoutStatusComponent},
   {path: 'orders/:id',component: OrderDetailComponent},
   {path: 'checkout',component: CheckOutComponent},
   {path: '', component: HomeComponent, pathMatch: 'full' },
@@ -72,7 +72,7 @@ const routes : Routes = [
     OrderHistoryComponent,
     CartStatusComponent,
     CheckOutComponent,
-    CheckoutSuccessfullComponent,
+    CheckoutStatusComponent,
     VerifyEmailComponent,
     VerifyEmailSuccessfullyComponent,
     ReviewProductComponent,
