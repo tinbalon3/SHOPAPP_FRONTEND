@@ -31,7 +31,7 @@ export class LoginComponent {
     private router: Router,
     private userService: UserService,
     private tokenService: TokenService,
-   
+    private roleService: RoleService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService
    
@@ -40,12 +40,13 @@ export class LoginComponent {
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       user: this.formBuilder.group({
-        user_name: new FormControl('', [Validators.required]),
-        password: new FormControl('', Validators.required),
+        user_name: new FormControl(''),
+        password: new FormControl(''),
         role: new FormControl(1, Validators.required),
-        rememberMe: new FormControl(true)
+      
       })
     });
+    this.getRoles()
     // Gọi API lấy danh sách roles và lưu vào biến roles
     window.addEventListener('message', (event) => {
       // Kiểm tra nguồn của thông điệp
@@ -63,7 +64,7 @@ export class LoginComponent {
           timeOut:2000
          })
         // Tiến hành lấy chi tiết người dùng và chuyển hướng
-        this.getUserDetailsAndNavigate(token);
+        this.getUserDetailsAndNavigate(token,event.data.response.data.roles);
       }
       if (event.origin === window.location.origin && event.data.type === 'login-failed') {
         this.toastr.error(event.data.response,"LỖI",{
@@ -73,17 +74,28 @@ export class LoginComponent {
     });
    
   }
-  getUserDetailsAndNavigate(token: string) {
+
+  getRoles(){
+    this.roleService.getRoles().subscribe({
+      next:(response:Response)=> {
+        
+        this.roles = response.data
+       }
+      
+    })
+  }
+  getUserDetailsAndNavigate(token: string,role_name:string) {
     this.userService.getUserDetails(token).subscribe({
       next: (userResponse: Response) => {
-       
+        
         this.userResponse = {
           ...userResponse.data,
           date_of_birth: new Date(userResponse.data.date_of_birth)
         };
+       
         // let id = this.tokenService.getUserId()
         this.userService.saveUserDetailToLocalStorage(this.userResponse!);
-        this.router.navigate(['/']);
+        this.navigateBasedOnUserRole(role_name)
       },
       error: (error) => {
         console.log(error);
@@ -103,17 +115,15 @@ export class LoginComponent {
     this.userService.loginWithGoogle().subscribe({
       next: (response: Response) => {
         // Mở cửa sổ pop-up thay vì tab mới
-        
+       
         const authUrl = response.data;
         const width = 600;
         const height = 800;
         const left = (window.innerWidth / 2) - (width / 2);
         const top = (window.innerHeight / 2) - (height / 2);
         const windowFeatures = `width=${width}, height=${height}, top=${top}, left=${left}`;
-        
-        const popupWindow = window.open(authUrl, 'Google Login', windowFeatures);
-       
-
+        window.open(authUrl, 'Google Login', windowFeatures);
+      
        
       },
       error: (error) => {
@@ -128,11 +138,9 @@ export class LoginComponent {
     const loginDTO: LoginDTO = {
       user_name: this.loginForm.controls['user'].value.user_name,
       password: this.loginForm.controls['user'].value.password,
-      roleId: 1
+      roleId: this.loginForm.controls['user'].value.role
     };
-  console.log(loginDTO);
-  
-    
+
     this.userService.login(loginDTO).subscribe({
       next: (response:Response) => {
 
@@ -146,7 +154,8 @@ export class LoginComponent {
         this.tokenService.setExpiredRefreshTokenInCookie(expiredDate)
         
         // Gọi API lấy chi tiết người dùng
-        this.getUserDetailsAndNavigate(token);
+        this.getUserDetailsAndNavigate(token,response.data.roles[0]);
+       
       },
       error: (error) => {
         const message = error.error.message
@@ -157,39 +166,14 @@ export class LoginComponent {
     });
   }
  
-  // getUserDetailsAndNavigate(token: string) {
-  //   this.userService.getUserDetails(token).subscribe({
-  //     next: (userResponse:Response) => {
-  //       this.userResponse = {
-  //         ...userResponse.data,
-  //         date_of_birth: new Date(userResponse.data.date_of_birth)
-  //       };
-  
-  //       // Lưu trữ chi tiết người dùng dựa trên tùy chọn "remember me"
-  //       // if (rememberMe) {
-  //       //   // Lưu trữ lâu dài
-  //         this.userService.saveUserDetailToLocalStorage(this.userResponse);
-  //       // }
-  //       // else {
-  //         // this.userService.saveUserDetailToSessionStorage(this.userResponse);
-  //       // }
-  //       // Điều hướng dựa trên vai trò người dùng
-  //       // this.navigateBasedOnUserRole(userResponse.data.role_id.name);
-  //       this.router.navigate(['/']);
-  //     },
-  //     error: (error) => {
-  //       const message = error.error.message;
-  //       this.toastr.error(message, "LỖI", {
-  //         timeOut: 2000
-  //       });
-  //     }
-  //   });
-  // }
+ 
   
   navigateBasedOnUserRole(roleName: string) {
-    if (roleName === 'admin') {
-      this.router.navigate(['/admin/orders']);
-    } else if (roleName === 'user') {
+    console.log(roleName);
+    
+    if (roleName === 'ROLE_ADMIN') {
+      this.router.navigate(['/admin/products']);
+    } else if (roleName === 'ROLE_USER') {
       this.router.navigate(['/']);
     }
   }

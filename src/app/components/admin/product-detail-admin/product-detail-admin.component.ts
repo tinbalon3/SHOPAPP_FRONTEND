@@ -22,15 +22,17 @@ export class ProductDetailAdminComponent implements OnInit {
   files: File[] = [];
   idImages: number [] = [];
   productInfoForm!: FormGroup;
-  product?: ProductDetailDTO;
+  productDetail?: ProductDetailDTO;
   productId: number = 0;
   categories: Category[] = [];
   productImages: any[] = []
   selectedFiles: File[] = [];
   updateImages: boolean[] = [];
   maximum_images = 5;
+  isAddProduct=false;
   isLoading = false
   additionalImageInputs: number[] = [];
+  addImages: number[] = [];
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
@@ -43,19 +45,26 @@ export class ProductDetailAdminComponent implements OnInit {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam !== null) {
       this.productId = +idParam;
+      this.getProductDetail(this.productId);
+      
+    }
+    else {
+      this.isAddProduct=true;
+      this.addImages.length = 5;
     }
     this.initializeForm();
     this.getCategory();
-    this.getProductDetail(this.productId);
+    
 
   }
   initializeForm(): void {
     this.productInfoForm = this.formBuilder.group({
       productId: [{ value: '', disabled: true }],
-      productName: [''],
-      productPrice: [''],
-      productDescription: [''],
-      productCategory: ['']
+      productName: ['Táo Châu Đốc'],
+      productPrice: [12000],
+      productDescription: ['Thơm ngon'],
+      productCategory: [14],
+      productStock: [20]
     });
 
 
@@ -73,29 +82,29 @@ export class ProductDetailAdminComponent implements OnInit {
       }
     })
   }
+
   getProductDetail(productId:number) {
     this.isLoading = true
     if (!isNaN(productId)) {
       this.productService.getProductDetail(productId).subscribe({
         next: (response:Response) => {
           this.isLoading = false
-          console.log(response);
-          
-          const productDetail = response.data;
-
-          if (productDetail.product_images && productDetail.product_images.length > 0) {
-            productDetail.product_images.forEach((product_image: ProductImages) => {
+          this.productDetail = response.data;
+          if (this.productDetail?.product_images && this.productDetail?.product_images.length > 0) {
+            this.productDetail?.product_images.forEach((product_image: ProductImages) => {
               product_image.images_url = `${environment.apiBaseUrl}/products/images/${product_image.images_url}`
 
             })
           }
-          this.product = productDetail;
-          this.additionalImageInputs = Array.from({ length: this.maximum_images - this.product?.product_images.length! }, (_, i) => i);          this.productInfoForm.patchValue({
+         
+          this.additionalImageInputs = Array.from({ length: this.maximum_images - this.productDetail?.product_images.length! }, (_, i) => i);          
+          this.productInfoForm.patchValue({
             productId: this.productId,
-            productName: this.product!.name,
-            productPrice: this.product!.price,
-            productDescription: this.product!.description,
-            productCategory: this.product!.category_id
+            productName: this.productDetail!.name,
+            productPrice: this.productDetail!.price,
+            productDescription: this.productDetail!.description,
+            productCategory: this.productDetail!.category_id,
+            productStock:this.productDetail!.stock
           });
 
         },
@@ -108,13 +117,57 @@ export class ProductDetailAdminComponent implements OnInit {
       })
     }
   }
+  addProduct(): void {
+    const formData = new FormData();
 
+  // Add JSON dữ liệu sản phẩm vào `formData`
+  const product = {
+    name: this.productInfoForm.controls['productName'].value,
+    price: this.productInfoForm.controls['productPrice'].value,
+    description: this.productInfoForm.controls['productDescription'].value,
+    category_id: this.productInfoForm.controls['productCategory'].value,
+    stock: this.productInfoForm.controls['productStock'].value,
+  };
+    // Chuyển đổi JSON thành Blob để gửi qua FormData
+    const jsonBlob = new Blob([JSON.stringify(product)], { type: 'application/json' });
+
+    // Thêm tệp JSON vào FormData
+    formData.append('product', jsonBlob, 'product.json');
+
+  // Add file vào `formData` (multiple images)
+  for (const file of this.selectedFiles) {
+    formData.append('images', file);
+  }
+console.log(formData.get('product'));
+
+  
+    this.isLoading = true
+    this.productService.addProduct(formData).subscribe({
+      next:(response:Response) => {
+        this.isLoading = false
+        this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÀNH CÔNG", {
+          timeOut: 2000
+        })
+        this.productDetail = response.data;
+        this.productDetail!.id = this.productId;
+        location.reload()
+      },
+      error:(e) => {
+        this.isLoading = false
+        this.toastr.error("Thay đổi thất bại", "THÀNH CÔNG", {
+          timeOut: 2000
+        })
+        console.log("Update product failed : ",e)
+      }
+    });
+  }
   saveProductInfo(): void {
     const product = {
       name: this.productInfoForm.controls['productName'].value,
       price: this.productInfoForm.controls['productPrice'].value,
       description: this.productInfoForm.controls['productDescription'].value,
       category_id: this.productInfoForm.controls['productCategory'].value,
+      stock: this.productInfoForm.controls['productStock'].value,
     }
     this.isLoading = true
     this.productService.updateProduct(product,this.productId).subscribe({
@@ -123,8 +176,8 @@ export class ProductDetailAdminComponent implements OnInit {
         this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÀNH CÔNG", {
           timeOut: 2000
         })
-        this.product = response.data;
-        this.product!.id = this.productId;
+        this.productDetail = response.data;
+        this.productDetail!.id = this.productId;
         location.reload()
       },
       error:(e) => {
@@ -136,6 +189,7 @@ export class ProductDetailAdminComponent implements OnInit {
       }
     });
   }
+
   filterByCategory(categoryId: any): void {
     if (categoryId.value) {
 
@@ -147,6 +201,8 @@ export class ProductDetailAdminComponent implements OnInit {
       this.idImages.push(id);
       this.updateImages.push(updateImage);
     }
+    console.log(this.selectedFiles);
+    
     const input = file.target as HTMLInputElement;
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -179,12 +235,14 @@ export class ProductDetailAdminComponent implements OnInit {
       formData.append('imageIds', this.idImages[i].toString());
       formData.append('updateImages', this.updateImages[i].toString());
     }
+    
+    
     this.isLoading = true
     this.productService.updateImages(formData, this.productId).subscribe({
      next:(response:any) => {
       this.isLoading = false
 
-        this.toastr.success(`Images updated successfully: ${response}`, "THÀNH CÔNG", {
+        this.toastr.success(`Hình ảnh đã được cập nhật thành công: ${response}`, "THÀNH CÔNG", {
           timeOut: 2000
         })
        },
@@ -192,7 +250,7 @@ export class ProductDetailAdminComponent implements OnInit {
       error:(err:any) => {
         this.isLoading = false
        
-        this.toastr.success(`Error updating images: ${err.message}`, "THÀNH CÔNG", {
+        this.toastr.success(`Có lỗi trong quá trình cập nhật ảnh: ${err.message}`, "THÀNH CÔNG", {
           timeOut: 2000
         })
       }

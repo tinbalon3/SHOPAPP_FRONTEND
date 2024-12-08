@@ -92,7 +92,7 @@ const routes : Routes = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
     NgbModule,
-    // AdminModule,
+    AdminModule,
     ToastrModule.forRoot() ,
     BrowserAnimationsModule,
     ModalModule.forRoot()

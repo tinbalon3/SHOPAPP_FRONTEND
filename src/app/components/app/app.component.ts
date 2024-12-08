@@ -19,12 +19,7 @@ export class AppComponent implements OnInit{
     
 ){}
 ngOnInit(): void {
- const refreshToken = this.tokenService.getRefreshTokenFromCookie();
- const token = this.tokenService.getTokenFromCookie();
 
- if(refreshToken && token == null) {
-    
- }
   
 }
 

@@ -3,28 +3,61 @@
         <!-- Product Information Section -->
         <div class="col-md-6">
             <h3>Thông tin sản phẩm</h3>
-            <form [formGroup]="productInfoForm" (ngSubmit)="saveProductInfo()">
+            <form *ngIf="this.isAddProduct" [formGroup]="productInfoForm" (ngSubmit)="addProduct()">
                 <div class="form-group">
                     <label for="productId">Mã sản phẩm</label>
                     <input type="text" [value]="productId" class="form-control" formControlName="productId">
                 </div>
                 <div class="form-group">
                     <label for="productName">Tên sản phẩm</label>
-                    <input type="text" [value]="product?.name" class="form-control" formControlName="productName">
+                    <input type="text" [value]="this.productDetail?.name" class="form-control" formControlName="productName">
                 </div>
                 <div class="form-group">
                     <label for="productPrice">Giá sản phẩm</label>
-                    <input type="number" [value]="product?.price" class="form-control" formControlName="productPrice">
+                    <input type="number" [value]="this.productDetail?.price" class="form-control" formControlName="productPrice">
                 </div>
                 <div class="form-group">
                     <label for="productDescription">Mô tả sản phẩm</label>
-                    <textarea class="form-control" [value]="product?.description" formControlName="productDescription" rows="10"></textarea>
+                    <textarea class="form-control" [value]="this.productDetail?.description" formControlName="productDescription" rows="10"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="productCategory">Phân loại</label>
                     <select id="categorySelect" formControlName="productCategory" class="form-control" (change)="filterByCategory($event.target!)">
                         <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Tồn kho</label>
+                    <input type="number" [value]="this.productDetail?.price" class="form-control" formControlName="productPrice">
+                </div>
+                <button type="submit" class="btn btn-primary mt-5">Lưu thay đổi</button>
+            </form>
+            <form *ngIf="!this.isAddProduct" [formGroup]="productInfoForm" (ngSubmit)="saveProductInfo()">
+                <div class="form-group">
+                    <label for="productId">Mã sản phẩm</label>
+                    <input type="text" [value]="productId" class="form-control" formControlName="productId">
+                </div>
+                <div class="form-group">
+                    <label for="productName">Tên sản phẩm</label>
+                    <input type="text" [value]="this.productDetail?.name" class="form-control" formControlName="productName">
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Giá sản phẩm</label>
+                    <input type="number" [value]="this.productDetail?.price" class="form-control" formControlName="productPrice">
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Mô tả sản phẩm</label>
+                    <textarea class="form-control" [value]="this.productDetail?.description" formControlName="productDescription" rows="10"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Phân loại</label>
+                    <select id="categorySelect" formControlName="productCategory" class="form-control" (change)="filterByCategory($event.target!)">
+                        <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Tồn kho</label>
+                    <input type="number" [value]="this.productDetail?.price" class="form-control" formControlName="productPrice">
                 </div>
                 <button type="submit" class="btn btn-primary mt-5">Lưu thay đổi</button>
             </form>
@@ -33,7 +66,7 @@
             <h3 class="mb-4">Ảnh sản phẩm</h3>
             <form (ngSubmit)="saveProductImages()">
                 <div class="row">
-                    <div class="col-md-4 mb-4" *ngFor="let image of product?.product_images">
+                    <div class="col-md-4 mb-4" *ngFor="let image of this.productDetail?.product_images">
                         <div class="image-container">
                             <img [src]="image.images_url" class="product-image img-fluid mb-2" [id]="'productImage-' + image.id">
                             <input type="file"  class="form-control-file mt-2" (change)="onFileChange($event, image.id, false)">
@@ -41,15 +74,23 @@
                         </div>
                     </div>
                     <ng-container *ngIf="additionalImageInputs.length > 0">
-                        <div class="col-md-4 mb-4" *ngFor="let image of additionalImageInputs;">
+                        <div class="col-md-4 mb-4" *ngFor="let image of additionalImageInputs;let i = index">
                             <div class="image-container">
-                                <img class="product-image img-fluid mb-2">
-                                <input type="file" class="form-control-file mt-2" (change)="onFileChange($event, 0, true)">
+                                <img class="product-image img-fluid mb-2" [id]="'productImage-' + i">
+                                <input type="file" class="form-control-file mt-2" (change)="onFileChange($event, i, true)">
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="addImages.length > 0 && isAddProduct">
+                        <div class="col-md-4 mb-4" *ngFor="let image of addImages;let i = index">
+                            <div class="image-container">
+                                <img class="product-image img-fluid mb-2" [id]="'productImage-' + i">
+                                <input type="file" class="form-control-file mt-2" (change)="onFileChange($event, i, false)">
                             </div>
                         </div>
                     </ng-container>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Lưu hình ảnh</button>
+                <button *ngIf="!isAddProduct" type="submit" class="btn btn-primary mt-3">Lưu hình ảnh</button>
             </form>
         </div>
     </div>

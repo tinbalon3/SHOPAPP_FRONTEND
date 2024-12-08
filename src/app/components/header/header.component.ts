@@ -56,8 +56,6 @@ export class HeaderComponent implements OnInit {
           timeOut: 2000
         });
       }
-
-
     });
   }
 }

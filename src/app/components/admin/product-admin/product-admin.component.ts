@@ -113,7 +113,7 @@ export class ProductAdminComponent {
     })
   }
   viewProductDetail(id:number){
-    this.router.navigate(['/admin/products',id])
+    this.router.navigate(['/admin/products/edit/',id])
   }
   deleteProduct(id:number){
     this.productService.deleteProduct(id).subscribe({

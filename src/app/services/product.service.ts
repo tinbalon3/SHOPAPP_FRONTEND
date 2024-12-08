@@ -2,9 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, Observer } from 'rxjs';
-import { ProductResponse } from '../response/product/product.response';
 import { environment } from '../../enviroments/environment';
-import { CartItem } from '../class/cart-item';
 import { Response } from '../response/response';
 
 @Injectable({
@@ -26,6 +24,10 @@ export class ProductService {
     .set('limit', limit.toString());
     return this.http.get<Response>(this.apiProducts, {params})
   }
+  addProduct(formData:any):Observable<Response> {
+    return this.http.post<Response>(`${this.apiProducts}`,formData
+    )
+  }
   getProductDetail(productId:number): Observable<Response> {
     return this.http.get<Response>(`${this.apiProducts}/${productId}`);
   }
@@ -34,7 +36,7 @@ export class ProductService {
   }
   updateImages(formData:FormData,productId:number): Observable <any>{
     
-    return this.http.put(`${this.apiProducts}/upload/${productId}`,formData);
+    return this.http.put(`${this.apiProducts}/images/upload/${productId}`,formData);
   }
   updateProduct(product:any,id:number):Observable<Response>{
     return this.http.put<Response>(`${this.apiProducts}/update/${id}`,product);

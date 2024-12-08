@@ -188,7 +188,7 @@ export class UserService implements OnInit {
   callbackAuth(code: string): Observable<any> {
     let params = new HttpParams()
       .set('code', code.toString())
-    return this.http.get(this.apiCallbackAuth, {params,headers: {
+    return this.http.get(this.apiCallbackAuth, {params, headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'vi',
       }

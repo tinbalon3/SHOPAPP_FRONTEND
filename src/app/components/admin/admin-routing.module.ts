@@ -26,7 +26,11 @@ const routes: Routes = [
                 component: ProductAdminComponent
             },
             {
-                path: 'products/:id',
+                path: 'products/edit/:id',
+                component: ProductDetailAdminComponent
+            },
+            {
+                path: 'products/add',
                 component: ProductDetailAdminComponent
             },
             {

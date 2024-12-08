@@ -7,5 +7,6 @@ export interface UserDetailResponse {
     address:string;
     date_of_birth:Date;
     active:number;
+    role_name:string
     [key: string]: any; // Chỉ mục này cho phép sử dụng bất kỳ chuỗi nào để truy cập thuộc tính
 }
