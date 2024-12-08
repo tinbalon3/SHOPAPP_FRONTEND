@@ -64,7 +64,9 @@ export class LoginComponent {
           timeOut:2000
          })
         // Tiến hành lấy chi tiết người dùng và chuyển hướng
-        this.getUserDetailsAndNavigate(token,event.data.response.data.roles);
+      
+        
+        this.getUserDetailsAndNavigate(token,event.data.response.data.roles[0]);
       }
       if (event.origin === window.location.origin && event.data.type === 'login-failed') {
         this.toastr.error(event.data.response,"LỖI",{
@@ -154,6 +156,9 @@ export class LoginComponent {
         this.tokenService.setExpiredRefreshTokenInCookie(expiredDate)
         
         // Gọi API lấy chi tiết người dùng
+       
+      
+        
         this.getUserDetailsAndNavigate(token,response.data.roles[0]);
        
       },
@@ -169,11 +174,14 @@ export class LoginComponent {
  
   
   navigateBasedOnUserRole(roleName: string) {
-    console.log(roleName);
+    
+   
     
     if (roleName === 'ROLE_ADMIN') {
       this.router.navigate(['/admin/products']);
     } else if (roleName === 'ROLE_USER') {
+      console.log("test");
+      
       this.router.navigate(['/']);
     }
   }
