@@ -48,18 +48,20 @@ export class ForgotpasswordComponent implements OnInit {
           this.resetPasswordUser(this.email)
         }
         else {
-          this.toastr.error("Mã OTP không chính xác, vui lòng thử lại", "THẤT BẠI", {
+          this.toastr.error("Mã OTP không chính xác. Vui lòng thử lại", "THẤT BẠI", {
             timeOut: 2000,
           });
           this.isLoading = false
-        
+       
+         
         }
       },
       error: (err: any) => {
         this.isLoading = false
-        this.toastr.error("Có lỗi xảy ra với hệ thống, vui lòng thử lại", "THẤT BẠI", {
+        this.toastr.error("Mã OTP hết hạn. Vui lòng thử lại", "THẤT BẠI", {
           timeOut: 2000,
         })
+        this.isSuccessSendEmailCode = false;
       }
     })
   }
@@ -76,11 +78,12 @@ export class ForgotpasswordComponent implements OnInit {
       error: (err: any) => {
         this.isResendDisabled = false;
         // Truy cập thông điệp lỗi từ backend
+      
         const errorMessage = err.error.message || 'Có lỗi xảy ra';
         this.toastr.error(errorMessage, "THẤT BẠI", {
           timeOut: 4000
         });
-        this.router.navigate(['/login'])
+        this.isSuccessSendEmailCode = false;
 
       }
     })
@@ -92,12 +95,16 @@ checkIsMailIsExist(email:string) {
       if (response.status == 200) {
         this.sendOTPCodeToEmail(email);
       }
-      else{
-        this.toastr.error(response.message, "THẤT BẠI", {
-          timeOut: 2000,
+    },error:(error:any) => {
+     
+        console.log(error.error.message);
+        
+        this.toastr.error(error.error.message, "THẤT BẠI", {
+          timeOut: 4000,
       })
-      }
-    }
+    
+     }
+    
   })
 }
   sendOTPCodeToEmail(email: string) {

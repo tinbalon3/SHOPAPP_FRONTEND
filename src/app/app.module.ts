@@ -45,7 +45,7 @@ const routes : Routes = [
   {path: 'register',component: RegisterComponent},
   {path: 'products/:id',component:DetailProductComponent},
   {path: 'user-profile',component: UserProfileComponent},
-  {path: 'orders',component: OrderComponent},
+  {path: 'orders',component: OrderComponent, canActivate: [AuthGuard]},
   {path: 'checkout-status',component: CheckoutStatusComponent},
   {path: 'orders/:id',component: OrderDetailComponent},
   {path: 'checkout',component: CheckOutComponent},

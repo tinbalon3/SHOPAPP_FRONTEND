@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../../models/product.interface';
 import { ProductImages } from '../../../models/productimgaes.interface';
 
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/category.interface';
 import { environment } from '../../../../enviroments/environment';
@@ -61,7 +61,7 @@ export class ProductDetailAdminComponent implements OnInit {
     this.productInfoForm = this.formBuilder.group({
       productId: [{ value: '', disabled: true }],
       productName: ['Táo Châu Đốc'],
-      productPrice: [12000],
+      productPrice: [12000, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
       productDescription: ['Thơm ngon'],
       productCategory: [14],
       productStock: [20]
@@ -119,7 +119,12 @@ export class ProductDetailAdminComponent implements OnInit {
   }
   addProduct(): void {
     const formData = new FormData();
-
+    if (this.productInfoForm.invalid) {
+      this.toastr.error("Điền sai thông tin", "",{
+        timeOut: 3000,
+      })
+      return;
+    } 
   // Add JSON dữ liệu sản phẩm vào `formData`
   const product = {
     name: this.productInfoForm.controls['productName'].value,
