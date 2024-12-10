@@ -60,9 +60,7 @@ export class LoginComponent {
           this.tokenService.setTokenInCookie(token);
           this.tokenService.setRefreshTokenInCookie(refresh_token);
           this.tokenService.setExpiredRefreshTokenInCookie(expiredDate)
-         this.toastr.success("Đăng nhập thành công","",{
-          timeOut:2000
-         })
+        
         // Tiến hành lấy chi tiết người dùng và chuyển hướng
       
         
@@ -174,9 +172,9 @@ export class LoginComponent {
  
   
   navigateBasedOnUserRole(roleName: string) {
-    
-   
-    
+    this.toastr.success("Đăng nhập thành công","THÔNG BÁO",{
+      timeOut:2000
+     })
     if (roleName === 'ROLE_ADMIN') {
       this.router.navigate(['/admin/products']);
     } else if (roleName === 'ROLE_USER') {

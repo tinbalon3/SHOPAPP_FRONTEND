@@ -44,29 +44,6 @@ export class AuthcallbackComponent implements OnInit {
 
   }
 
-  navigateBasedOnUserRole(roleName: string) {
-    if (roleName === 'admin') {
-      this.router.navigate(['/admin/orders']);
-    } else if (roleName === 'user') {
-      this.router.navigate(['/']);
-    }
-  }
-  getUserDetailsAndNavigate(token: string) {
-    this.userService.getUserDetails(token).subscribe({
-      next: (userResponse: Response) => {
-        this.userResponse = {
-          ...userResponse.data,
-          date_of_birth: new Date(userResponse.data.date_of_birth)
-        };
-        this.userService.saveUserDetailToLocalStorage(this.userResponse!);
-        this.router.navigate(['/']);
-      },
-      error: (error) => {
-        const message = error.error.message;
-        this.toastr.error(message, "LỖI", {
-          timeOut: 2000
-        });
-      }
-    });
-  }
+
+  
 }

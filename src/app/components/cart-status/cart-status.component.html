@@ -1,7 +1,7 @@
 <div class="cart-area d-n">
     <a routerLink="/orders">
-        <div class="total">{{totalPrice}}
-            <span>{{totalQuantity}}</span>
+        <div class="total">{{totalPrice| currency:'VND'}}
+            <span>{{totalQuantity }}</span>
         </div>
         <i class="fa fa-shopping-cart" aria-hidden="true"></i>
     </a>

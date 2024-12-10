@@ -140,12 +140,15 @@ export class ProductDetailAdminComponent implements OnInit {
     formData.append('product', jsonBlob, 'product.json');
 
   // Add file vào `formData` (multiple images)
+  if(this.selectedFiles.length < 3) {
+    this.toastr.error("Cần có ít nhất 3 hình ảnh sản phẩm", "LỖI",{
+      timeOut: 3000,
+    })
+    return;
+  }
   for (const file of this.selectedFiles) {
     formData.append('images', file);
   }
-console.log(formData.get('product'));
-
-  
     this.isLoading = true
     this.productService.addProduct(formData).subscribe({
       next:(response:Response) => {
@@ -159,7 +162,7 @@ console.log(formData.get('product'));
       },
       error:(e) => {
         this.isLoading = false
-        this.toastr.error("Thay đổi thất bại", "THÀNH CÔNG", {
+        this.toastr.error(e.error.message, "THẤT BẠI", {
           timeOut: 2000
         })
         console.log("Update product failed : ",e)

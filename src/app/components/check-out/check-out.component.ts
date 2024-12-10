@@ -160,7 +160,7 @@ export class CheckOutComponent implements OnInit {
       
         if(errorData.status == 500) {
           this.toastr.error(errorData.message,"LỖI",{
-            timeOut: 2000
+            timeOut: 4000
           })
         }
         else if(errorData.status == 423 ) {

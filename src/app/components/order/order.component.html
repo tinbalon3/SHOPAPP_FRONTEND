@@ -36,7 +36,7 @@
                           class="fas fa-chevron-down"></i></button>
                     </div>
                   </div>
-                  <h3 class="ezy__epcart4_OdTjk3TS-price mb-0">{{ (item.price * item.quantity)}} VND
+                  <h3 class="ezy__epcart4_OdTjk3TS-price mb-0">{{ (item.price * item.quantity) | currency:'VND'}} 
                   </h3>
                 </div>
               </div>
@@ -61,22 +61,22 @@
 
             <div class="d-flex justify-content-between align-items-center">
               <span>Tổng phụ</span>
-              <span class="fw-bold">{{totalAmount | number:'1.0-2'}} VND</span>
+              <span class="fw-bold">{{totalAmount |  currency:'VND'}} </span>
             </div>
             <hr class="ezy__epcart4_OdTjk3TS-hr" />
             <div class="d-flex justify-content-between align-items-center">
               <span>Phí giao hàng</span>
-              <span class="fw-bold">0 VND</span>
+              <span class="fw-bold">{{0 | currency:'VND'}}</span>
             </div>
             <hr class="ezy__epcart4_OdTjk3TS-hr" />
             <div class="d-flex justify-content-between align-items-center">
               <span>Thuế</span>
-              <span class="fw-bold">0 VND</span>
+              <span class="fw-bold">{{0 | currency:'VND'}}</span>
             </div>
             <hr class="ezy__epcart4_OdTjk3TS-hr" />
             <div class="d-flex justify-content-between align-items-center">
               <span class="fs-5 fw-bold">Tổng cộng</span>
-              <span class="fw-bold">{{totalAmount | number:'1.0-2'}} VND</span>
+              <span class="fw-bold">{{totalAmount  | currency:'VND'}}</span>
             </div>
           </div>
           <div class="card-body ">
@@ -87,7 +87,7 @@
                 class="btn btn-dark" 
                 [disabled]="isApplyCoupon" 
                 (click)="applyCoupon()"
-                type="button">Apply</button>
+                type="button">Áp dụng</button>
             </div>
 
           </div>
