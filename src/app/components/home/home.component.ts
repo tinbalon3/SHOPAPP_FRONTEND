@@ -197,7 +197,7 @@ export class HomeComponent implements OnInit {
     this.categoryService.getCategory().subscribe({
       next: (response:Response) => {
         this.categories = response.data.filter((category:any) => category && category.id && category.name && category.isActive);
-        console.log( this.categories);
+        
         
       },
       complete: () => {

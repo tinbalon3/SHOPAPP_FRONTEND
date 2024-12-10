@@ -15,7 +15,9 @@
           <p class="mb-1">
             {{theCartItem.name}}
           </p>
-          
+          <p class="mb-1">
+            {{theCartItem.price | currency:'VND'}}
+          </p>
         </div>
       </div>
       <div class="mb-4">
@@ -38,9 +40,12 @@
         <textarea
         [(ngModel)]="content"
           class="form-control"
-          placeholder="Hãy chia sẻ những điều bạn thích về sản phẩm này với những người mua khác nhé."
+          placeholder="Hãy chia sẻ những điều bạn thích về sản phẩm này với những người mua khác nhé. Tối đa 50 kí tự"
           rows="3"
         ></textarea>
+        <small [ngClass]="{'text-danger': content.length > 50, 'text-muted': content.length <= 50}">
+          {{ content.length }}/50
+        </small>
       </div>
       <div class="d-flex justify-content-end">
         <button style="margin-right: 12px;" (click)="bsModalRef.hide()" class="btn btn-light">TRỞ LẠI</button>

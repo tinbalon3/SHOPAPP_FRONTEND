@@ -83,7 +83,21 @@ throw new Error('Method not implemented.');
         
           return;
         }
-        this.orderHistory = response.data.orderDetails;
+        this.orderHistory = response.data.orderDetails.map((order:OrderHistoryDTO) => {
+            if(order.status == 'PROCESSING')
+                order.status = 'Đang xử lý'
+            if(order.status == 'SHIPPED')
+                order.status = 'Đã vận chuyển'
+            if(order.status == 'DELIVERED')
+                order.status = 'Đã vận chuyển'
+            if(order.status == 'PENDING')
+                order.status = 'Chưa xử lý'
+            if(order.status == 'CANCELED')
+                order.status = 'Đã hủy'
+            return order
+        });
+        console.log(this.orderHistory);
+        
         this.totalElements = response.data.totalElements;
       },
      

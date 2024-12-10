@@ -7,6 +7,7 @@ import { ReviewProductRatingService } from '../../services/review-product-rating
 import { CartItem } from '../../class/cart-item';
 import { environment } from '../../../enviroments/environment';
 import { Response } from '../../response/response';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -27,13 +28,16 @@ export class ReviewProductRatingComponent implements OnInit{
   limit: number = 3; // Số lượng đánh giá tối đa hiển thị
 
  
-  constructor(public bsModalRef: BsModalRef,private router:ActivatedRoute,private tokenSerivce: TokenService,private reviewRatingService: ReviewProductRatingService) {}
+  constructor(public bsModalRef: BsModalRef,
+    private router:ActivatedRoute,
+    private tokenSerivce: TokenService,
+    private reviewRatingService: ReviewProductRatingService,
+    private toastr: ToastrService) {}
   
   ngOnInit(): void {
     if(!this.theCartItem.thumbnail.includes(`${environment.apiBaseUrl}/products/images/`)){
       this.theCartItem.thumbnail = `${environment.apiBaseUrl}/products/images/${this.theCartItem.thumbnail}`
     }
-  console.log(this.theCartItem);
   
     this.user_id = this.tokenSerivce.getUserId();
   }
@@ -51,7 +55,16 @@ export class ReviewProductRatingComponent implements OnInit{
     const rate = new RatingDTO(this.user_id,this.theCartItem?.id!,this.content,this.rate);
     this.reviewRatingService.ratingProduct(rate).subscribe({
      next:(response:Response) => {
+      this.toastr.success(response.message,"THÔNG BÁO",{
+        timeOut:4000
+      })
       this.closeModal();
+     },
+     error:(error:any) => {
+      this.toastr.error(error.error.message,"LỖI",{
+        timeOut:4000
+      })
+     
      }
     })
   }

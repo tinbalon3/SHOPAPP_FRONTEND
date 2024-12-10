@@ -56,7 +56,7 @@ export class OrderDetailComponent implements OnInit {
     this.productService.getProductDetail(productId).subscribe({
       next: (response: Response) => {
         this.theCartItem = new CartItem(response.data);
-        console.log(this.theCartItem);
+        
         
         this.openReviewModal(this.theCartItem)
 
@@ -75,6 +75,16 @@ export class OrderDetailComponent implements OnInit {
         this.orderDetailRequest = response.data;
         this.orderDetailRequest!.order_details = response.data.order_details.map((orderDetail: OrderDetail) => {
           orderDetail.product.thumbnail = `${environment.apiBaseUrl}/products/images/${orderDetail.product.thumbnail}`;
+          if( this.orderDetailRequest.status == 'PROCESSING')
+            this.orderDetailRequest.status = 'Đang xử lý'
+          if( this.orderDetailRequest.status == 'SHIPPED')
+            this.orderDetailRequest.status = 'Đã vận chuyển'
+          if( this.orderDetailRequest.status == 'DELIVERED')
+            this.orderDetailRequest.status = 'Đã vận chuyển'
+          if( this.orderDetailRequest.status == 'PENDING')
+            this.orderDetailRequest.status = 'Chưa xử lý'
+          if( this.orderDetailRequest.status == 'CANCELED')
+            this.orderDetailRequest.status = 'Đã hủy'
           return orderDetail;
 
         }
