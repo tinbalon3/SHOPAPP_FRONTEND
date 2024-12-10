@@ -200,7 +200,7 @@
                   </div>
 
                   <div class="col-4">
-                    <p class="mb-0">{{item.price * item.quantity}} VND</p>
+                    <p class="mb-0">{{item.price * item.quantity | currency:'VND'}}</p>
                   </div>
                 </div>
                 <ng-container *ngIf="this.couponList.length > 0">
@@ -219,7 +219,7 @@
                     <h6 class="mb-0">Tổng cộng</h6>
                   </div>
                   <div class="col-4">
-                    <h6 class="mb-0">{{totalAmount }} VND</h6>
+                    <h6 class="mb-0">{{totalAmount | currency:'VND'}}</h6>
                   </div>
                 </div>
               </div>
