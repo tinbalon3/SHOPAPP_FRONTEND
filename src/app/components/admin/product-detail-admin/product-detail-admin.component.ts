@@ -120,7 +120,7 @@ export class ProductDetailAdminComponent implements OnInit {
   addProduct(): void {
     const formData = new FormData();
     if (this.productInfoForm.invalid) {
-      this.toastr.error("Điền sai thông tin", "",{
+      this.toastr.error("Điền sai thông tin", "LỖI",{
         timeOut: 3000,
       })
       return;
