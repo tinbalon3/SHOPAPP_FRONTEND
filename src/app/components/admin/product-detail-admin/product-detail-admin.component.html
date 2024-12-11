@@ -27,12 +27,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="productPrice">Tồn kho</label>
-                    <input type="number" [value]="this.productDetail?.price" class="form-control" formControlName="productPrice">
+                    <label for="productStock">Tồn kho</label>
+                    <input type="number" [value]="this.productDetail?.stock" class="form-control" formControlName="productStock">
                 </div>
                 <button type="submit" class="btn btn-primary mt-5">Lưu thay đổi</button>
             </form>
-            <form *ngIf="!this.isAddProduct" [formGroup]="productInfoForm" (ngSubmit)="saveProductInfo()">
+            <form *ngIf="!this.isAddProduct" [formGroup]="productInfoForm" (ngSubmit)="saveProduct()">
                 <div class="form-group">
                     <label for="productId">Mã sản phẩm</label>
                     <input type="text" [value]="productId" class="form-control" formControlName="productId">
@@ -56,15 +56,15 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="productPrice">Tồn kho</label>
-                    <input type="number" [value]="this.productDetail?.price" class="form-control" formControlName="productPrice">
+                    <label for="productStock">Tồn kho</label>
+                    <input type="number" [value]="this.productDetail?.stock" class="form-control" formControlName="productStock">
                 </div>
                 <button type="submit" class="btn btn-primary mt-5">Lưu thay đổi</button>
             </form>
         </div>
         <div class="col-md-6">
             <h3 class="mb-4">Ảnh sản phẩm</h3>
-            <form (ngSubmit)="saveProductImages()">
+            <div >
                 <div class="row">
                     <div class="col-md-4 mb-4" *ngFor="let image of this.productDetail?.product_images">
                         <div class="image-container">
@@ -90,8 +90,8 @@
                         </div>
                     </ng-container>
                 </div>
-                <button *ngIf="!isAddProduct" type="submit" class="btn btn-primary mt-3">Lưu hình ảnh</button>
-            </form>
+                <!-- <button *ngIf="!isAddProduct" type="submit" class="btn btn-primary mt-3">Lưu hình ảnh</button> -->
+            </div>
         </div>
     </div>
 </div>

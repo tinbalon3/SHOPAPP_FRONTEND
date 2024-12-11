@@ -89,6 +89,8 @@ export class ProductDetailAdminComponent implements OnInit {
       this.productService.getProductDetail(productId).subscribe({
         next: (response:Response) => {
           this.isLoading = false
+          console.log(response);
+          
           this.productDetail = response.data;
           if (this.productDetail?.product_images && this.productDetail?.product_images.length > 0) {
             this.productDetail?.product_images.forEach((product_image: ProductImages) => {
@@ -108,15 +110,13 @@ export class ProductDetailAdminComponent implements OnInit {
           });
 
         },
-        complete: () => {
-
-        },
         error: (e) => {
           console.error(e.error.message)
         }
       })
     }
   }
+
   addProduct(): void {
     const formData = new FormData();
     if (this.productInfoForm.invalid) {
@@ -165,11 +165,35 @@ export class ProductDetailAdminComponent implements OnInit {
         this.toastr.error(e.error.message, "THẤT BẠI", {
           timeOut: 2000
         })
-        console.log("Update product failed : ",e)
+        
       }
     });
   }
-  saveProductInfo(): void {
+
+  saveProduct(): void {
+    const formData = new FormData();
+    if (
+      this.idImages.length !== this.selectedFiles.length ||
+      this.updateImages.length !== this.selectedFiles.length
+    ) {
+      this.toastr.error('Dữ liệu hình ảnh không đồng bộ', 'LỖI', {
+        timeOut: 3000,
+      });
+      return;
+    }
+    else {
+      const imageData = {
+        imageIds: this.idImages,
+        updateImages: this.updateImages,
+      };
+  
+      const imageBlob = new Blob([JSON.stringify(imageData)], { type: 'application/json' });
+      formData.append('imageData', imageBlob, 'imageData.json');
+    }
+    
+    
+   
+
     const product = {
       name: this.productInfoForm.controls['productName'].value,
       price: this.productInfoForm.controls['productPrice'].value,
@@ -177,11 +201,23 @@ export class ProductDetailAdminComponent implements OnInit {
       category_id: this.productInfoForm.controls['productCategory'].value,
       stock: this.productInfoForm.controls['productStock'].value,
     }
+    // Chuyển đổi JSON thành Blob để gửi qua FormData
+    const jsonBlob = new Blob([JSON.stringify(product)], { type: 'application/json' });
+
+    // Thêm tệp JSON vào FormData
+    formData.append('product', jsonBlob, 'product.json');
+
+    for (const file of this.selectedFiles) {
+      formData.append('images', file);
+    }
+      
+    
+    
     this.isLoading = true
-    this.productService.updateProduct(product,this.productId).subscribe({
+    this.productService.updateProduct(this.productId,formData).subscribe({
       next:(response:Response) => {
         this.isLoading = false
-        this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÀNH CÔNG", {
+        this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÔNG BÁO", {
           timeOut: 2000
         })
         this.productDetail = response.data;
@@ -190,10 +226,10 @@ export class ProductDetailAdminComponent implements OnInit {
       },
       error:(e) => {
         this.isLoading = false
-        this.toastr.error("Thay đổi thất bại", "THÀNH CÔNG", {
+        this.toastr.error("Thay đổi thất bại", "THÔNG BÁO", {
           timeOut: 2000
         })
-        console.log("Update product failed : ",e.message,product)
+        console.log("Update product failed : ",e,product)
       }
     });
   }
@@ -209,8 +245,6 @@ export class ProductDetailAdminComponent implements OnInit {
       this.idImages.push(id);
       this.updateImages.push(updateImage);
     }
-    console.log(this.selectedFiles);
-    
     const input = file.target as HTMLInputElement;
     if (input.files && input.files[0]) {
         const reader = new FileReader();

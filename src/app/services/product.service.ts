@@ -38,8 +38,8 @@ export class ProductService {
     
     return this.http.put(`${this.apiProducts}/images/upload/${productId}`,formData);
   }
-  updateProduct(product:any,id:number):Observable<Response>{
-    return this.http.put<Response>(`${this.apiProducts}/update/${id}`,product);
+  updateProduct(productId:number,formData:any):Observable<Response>{
+    return this.http.put<Response>(`${this.apiProducts}/update/${productId}`,formData);
   }
   deleteProduct(id:number):Observable<Response> {
     return this.http.delete<Response>(`${this.apiProducts}/${id}`);

@@ -106,35 +106,35 @@ throw new Error('Method not implemented.');
       }
     })
   }
-   timeAgo(orderTimestamp: string): string {
-   
-    const now = new Date();
-    const orderDate = new Date(orderTimestamp);
-    const diffInSeconds = Math.floor((now.getTime() - orderDate.getTime()) / 1000);
-  
-    const minutes = Math.floor(diffInSeconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const weeks = Math.floor(days / 7);
-    const months = Math.floor(days / 30); // Rough estimate
-    const years = Math.floor(days / 365); // Rough estimate
-  
-    if (years > 0) {
-      return `${years} năm${years > 1 ? 's' : ''} trước`;
-    } else if (months > 0) {
-      return `${months} tháng${months > 1 ? 's' : ''} trước`;
-    } else if (weeks > 0) {
-      return `${weeks} tuần${weeks > 1 ? 's' : ''} trước`;
-    } else if (days > 0) {
-      return `${days} ngày${days > 1 ? 's' : ''} trước`;
-    } else if (hours > 0) {
-      return `${hours} giờ${hours > 1 ? 's' : ''} trước`;
-    } else if (minutes > 0) {
-      return `${minutes} phút${minutes > 1 ? 's' : ''} trước`;
-    } else {
-      return 'Mới đây';
-    }
+timeAgo(orderTimestamp: string): string {
+  const now = new Date();
+  const orderDate = new Date(orderTimestamp);
+  const diffInSeconds = Math.floor((now.getTime() - orderDate.getTime()) / 1000);
+
+  const minutes = Math.floor(diffInSeconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
+  const months = Math.floor(days / 30); // Rough estimate
+  const years = Math.floor(days / 365); // Rough estimate
+
+  if (years > 0) {
+    return `${years} năm trước`;
+  } else if (months > 0) {
+    return `${months} tháng trước`;
+  } else if (weeks > 0) {
+    return `${weeks} tuần trước`;
+  } else if (days > 0) {
+    return `${days} ngày trước`;
+  } else if (hours > 0) {
+    return `${hours} giờ trước`;
+  } else if (minutes > 0) {
+    return `${minutes} phút trước`;
+  } else {
+    return 'Mới đây';
   }
+}
+
   
   updatePageSize(pageSize: string) {
     this.itemsPerPage = +pageSize;
