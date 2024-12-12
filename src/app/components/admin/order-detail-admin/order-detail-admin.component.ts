@@ -48,7 +48,7 @@ getOrderDetail(){
     )
     this.shipping_address = `${this.orderDetailRequest.shipping_address.city} ${this.orderDetailRequest.shipping_address.state} ${this.orderDetailRequest.shipping_address.city}`
     this.orderDetailRequest =JSON.parse(JSON.stringify(this.orderDetailRequest));
-    console.log(this.orderDetailRequest.id);
+    console.log(this.orderDetailRequest);
     
 
     },

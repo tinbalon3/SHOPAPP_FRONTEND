@@ -34,11 +34,11 @@
           <div class="mb-3">
             <label for="status">Trạng thái: <span style="font-size: 12px;color: red;">(được quyền thay đổi)</span></label>
             <select id="status" class="form-control" [(ngModel)]="orderDetailRequest.status">
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="shipped">Shipped</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
+              <option value="PENDING">Đang chờ</option>
+              <option value="PROCESSING">Đang xử lý</option>
+              <option value="SHIPPED">Đang giao</option>
+              <option value="DELIEVERED">Đang vận chuyển</option>
+              <option value="CANCELLED">Đã hủy</option>
             </select>
           </div>
         </div>
@@ -47,7 +47,7 @@
         <div class="col-md-6"  *ngIf="orderDetailRequest">
           <div class="mb-3">
             <label for="total_money">Tổng tiền:</label>
-            <input type="text" id="total_money" class="form-control" [value]="totalAmount | currency" readonly>
+            <input type="text" id="total_money" class="form-control" [value]="orderDetailRequest.total_money| currency:'VND'" readonly>
           </div>
           <div class="mb-3">
             <label for="payment_method">Phương thức thanh toán:</label>
@@ -82,14 +82,14 @@
               <td><img [src]="item.product.thumbnail" alt="{{ item.product.name }}" width="100"></td>
               <td>{{ item.product.name }}</td>
               <td>{{ item.numberOfProduct }}</td>
-              <td>{{ item.price | currency }}</td>
-              <td>{{ item.totalMoney | currency }}</td>
+              <td>{{ item.price | currency:'VND' }}</td>
+              <td>{{ item.totalMoney | currency:'VND' }}</td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
               <td colspan="4" class="text-end"><strong>Tổng giá trị đơn hàng:</strong></td>
-              <td>{{ this.orderDetailRequest.total_money | currency }}</td>
+              <td>{{ this.orderDetailRequest.total_money | currency:'VND' }}</td>
             </tr>
           </tfoot>
         </table>

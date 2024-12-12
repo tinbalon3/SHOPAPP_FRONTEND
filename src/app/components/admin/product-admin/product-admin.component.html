@@ -27,12 +27,12 @@
 
                 </tr>
             </thead>
-            <tbody>
+            <tbody *ngIf="products.length > 0">
                 <tr *ngFor="let product of products">
                     <td>{{ product.id }}</td>
                     <td><img [src]="product.url" alt="{{product.name }}" width="100"></td>
                     <td>{{ product.name }}</td>
-                    <td>{{ product.price | currency }}</td>
+                    <td>{{ product.price | currency :'VND'}}</td>
                     <td>{{ product.description }}</td>
                     <td>
                         <div class="dropdown">
@@ -49,6 +49,10 @@
                     
                 </tr>
             </tbody>
+            <div *ngIf="products.length == 0">
+                <p class="text-muted">Không có sản phẩm nào.</p>
+            </div>
+            
         </table>
     </div>
     <!-- footer -->

@@ -22,7 +22,7 @@ export class ProductAdminComponent {
  
   keyword:string ="";
   categories:Category[] = [];
-  selectedCategoryId=0;
+  selectedCategoryId=8;
   bsModalRef?: BsModalRef;
 
 // pagination

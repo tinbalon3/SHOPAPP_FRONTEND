@@ -168,7 +168,7 @@ export class CheckOutComponent implements OnInit {
           let cartItem = this.cartItems.find((item) => {
             return item.id == Number(errorData.data);
           });
-           console.log(cartItem);
+          
           this.toastr.error(`Sản phẩm ${cartItem?.name} không đủ tồn kho, vui lòng kiểm tra lại đơn hàng.`,"LỖI",{
             timeOut: 2000
           })

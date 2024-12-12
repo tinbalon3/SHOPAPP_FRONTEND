@@ -64,35 +64,42 @@
         </div>
         <div class="col-md-6">
             <h3 class="mb-4">Ảnh sản phẩm</h3>
-            <div >
+            <div>
                 <div class="row">
-                    <div class="col-md-4 mb-4" *ngFor="let image of this.productDetail?.product_images">
+                    <!-- Hiển thị ảnh hiện tại của sản phẩm -->
+                    <div class="col-md-4 mb-4" *ngFor="let image of productDetail?.product_images">
                         <div class="image-container">
-                            <img [src]="image.images_url" class="product-image img-fluid mb-2" [id]="'productImage-' + image.id">
-                            <input type="file"  class="form-control-file mt-2" (change)="onFileChange($event, image.id, false)">
+                            <img [src]="image.images_url || ''" class="product-image img-fluid mb-2" [id]="'productImage-' + image.id">
+                            <input type="file" class="form-control-file mt-2" (change)="onFileChange($event, image.id, false)">
                             <button type="button" class="btn btn-secondary mt-2" (click)="undoImageChange(image.id)" [id]="'undoButton-' + image.id" style="display:none;">Hoàn tác</button>
                         </div>
                     </div>
+        
+                    <!-- Hiển thị ảnh thêm nếu có -->
                     <ng-container *ngIf="additionalImageInputs.length > 0">
-                        <div class="col-md-4 mb-4" *ngFor="let image of additionalImageInputs;let i = index">
+                        <div class="col-md-4 mb-4" *ngFor="let image of additionalImageInputs; let i = index">
                             <div class="image-container">
-                                <img class="product-image img-fluid mb-2" [id]="'productImage-' + i">
+                                <img [src]="image || ''" class="product-image img-fluid mb-2" [id]="'productImage-' + i">
                                 <input type="file" class="form-control-file mt-2" (change)="onFileChange($event, i, true)">
+                                <button type="button" class="btn btn-secondary mt-2" (click)="undoImageChange(i)" [id]="'undoButton-' + i" style="display:none;">Hoàn tác</button>
                             </div>
                         </div>
                     </ng-container>
+        
+                    <!-- Hiển thị ảnh thêm mới nếu đang thêm sản phẩm -->
                     <ng-container *ngIf="addImages.length > 0 && isAddProduct">
-                        <div class="col-md-4 mb-4" *ngFor="let image of addImages;let i = index">
+                        <div class="col-md-4 mb-4" *ngFor="let image of addImages; let i = index">
                             <div class="image-container">
-                                <img class="product-image img-fluid mb-2" [id]="'productImage-' + i">
+                                <img [src]="image || ''" class="product-image img-fluid mb-2" [id]="'productImage-' + i">
                                 <input type="file" class="form-control-file mt-2" (change)="onFileChange($event, i, false)">
+                                <button type="button" class="btn btn-secondary mt-2" (click)="undoImageChange(i)" [id]="'undoButton-' + i" style="display:none;">Hoàn tác</button>
                             </div>
                         </div>
                     </ng-container>
                 </div>
-                <!-- <button *ngIf="!isAddProduct" type="submit" class="btn btn-primary mt-3">Lưu hình ảnh</button> -->
             </div>
         </div>
+        
     </div>
 </div>
 

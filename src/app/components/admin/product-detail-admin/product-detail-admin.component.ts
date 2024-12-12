@@ -31,6 +31,7 @@ export class ProductDetailAdminComponent implements OnInit {
   maximum_images = 5;
   isAddProduct=false;
   isLoading = false
+  isChanged = false; // Cờ theo dõi thay đổi
   additionalImageInputs: number[] = [];
   addImages: number[] = [];
   constructor(
@@ -60,25 +61,26 @@ export class ProductDetailAdminComponent implements OnInit {
   initializeForm(): void {
     this.productInfoForm = this.formBuilder.group({
       productId: [{ value: '', disabled: true }],
-      productName: ['Táo Châu Đốc'],
-      productPrice: [12000, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
-      productDescription: ['Thơm ngon'],
-      productCategory: [14],
-      productStock: [20]
+      productName: [],
+      productPrice: [, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
+      productDescription: [],
+      productCategory: [],
+      productStock: []
     });
 
+    
 
   }
   getCategory() {
     this.categoryService.getCategory().subscribe({
       next: (response: Response) => {
         this.categories = response.data;
-      },
-      complete: () => {
-
+        this.productInfoForm.get('productCategory')?.setValue(this.categories[0].id);
       },
       error: (e) => {
-        console.log(e)
+        this.toastr.error(e.error.message, "THÔNG BÁO", {
+          timeOut: 2000
+        })
       }
     })
   }
@@ -89,8 +91,6 @@ export class ProductDetailAdminComponent implements OnInit {
       this.productService.getProductDetail(productId).subscribe({
         next: (response:Response) => {
           this.isLoading = false
-          console.log(response);
-          
           this.productDetail = response.data;
           if (this.productDetail?.product_images && this.productDetail?.product_images.length > 0) {
             this.productDetail?.product_images.forEach((product_image: ProductImages) => {
@@ -98,7 +98,6 @@ export class ProductDetailAdminComponent implements OnInit {
 
             })
           }
-         
           this.additionalImageInputs = Array.from({ length: this.maximum_images - this.productDetail?.product_images.length! }, (_, i) => i);          
           this.productInfoForm.patchValue({
             productId: this.productId,
@@ -108,10 +107,14 @@ export class ProductDetailAdminComponent implements OnInit {
             productCategory: this.productDetail!.category_id,
             productStock:this.productDetail!.stock
           });
-
+          this.productInfoForm.valueChanges.subscribe(() => {
+            this.isChanged = true;
+          });
         },
         error: (e) => {
-          console.error(e.error.message)
+          this.toastr.error(e.error.message, "THÔNG BÁO", {
+            timeOut: 2000
+          })
         }
       })
     }
@@ -119,119 +122,149 @@ export class ProductDetailAdminComponent implements OnInit {
 
   addProduct(): void {
     const formData = new FormData();
+  
+    // Kiểm tra `productInfoForm` trước
     if (this.productInfoForm.invalid) {
-      this.toastr.error("Điền sai thông tin", "LỖI",{
-        timeOut: 3000,
-      })
-      return;
-    } 
-  // Add JSON dữ liệu sản phẩm vào `formData`
-  const product = {
-    name: this.productInfoForm.controls['productName'].value,
-    price: this.productInfoForm.controls['productPrice'].value,
-    description: this.productInfoForm.controls['productDescription'].value,
-    category_id: this.productInfoForm.controls['productCategory'].value,
-    stock: this.productInfoForm.controls['productStock'].value,
-  };
-    // Chuyển đổi JSON thành Blob để gửi qua FormData
-    const jsonBlob = new Blob([JSON.stringify(product)], { type: 'application/json' });
-
-    // Thêm tệp JSON vào FormData
-    formData.append('product', jsonBlob, 'product.json');
-
-  // Add file vào `formData` (multiple images)
-  if(this.selectedFiles.length < 3) {
-    this.toastr.error("Cần có ít nhất 3 hình ảnh sản phẩm", "LỖI",{
-      timeOut: 3000,
-    })
-    return;
-  }
-  for (const file of this.selectedFiles) {
-    formData.append('images', file);
-  }
-    this.isLoading = true
-    this.productService.addProduct(formData).subscribe({
-      next:(response:Response) => {
-        this.isLoading = false
-        this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÀNH CÔNG", {
-          timeOut: 2000
-        })
-        this.productDetail = response.data;
-        this.productDetail!.id = this.productId;
-        location.reload()
-      },
-      error:(e) => {
-        this.isLoading = false
-        this.toastr.error(e.error.message, "THẤT BẠI", {
-          timeOut: 2000
-        })
-        
-      }
-    });
-  }
-
-  saveProduct(): void {
-    const formData = new FormData();
-    if (
-      this.idImages.length !== this.selectedFiles.length ||
-      this.updateImages.length !== this.selectedFiles.length
-    ) {
-      this.toastr.error('Dữ liệu hình ảnh không đồng bộ', 'LỖI', {
+      this.toastr.error("Điền sai thông tin sản phẩm. Vui lòng kiểm tra lại.", "LỖI", {
         timeOut: 3000,
       });
       return;
     }
-    else {
-      const imageData = {
-        imageIds: this.idImages,
-        updateImages: this.updateImages,
-      };
   
-      const imageBlob = new Blob([JSON.stringify(imageData)], { type: 'application/json' });
-      formData.append('imageData', imageBlob, 'imageData.json');
-    }
-    
-    
-   
-
+    // Lấy dữ liệu từ form và chuẩn bị JSON
     const product = {
-      name: this.productInfoForm.controls['productName'].value,
-      price: this.productInfoForm.controls['productPrice'].value,
-      description: this.productInfoForm.controls['productDescription'].value,
-      category_id: this.productInfoForm.controls['productCategory'].value,
-      stock: this.productInfoForm.controls['productStock'].value,
+      name: this.productInfoForm.controls['productName'].value?.trim() || '',
+      price: this.productInfoForm.controls['productPrice'].value || 0,
+      description: this.productInfoForm.controls['productDescription'].value?.trim() || '',
+      category_id: this.productInfoForm.controls['productCategory'].value || null,
+      stock: this.productInfoForm.controls['productStock'].value || 0,
+    };
+    
+  
+    // Kiểm tra logic dữ liệu
+    if (!product.name || product.name.length === 0) {
+      this.toastr.error("Tên sản phẩm không được để trống.", "LỖI", { timeOut: 3000 });
+      return;
     }
-    // Chuyển đổi JSON thành Blob để gửi qua FormData
+    if (product.price <= 0) {
+      this.toastr.error("Giá sản phẩm phải lớn hơn 0.", "LỖI", { timeOut: 3000 });
+      return;
+    }
+    if (product.stock <= 0) {
+      this.toastr.error("Số lượng sản phẩm không hợp lệ.", "LỖI", { timeOut: 3000 });
+      return;
+    }
+  
+    // Thêm JSON vào FormData
     const jsonBlob = new Blob([JSON.stringify(product)], { type: 'application/json' });
-
-    // Thêm tệp JSON vào FormData
     formData.append('product', jsonBlob, 'product.json');
-
+  
+    // Kiểm tra file hình ảnh
+    if (this.selectedFiles.length < 3) {
+      this.toastr.error("Cần có ít nhất 3 hình ảnh sản phẩm.", "LỖI", { timeOut: 3000 });
+      return;
+    }
+  
+    // Kiểm tra từng file
     for (const file of this.selectedFiles) {
+      if (!file.type.match('image.*')) {
+        this.toastr.error(`File ${file.name} không phải là hình ảnh hợp lệ.`, "LỖI", { timeOut: 3000 });
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        this.toastr.error(`File ${file.name} vượt quá kích thước cho phép (5MB).`, "LỖI", { timeOut: 3000 });
+        return;
+      }
       formData.append('images', file);
     }
-      
-    
-    
-    this.isLoading = true
-    this.productService.updateProduct(this.productId,formData).subscribe({
-      next:(response:Response) => {
-        this.isLoading = false
-        this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÔNG BÁO", {
-          timeOut: 2000
-        })
+  
+    // Gửi request nếu tất cả đều hợp lệ
+    this.isLoading = true;
+    this.productService.addProduct(formData).subscribe({
+      next: (response: Response) => {
+        this.isLoading = false;
+        this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÀNH CÔNG", {
+          timeOut: 2000,
+        });
         this.productDetail = response.data;
         this.productDetail!.id = this.productId;
-        location.reload()
+        location.reload();
       },
-      error:(e) => {
-        this.isLoading = false
-        this.toastr.error("Thay đổi thất bại", "THÔNG BÁO", {
-          timeOut: 2000
-        })
-        console.log("Update product failed : ",e,product)
-      }
+      error: (e) => {
+        this.isLoading = false;
+        console.log(e);
+        this.toastr.error(e.error.message, "THẤT BẠI", {
+          timeOut: 2000,
+        });
+      },
     });
+  }
+  
+
+  saveProduct(): void {
+    if(this.isChanged || this.selectedFiles.length > 0) {
+      const formData = new FormData();
+      if (
+        this.idImages.length !== this.selectedFiles.length ||
+        this.updateImages.length !== this.selectedFiles.length
+      ) {
+        this.toastr.error('Dữ liệu hình ảnh không đồng bộ', 'LỖI', {
+          timeOut: 3000,
+        });
+        return;
+      }
+      else {
+        const imageData = {
+          imageIds: this.idImages,
+          updateImages: this.updateImages,
+        };
+    
+        const imageBlob = new Blob([JSON.stringify(imageData)], { type: 'application/json' });
+        formData.append('imageData', imageBlob, 'imageData.json');
+      }
+      const product = {
+        name: this.productInfoForm.controls['productName'].value,
+        price: this.productInfoForm.controls['productPrice'].value,
+        description: this.productInfoForm.controls['productDescription'].value,
+        category_id: this.productInfoForm.controls['productCategory'].value,
+        stock: this.productInfoForm.controls['productStock'].value,
+      }
+      // Chuyển đổi JSON thành Blob để gửi qua FormData
+      const jsonBlob = new Blob([JSON.stringify(product)], { type: 'application/json' });
+  
+      // Thêm tệp JSON vào FormData
+      formData.append('product', jsonBlob, 'product.json');
+  
+      for (const file of this.selectedFiles) {
+        formData.append('images', file);
+      }
+        
+      this.isLoading = true
+      this.productService.updateProduct(this.productId,formData).subscribe({
+        next:(response:Response) => {
+          this.isLoading = false
+          this.toastr.success("Thay đổi thông tin sản phẩm thành công", "THÔNG BÁO", {
+            timeOut: 2000
+          })
+          this.productDetail = response.data;
+          this.productDetail!.id = this.productId;
+          location.reload()
+        },
+        error:(error:any) => {
+          this.isLoading = false
+          this.toastr.error(error.error.message, "THÔNG BÁO", {
+            timeOut: 2000
+          })
+          
+        }
+      });
+    }
+    else {
+      this.toastr.info("Không có thay đổi", "THÔNG BÁO", {
+        timeOut: 2000
+      })
+    }
+  
   }
 
   filterByCategory(categoryId: any): void {
@@ -270,34 +303,5 @@ export class ProductDetailAdminComponent implements OnInit {
     imgElement.src = imgElement.getAttribute('data-original-src')!;
     undoButton.style.display = 'none';
 }
-  saveProductImages() {
-    const formData = new FormData();
-    for (let i = 0; i < this.selectedFiles.length; i++) {
-      formData.append('images', this.selectedFiles[i]);
-      formData.append('imageIds', this.idImages[i].toString());
-      formData.append('updateImages', this.updateImages[i].toString());
-    }
-    
-    
-    this.isLoading = true
-    this.productService.updateImages(formData, this.productId).subscribe({
-     next:(response:any) => {
-      this.isLoading = false
-
-        this.toastr.success(`Hình ảnh đã được cập nhật thành công: ${response}`, "THÀNH CÔNG", {
-          timeOut: 2000
-        })
-       },
-     
-      error:(err:any) => {
-        this.isLoading = false
-       
-        this.toastr.success(`Có lỗi trong quá trình cập nhật ảnh: ${err.message}`, "THÀNH CÔNG", {
-          timeOut: 2000
-        })
-      }
-   
-   
-   })  
-  }
+  
 }
