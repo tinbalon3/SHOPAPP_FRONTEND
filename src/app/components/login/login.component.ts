@@ -46,7 +46,7 @@ export class LoginComponent {
       
       })
     });
-    this.getRoles()
+    // this.getRoles()
     // Gọi API lấy danh sách roles và lưu vào biến roles
     window.addEventListener('message', (event) => {
       // Kiểm tra nguồn của thông điệp
@@ -98,8 +98,7 @@ export class LoginComponent {
         this.navigateBasedOnUserRole(role_name)
       },
       error: (error) => {
-        console.log(error);
-        
+      
         const message = error.error.message;
         this.toastr.error(message, "LỖI", {
           timeOut: 2000
@@ -138,7 +137,7 @@ export class LoginComponent {
     const loginDTO: LoginDTO = {
       user_name: this.loginForm.controls['user'].value.user_name,
       password: this.loginForm.controls['user'].value.password,
-      roleId: this.loginForm.controls['user'].value.role
+      
     };
 
     this.userService.login(loginDTO).subscribe({

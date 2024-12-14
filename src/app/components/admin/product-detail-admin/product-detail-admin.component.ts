@@ -143,17 +143,22 @@ export class ProductDetailAdminComponent implements OnInit {
   
     // Kiểm tra logic dữ liệu
     if (!product.name || product.name.length === 0) {
-      this.toastr.error("Tên sản phẩm không được để trống.", "LỖI", { timeOut: 3000 });
+      this.toastr.error("Tên sản phẩm không được để trống", "LỖI", { timeOut: 3000 });
       return;
     }
     if (product.price <= 0) {
-      this.toastr.error("Giá sản phẩm phải lớn hơn 0.", "LỖI", { timeOut: 3000 });
+      this.toastr.error("Giá sản phẩm phải lớn hơn 0", "LỖI", { timeOut: 3000 });
       return;
     }
-    if (product.stock <= 0) {
-      this.toastr.error("Số lượng sản phẩm không hợp lệ.", "LỖI", { timeOut: 3000 });
+    if (product.price > 10000000 || !product.stock ) {
+      this.toastr.error("Giá phải nhỏ hơn hoặc bằng 10.000.000", "LỖI", { timeOut: 3000 });
       return;
     }
+    if (product.stock < 0 || !product.stock ) {
+      this.toastr.error("Số lượng sản phẩm phải lớn hơn hoặc bằng 0", "LỖI", { timeOut: 3000 });
+      return;
+    }
+   
   
     // Thêm JSON vào FormData
     const jsonBlob = new Blob([JSON.stringify(product)], { type: 'application/json' });

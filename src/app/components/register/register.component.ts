@@ -36,12 +36,12 @@ export class RegisterComponent implements OnInit {
       user: this.formBuilder.group({
         phoneNumber: new FormControl('', [Validators.required, ShopValidators.notOnlyWhitespace]),
         email: new FormControl('', [Validators.required, ShopValidators.notOnlyWhitespace]),
-        password: new FormControl('', [Validators.required, Validators.minLength(6),Validators.maxLength(50), ShopValidators.notOnlyWhitespace]),
-        retypePassword: new FormControl('', [Validators.required, Validators.minLength(6),Validators.maxLength(50), ShopValidators.notOnlyWhitespace]),
-        fullname: new FormControl('', [Validators.required,Validators.minLength(3), ShopValidators.notOnlyWhitespace,ShopValidators.containsAlphabet]),
+        password: new FormControl('123456', [Validators.required, Validators.minLength(6),Validators.maxLength(50), ShopValidators.notOnlyWhitespace]),
+        retypePassword: new FormControl('123456', [Validators.required, Validators.minLength(6),Validators.maxLength(50), ShopValidators.notOnlyWhitespace]),
+        fullname: new FormControl('abc', [Validators.required,Validators.minLength(3), ShopValidators.notOnlyWhitespace,ShopValidators.containsAlphabet]),
         address: new FormControl(''),
-        dateOfBirth: new FormControl('',Validators.required),
-        isAccepted: new FormControl(false,Validators.required)
+        dateOfBirth: new FormControl('2003-05-13',Validators.required),
+        isAccepted: new FormControl(true,Validators.required)
       }, 
       // { validator: ShopValidators.checkvaluesmatch('password', 'retypePassword') }
     ) // Move the validator here
@@ -157,13 +157,14 @@ export class RegisterComponent implements OnInit {
         localStorage.removeItem("isVerifyOTP")
         if (response.status == 200) {
           this.isLoading = false
-          this.toastr.success("Đăng kí thành công", "THÀNH CÔNG", {
+          this.toastr.success(response.message, "THÀNH CÔNG", {
             timeOut: 2000,});this.router.navigate(['/login'])}
         else {
-          this.toastr.error("Nhập sai mã xác thực", "THẤT BẠI", {
+          this.toastr.error(response.message, "THẤT BẠI", {
             timeOut: 2000,});
           this.isLoading = false
-          this.router.navigate(['/login'])}},
+          this.otp = ['', '', '', '', '', ''];
+        }},
       error: (err: any) => {
         localStorage.removeItem("isVerifyOTP")
         this.isLoading = false
