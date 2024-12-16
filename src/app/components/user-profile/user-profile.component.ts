@@ -196,7 +196,10 @@ export class UserProfileComponent implements OnInit {
             this.toastr.success("Thay đổi mật khẩu thành công", "THÀNH CÔNG", {
               timeOut: 2000,
             })
-            window.location.reload();
+           
+            this.toastr.info(response.message, "THÔNG BÁO", {
+              timeOut: 2000,
+            });
             this.userService.handleLogout()
           }
           else {

@@ -82,7 +82,7 @@ export class UserService implements OnInit {
     return this.http.post<Response>(this.apiLogin, loginDTO, this.apiConfig);
   }
 
-  handleLogout() {
+  handleLogout(message = '') {
   
     this.cartService.resetCart();
     this.cookieService.delete('token', '/');
