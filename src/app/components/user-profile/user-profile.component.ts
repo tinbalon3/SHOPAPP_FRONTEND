@@ -197,7 +197,7 @@ export class UserProfileComponent implements OnInit {
               timeOut: 2000,
             })
             window.location.reload();
-
+            this.userService.handleLogout()
           }
           else {
             this.isLoading = false
@@ -275,8 +275,7 @@ export class UserProfileComponent implements OnInit {
       this.userService.sendVerificationPasswordCode(email).subscribe({
         next: (response: Response) => {
           this.isLoading = false
-          console.log(response);
-
+         
           if (response.status == 200) { // Kiểm tra response không null
             this.isSuccessVerifyCode = true
             this.isSuccessSendCode = true;
@@ -374,7 +373,7 @@ export class UserProfileComponent implements OnInit {
                 this.toastr.success("Thay đổi email thành công.", "THÀNH CÔNG", {
                   timeOut: 2000
                 });
-                this.userService.handleLogout()
+               
               }
             }
           })
@@ -404,7 +403,7 @@ export class UserProfileComponent implements OnInit {
           this.toastr.success(message, "THÀNH CÔNG", {
             timeOut: 2000
           });
-          this.userService.handleLogout()
+          
         }
       }
     })
