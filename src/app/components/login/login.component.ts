@@ -75,15 +75,7 @@ export class LoginComponent {
    
   }
 
-  getRoles(){
-    this.roleService.getRoles().subscribe({
-      next:(response:Response)=> {
-        
-        this.roles = response.data
-       }
-      
-    })
-  }
+
   getUserDetailsAndNavigate(token: string,role_name:string) {
     this.userService.getUserDetails(token).subscribe({
       next: (userResponse: Response) => {
@@ -153,6 +145,7 @@ export class LoginComponent {
         this.tokenService.setExpiredRefreshTokenInCookie(expiredDate)
         
         // Gọi API lấy chi tiết người dùng
+       console.log(response);
        
       
         
