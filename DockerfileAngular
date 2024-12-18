@@ -1,12 +1,20 @@
 # Stage 1: Build the Angular app
 FROM node:18 AS build
+
+# Thiết lập thư mục làm việc trong container
 WORKDIR /app
 
-# Copy all project files
-COPY ./package.json /package.json
+# Cài đặt Corepack để quản lý phiên bản Yarn
+RUN corepack enable
 
-RUN yarn install 
+# Sao chép package.json và yarn.lock vào container để cài đặt phụ thuộc
+COPY ./package.json ./yarn.lock /app/
 
+# Cài đặt các phụ thuộc bằng yarn
+RUN yarn install
+
+# Sao chép toàn bộ mã nguồn vào container
 COPY . .
 
+# Chạy ứng dụng Angular bằng `yarn start`
 CMD ["yarn", "start"]
