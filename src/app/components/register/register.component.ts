@@ -11,7 +11,7 @@ import { Response } from '../../response/response';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrls: ['./register.component.scss','./register.component_1.scss']
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;

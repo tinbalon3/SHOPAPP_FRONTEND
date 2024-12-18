@@ -1,0 +1,163 @@
+.container {
+    padding-bottom: 2.6rem;
+    padding-top: 2rem;
+}
+
+.register-form {
+    background-color: rgb(12, 12, 55);
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    border: 1px solid rgb(32, 34, 60);
+    align-items: center;
+    justify-content: center;
+}
+
+.register-header {
+    text-align: center;
+    /*      color: rgb(233, 66, 178);*/
+    color: rgb(105, 244, 181);
+    margin-bottom: 20px;
+
+}
+
+.label-text {
+    color: rgb(243, 165, 42);
+}
+
+.form-control {
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.form-control:focus {
+    color: white;
+    background-color: transparent;
+    outline: none;
+    box-shadow: none;
+    border-color: transparent;
+    padding-left: 0;
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: rgb(105, 244, 181);
+    cursor: pointer;
+}
+
+.checkbox-text {
+    color: rgb(243, 165, 42);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Màu checkbox khi được chọn */
+.checkbox-text input[type="checkbox"]:checked {
+    border-color: white;
+    background-color: rgb(233, 66, 178);
+}
+
+.form-check-input {
+    margin-right: 5px;
+}
+
+.register-link {
+    color: rgb(105, 244, 181);
+    text-decoration: none;
+}
+
+.register-button {
+    background: linear-gradient(to right, rgb(225, 64, 180), rgb(126, 43, 237));
+    color: white;
+    border-radius: 30px;
+    width: 100%;
+    padding: 10px 0;
+    margin-top: 20px;
+    border: none;
+}
+
+.divider {
+    height: 1px;
+    background-color: rgb(243, 165, 42);
+    /*      background-color: rgb(105, 244, 181)*/
+    margin: 20px;
+}
+
+.divider-nospace {
+    border-top: 1px solid white;
+}
+
+
+
+
+// test
+.ezy__signup16_LBMtewSK {
+    /* Bootstrap variables */
+    --bs-body-color: #1c1c1f;
+    --bs-body-bg: rgb(255, 255, 255);
+  
+    /* Easy Frontend variables */
+    --ezy-theme-color: rgb(13, 110, 253);
+    --ezy-theme-color-rgb: 13, 110, 253;
+    --ezy-form-card-bg: #ffffff;
+    --ezy-form-card-shadow: 6px 0px 118px rgba(0, 0, 0, 0.08);
+    --ezy-border-color: rgba(0, 0, 0, 0.125);
+  
+    color: var(--bs-body-color);
+    // color: white;
+    // background-color: var(--bs-body-bg);
+    background-size: cover;
+    background-position: right;
+    
+  }
+
+  
+  /* Gray Block Style */
+  .gray .ezy__signup16_LBMtewSK,
+  .ezy__signup16_LBMtewSK.gray {
+    /* Bootstrap variables */
+    --bs-body-bg: rgb(246, 246, 246);
+  
+    /* Easy Frontend variables */
+    --ezy-form-card-bg: #f6f6f6;
+    --ezy-form-card-shadow: 6px 0px 118px rgba(38, 38, 38, 0.08);
+  }
+  
+  /* Dark Gray Block Style */
+  .dark-gray .ezy__signup16_LBMtewSK,
+  .ezy__signup16_LBMtewSK.dark-gray {
+    /* Bootstrap variables */
+    --bs-body-color: #ffffff;
+    --bs-body-bg: rgb(30, 39, 53);
+    --bs-dark-rgb: 255, 255, 255;
+  
+    /* Easy Frontend variables */
+    --ezy-form-card-bg: rgb(11, 23, 39);
+    --ezy-form-card-shadow: none;
+    --ezy-border-color: rgb(58, 68, 80);
+  }
+  
+  /* Dark Block Style */
+  .dark .ezy__signup16_LBMtewSK,
+  .ezy__signup16_LBMtewSK.dark {
+    /* Bootstrap variables */
+    --bs-body-color: #ffffff;
+    --bs-body-bg: rgb(11, 23, 39);
+    --bs-dark-rgb: 255, 255, 255;
+  
+    /* Easy Frontend variables */
+    --ezy-form-card-bg: rgb(30, 39, 53);
+    --ezy-form-card-shadow: none;
+    --ezy-border-color: rgba(127, 127, 127, 0.35);
+  }
+  

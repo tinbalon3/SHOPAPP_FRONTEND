@@ -17,7 +17,7 @@ import { SharedDataService } from '../../services/shared-data.service';
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
-  styleUrl: './order.component.scss'
+  styleUrls: ['./order.component.scss','./order.component_1.scss']
 })
 export class OrderComponent implements OnInit {
   orderForm!: FormGroup
