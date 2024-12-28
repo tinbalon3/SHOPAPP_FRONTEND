@@ -1,27 +1,72 @@
-# ShopappAngular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.7.
+# VNA Fruit Website - Tóm tắt Dự án
 
-## Development server
+## Mô tả Dự án
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+VNA Fruit Website là một nền tảng thương mại điện tử được phát triển theo kiến trúc Model-View-Controller (MVC). Dự án cung cấp một thị trường trực tuyến cho việc mua bán trái cây chất lượng cao của Việt Nam. Website bao gồm các tính năng như duyệt sản phẩm, quản lý giỏ hàng, xử lý thanh toán, đánh giá sản phẩm và một bảng điều khiển quản trị cho việc quản lý sản phẩm.
 
-## Code scaffolding
+## Công nghệ Sử dụng
+- **Spring Boot**: Framework backend để xử lý các yêu cầu API và tương tác với cơ sở dữ liệu.
+- **Angular**: Framework frontend để xây dựng giao diện người dùng động.
+- **MySQL**: Cơ sở dữ liệu quan hệ để lưu trữ thông tin sản phẩm, người dùng và đơn hàng.
+- **Redis**: Sử dụng để caching nhằm cải thiện hiệu suất.
+- **Kafka**: Dùng để gửi email thông báo bất đồng bộ.
+- **VNPay**: Cổng thanh toán để xử lý các giao dịch.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Các Tính năng
+- **Danh mục Sản phẩm**: Duyệt và lọc sản phẩm theo danh mục, giá và đánh giá.
+- **Giỏ hàng**: Thêm sản phẩm vào giỏ hàng, thay đổi số lượng và thanh toán.
+- **Cổng Thanh toán**: Xử lý thanh toán qua VNPay.
+- **Đánh giá Sản phẩm**: Đánh giá sản phẩm và cung cấp phản hồi.
+- **Quản trị viên**: Quản trị viên có thể thêm, sửa, xóa sản phẩm và quản lý đơn hàng.
 
-## Build
+## Cài đặt
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### 1. Clone kho mã nguồn
 
-## Running unit tests
+```bash
+git clone https://github.com/tinbalon3/SHOPAPP_BACKEND.git
+git clone https://github.com/tinbalon3/SHOPAPP_FRONTEND.git
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### 2. Cài đặt các thư viện frontend (Angular)
 
-## Running end-to-end tests
+```bash
+yarn install
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```
 
-## Further help
+### 3. Cài đặt backend (Spring Boot)
+- Cấu hình `application.yml` cho MySQL, Redis và Kafka.
+- File cấu hình kafka và redis nằm ở SHOPAPP_FRONTEND bạn có thể tham khảo
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### 4. Cài đặt cơ sở dữ liệu
+- Tạo các bảng cần thiết trong MySQL.
+- Chạy migration của Flyway để thiết lập schema cơ sở dữ liệu.
+- Cơ sở dữ liệu MYSQL nằm trong docker, trước khi khởi động BE thì hãy bật Docker và bật tất cả các phụ thuộc trước như 3 zookeeper, 1 broker, MYSQL, PHPMYADMIN, REDIS
+
+## Sử dụng
+
+### 1. Khởi động Frontend
+
+```bash
+yarn start
+```
+
+Truy cập vào website tại `http://localhost:4200`.
+
+### 2. Khởi động Backend
+Backend có thể truy cập tại `http://localhost:8088`.
+-Nếu chạy bằng docker thì:
+Backend có thể truy cập tại `http://localhost:8099`.
+Frontend thay đổi trong file enviroment thành 8099
+## Kiểm thử
+
+- **Kiểm thử đơn vị**: Chạy các bài kiểm thử đơn vị bằng JUnit.
+- **Kiểm thử tích hợp**: Các bài kiểm thử tích hợp cho các API endpoints có sẵn trong backend.
+
+
+## Lời cảm ơn
+- **TS. Đỗ Như Tài** đã hướng dẫn và hỗ trợ.
+- **Dương Văn Sìnl** và **Đặng Ngân Đông** đã cùng nhau phát triển và kiểm thử dự án.
+- **Tác giả ** Dương Văn Sìnl: tinbalon3@gmail.com
